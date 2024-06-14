@@ -1,15 +1,19 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-// import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-// import 'package:audioplayers/audioplayers.dart';
-import 'package:just_audio/just_audio.dart';
-import 'dart:io';
+import 'package:provider/provider.dart';
+
+import '../providers/audioplayer_provider.dart';
+import '../screens/playback_screen.dart';
 
 void main() {
-  runApp(const JustPlay());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AudioPlayerProvider>(create: (context) => AudioPlayerProvider()),
+      ],
+      child: const JustPlay(),
+    ),
+  );
 }
 
 class JustPlay extends StatelessWidget {
@@ -22,162 +26,9 @@ class JustPlay extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         fontFamily: 'ProductSans',
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
+        primaryColor: Colors.blue,
       ),
       home: PlaybackScreen(),
-    );
-  }
-}
-
-class PlaybackScreen extends StatefulWidget {
-  const PlaybackScreen({super.key});
-  @override
-  State<PlaybackScreen> createState() => _PlaybackScreenState();
-}
-
-class _PlaybackScreenState extends State<PlaybackScreen> {
-  final audioPlayer = AudioPlayer();
-  String currentFilePath = '/storage/emulated/0/Music/01 Greyhound.mp3';
-  Duration currentFileDuration = Duration.zero;
-  bool fileExists = false;
-  bool nowPlaying = false;
-
-  final pathTextFieldController = TextEditingController(text: '/storage/emulated/0/Music/01 Greyhound.mp3');
-
-  @override
-  void initState() {
-    super.initState();
-    _requestPermission();
-    _setPlayerFile();
-  }
-
-  @override
-  void dispose() {
-    pathTextFieldController.dispose();
-    audioPlayer.dispose();
-    super.dispose();
-  }
-
-  Future<void> _requestPermission() async {
-    // final plugin = DeviceInfoPlugin();
-    final android = await DeviceInfoPlugin().androidInfo;
-    Permission selectedPermissionType;
-
-    if (android.version.sdkInt < 33) {
-      selectedPermissionType = Permission.storage;
-    } else {
-      selectedPermissionType = Permission.audio;
-    }
-
-    PermissionStatus permissionStatus = await selectedPermissionType.status;
-    debugPrint('Initial permission status: $permissionStatus');
-
-    if (permissionStatus.isDenied) {
-      permissionStatus = await selectedPermissionType.request();
-      debugPrint('After requested permission status: $permissionStatus');
-    }
-
-    if (permissionStatus.isGranted) {
-      if (File(currentFilePath).existsSync()) {
-        setState(() {
-          fileExists = true;
-        });
-      } else {
-        debugPrint("File doesn't exist.");
-      }
-    } else {
-      // Handle permission denial
-      debugPrint("Permission Denied.");
-      // openAppSettings();
-    }
-  }
-
-  Future<void> _setPlayerFile() async {
-    final currentFileDuration = await audioPlayer.setFilePath(currentFilePath);
-  }
-
-  Future<void> _togglePlayerPlayPause() async {
-    if (!nowPlaying) {
-      debugPrint("Playing...");
-      if (fileExists) {
-        await audioPlayer.play();
-      } else {
-        debugPrint("File not found.");
-        // Toast/Snackbar
-      }
-    } else {
-      await audioPlayer.pause();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('JustPlay!'),
-                    IconButton(
-                      icon: Icon(Icons.settings),
-                      onPressed: () => {
-                        debugPrint("Settings Button Pressed"),
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 40),
-                Text('$currentFilePath'),
-                SizedBox(height: 10),
-                Text('Artist'),
-                SizedBox(height: 20),
-                LinearProgressIndicator(),
-                SizedBox(height: 20),
-                IconButton(
-                  icon: Icon(
-                    nowPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                    size: 36,
-                  ),
-                  onPressed: () => {
-                    _togglePlayerPlayPause(),
-                    setState(() {
-                      nowPlaying = !nowPlaying;
-                    }),
-                  },
-                ),
-                SizedBox(height: 40),
-                Text('Up Next'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Path:'),
-                    Expanded(
-                      child: TextField(
-                        controller: pathTextFieldController,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  child: Text('Select File'),
-                  onPressed: () => {
-                    setState(() {
-                      currentFilePath = pathTextFieldController.text;
-                      _setPlayerFile();
-                    }),
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
