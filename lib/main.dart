@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
 import 'dart:io';
 
 void main() {
@@ -18,6 +19,11 @@ class JustPlay extends StatelessWidget {
     return MaterialApp(
       title: 'Just Play',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'ProductSans',
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
+      ),
       home: PlaybackScreen(),
     );
   }
@@ -30,15 +36,26 @@ class PlaybackScreen extends StatefulWidget {
 }
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
-  AudioPlayer audioPlayer = AudioPlayer();
-  String localFilePath = '/storage/emulated/0/Music/01 Greyhound.mp3';
+  final audioPlayer = AudioPlayer();
+  String currentFilePath = '/storage/emulated/0/Music/01 Greyhound.mp3';
+  Duration currentFileDuration = Duration.zero;
   bool fileExists = false;
   bool nowPlaying = false;
+
+  final pathTextFieldController = TextEditingController(text: '/storage/emulated/0/Music/01 Greyhound.mp3');
 
   @override
   void initState() {
     super.initState();
     _requestPermission();
+    _setPlayerFile();
+  }
+
+  @override
+  void dispose() {
+    pathTextFieldController.dispose();
+    audioPlayer.dispose();
+    super.dispose();
   }
 
   Future<void> _requestPermission() async {
@@ -61,12 +78,12 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
     }
 
     if (permissionStatus.isGranted) {
-      if (File(localFilePath).existsSync()) {
+      if (File(currentFilePath).existsSync()) {
         setState(() {
           fileExists = true;
         });
       } else {
-        debugPrint("File doesn't exist");
+        debugPrint("File doesn't exist.");
       }
     } else {
       // Handle permission denial
@@ -75,16 +92,22 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
     }
   }
 
-  void _playLocalFile() {
-    if (fileExists) {
-      audioPlayer.play(DeviceFileSource(localFilePath));
-    } else {
-      debugPrint("File not found.");
-    }
+  Future<void> _setPlayerFile() async {
+    final currentFileDuration = await audioPlayer.setFilePath(currentFilePath);
   }
 
-  void _pausePlayback() {
-    audioPlayer.pause();
+  Future<void> _togglePlayerPlayPause() async {
+    if (!nowPlaying) {
+      debugPrint("Playing...");
+      if (fileExists) {
+        await audioPlayer.play();
+      } else {
+        debugPrint("File not found.");
+        // Toast/Snackbar
+      }
+    } else {
+      await audioPlayer.pause();
+    }
   }
 
   @override
@@ -109,7 +132,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                   ],
                 ),
                 SizedBox(height: 40),
-                Text(fileExists ? 'Loaded: $localFilePath' : 'Loading...'),
+                Text('$currentFilePath'),
                 SizedBox(height: 10),
                 Text('Artist'),
                 SizedBox(height: 20),
@@ -121,16 +144,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                     size: 36,
                   ),
                   onPressed: () => {
-                    if (!nowPlaying)
-                      {
-                        debugPrint("Play button pressed"),
-                        _playLocalFile(),
-                      }
-                    else
-                      {
-                        debugPrint("Pause button pressed"),
-                        _pausePlayback(),
-                      },
+                    _togglePlayerPlayPause(),
                     setState(() {
                       nowPlaying = !nowPlaying;
                     }),
@@ -138,6 +152,27 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 ),
                 SizedBox(height: 40),
                 Text('Up Next'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Path:'),
+                    Expanded(
+                      child: TextField(
+                        controller: pathTextFieldController,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  child: Text('Select File'),
+                  onPressed: () => {
+                    setState(() {
+                      currentFilePath = pathTextFieldController.text;
+                      _setPlayerFile();
+                    }),
+                  },
+                ),
               ],
             ),
           ),

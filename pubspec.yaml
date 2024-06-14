@@ -1,5 +1,5 @@
 name: just_play
-description: 'A new Flutter project.'
+description: 'A music player app for playing local .mp3 files with a unique interface.'
 publish_to: 'none'
 version: 0.1.0
 
@@ -11,8 +11,9 @@ dependencies:
     sdk: flutter
   path_provider: ^2.1.3
   permission_handler: ^11.3.1
-  audioplayers: ^6.0.0
   device_info_plus: ^10.1.0
+  just_audio: ^0.9.38
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -21,3 +22,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/fonts/
+
+  fonts:
+    - family: ProductSans
+      fonts:
+        - asset: assets/fonts/ProductSans-Regular.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
