@@ -41,8 +41,22 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 SizedBox(height: 10),
                 Text('Artist'),
                 SizedBox(height: 20),
-                LinearProgressIndicator(),
+                LinearProgressIndicator(
+                  value: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds > 0
+                      ? Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inMilliseconds /
+                          Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds
+                      : 0,
+                ),
                 SizedBox(height: 20),
+                Slider(
+                    value: Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inSeconds.toDouble(),
+                    min: 0,
+                    max: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
+                    onChanged: (newSeekValue) {
+                      Provider.of<AudioPlayerProvider>(context, listen: false)
+                          .audioPlayer
+                          .seek(Duration(seconds: newSeekValue.toInt()));
+                    }),
                 isPlaying
                     ? IconButton(
                         icon: Icon(
