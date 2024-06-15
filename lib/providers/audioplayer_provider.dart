@@ -6,17 +6,11 @@ import 'dart:io';
 
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
-  String currentFilePath = '/storage/emulated/0/Music/01 Greyhound.mp3';
+  String currentFilePath = '/storage/emulated/0/Music/09. Alan Walker - Faded.mp3';
   Duration? currentFileDuration = Duration.zero;
-  bool fileExists = false;
+  Duration? currentPlaybackPosition = Duration.zero;
   bool isPlaying = false;
-
-  // Omitted good practice
-  // String get currentFilePath => _currentFilePath;
-  // Duration? get currentFileDuration => _currentFileDuration;
-  // bool get fileExists => _fileExists;
-  // bool get isPlaying => _isPlaying;
-  // Future<void> get toggleAudioPlayerPlayPause => _toggleAudioPlayerPlayPause();
+  bool fileExists = false;
 
   AudioPlayerProvider() {
     initializeAudioPlayerProvider();
@@ -24,7 +18,11 @@ class AudioPlayerProvider with ChangeNotifier {
 
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
-    await setAudioPlayerFile();
+    await setAudioPlayerFile(currentFilePath);
+    audioPlayer.positionStream.listen((obtainedPosition) {
+      currentPlaybackPosition = obtainedPosition;
+      notifyListeners();
+    });
   }
 
   Future<void> requestPermission() async {
@@ -55,37 +53,56 @@ class AudioPlayerProvider with ChangeNotifier {
         notifyListeners();
       }
     } else {
-      debugPrint("Permission Denied.");
+      debugPrint('Permission Denied.');
       // Handle permission denial with popup dialogue box
       // openAppSettings();
     }
   }
 
-  Future<void> setAudioPlayerFile() async {
-    await audioPlayer.setFilePath(currentFilePath);
-    currentFileDuration = await audioPlayer.load();
-    notifyListeners();
-  }
-
-  Future<void> toggleAudioPlayerPlayPause() async {
-    if (!isPlaying) {
-      if (fileExists) {
-        await audioPlayer.play();
-        isPlaying = true;
-      } else {
-        debugPrint("File not found."); // add toast/snackbar alert
-        isPlaying = false;
-      }
+  Future<void> setAudioPlayerFile(String newFilePath) async {
+    currentFilePath = newFilePath;
+    if (File(currentFilePath).existsSync()) {
+      fileExists = true;
+      await audioPlayer.setFilePath(currentFilePath);
+      currentFileDuration = await audioPlayer.load();
+      notifyListeners();
     } else {
-      await audioPlayer.pause();
-      isPlaying = false;
+      fileExists = false;
+      debugPrint("File doesn't exist.");
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  void updateFilePath(String newPath) {
-    currentFilePath = newPath;
-    setAudioPlayerFile();
-    notifyListeners();
-  }
+  // Future<void> playAudioPlayer() async {
+  //   if (fileExists) {
+  //     await audioPlayer.play();
+  //     isPlaying = true;
+  //     debugPrint('Playback started.');
+  //   } else {
+  //     debugPrint('File not found. Cannot start playback.');
+  //   }
+  //   notifyListeners();
+  // }
+
+  // Future<void> pauseAudioPlayer() async {
+  //   if (isPlaying) {
+  //     await audioPlayer.pause();
+  //     debugPrint('Playback paused.');
+  //     isPlaying = false;
+  //   } else {
+  //     debugPrint('Not playing. Cannot pause playback.');
+  //   }
+  //   notifyListeners();
+  // }
+
+  // Future<void> stopAudioPlayer() async {
+  //   if (isPlaying) {
+  //     await audioPlayer.stop();
+  //     debugPrint('Playback stopped.');
+  //     isPlaying = false;
+  //   } else {
+  //     debugPrint('Not playing. Cannot stop playback.');
+  //   }
+  //   notifyListeners();
+  // }
 }

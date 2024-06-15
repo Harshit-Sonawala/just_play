@@ -13,6 +13,7 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   final pathTextFieldController = TextEditingController(text: '/storage/emulated/0/Music/03 Majula.mp3');
+  bool isPlaying = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +43,33 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 SizedBox(height: 20),
                 LinearProgressIndicator(),
                 SizedBox(height: 20),
-                IconButton(
-                  icon: Icon(
-                    Provider.of<AudioPlayerProvider>(context).isPlaying
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                    size: 36,
-                  ),
-                  onPressed: () {
-                    Provider.of<AudioPlayerProvider>(context, listen: false).toggleAudioPlayerPlayPause();
-                  },
-                ),
+                isPlaying
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.pause_rounded,
+                          size: 36,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
+                            isPlaying = false;
+                          });
+                        },
+                      )
+                    : IconButton(
+                        icon: Icon(
+                          Icons.play_arrow_rounded,
+                          size: 36,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
+                            isPlaying = true;
+                          });
+                        },
+                      ),
                 SizedBox(height: 40),
-                Text('Up Next'),
+                Text('isPlaying: $isPlaying'),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -71,7 +86,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                   child: Text('Select File'),
                   onPressed: () {
                     Provider.of<AudioPlayerProvider>(context, listen: false)
-                        .updateFilePath(pathTextFieldController.text);
+                        .setAudioPlayerFile(pathTextFieldController.text);
                   },
                 ),
               ],
