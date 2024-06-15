@@ -40,23 +40,23 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 Text(Provider.of<AudioPlayerProvider>(context).currentFilePath),
                 SizedBox(height: 10),
                 Text('Artist'),
-                SizedBox(height: 20),
-                LinearProgressIndicator(
-                  value: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds > 0
-                      ? Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inMilliseconds /
-                          Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds
-                      : 0,
-                ),
+                // LinearProgressIndicator(
+                //   value: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds > 0
+                //       ? Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inMilliseconds /
+                //           Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds
+                //       : 0,
+                // ),
                 SizedBox(height: 20),
                 Slider(
-                    value: Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inSeconds.toDouble(),
-                    min: 0,
-                    max: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
-                    onChanged: (newSeekValue) {
-                      Provider.of<AudioPlayerProvider>(context, listen: false)
-                          .audioPlayer
-                          .seek(Duration(seconds: newSeekValue.toInt()));
-                    }),
+                  value: Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inSeconds.toDouble(),
+                  min: 0,
+                  max: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
+                  onChanged: (newSeekValue) {
+                    Provider.of<AudioPlayerProvider>(context, listen: false)
+                        .audioPlayer
+                        .seek(Duration(seconds: newSeekValue.toInt()));
+                  },
+                ),
                 isPlaying
                     ? IconButton(
                         icon: Icon(
@@ -103,6 +103,22 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                         .setAudioPlayerFile(pathTextFieldController.text);
                   },
                 ),
+                SizedBox(height: 20),
+                SizedBox(
+                    height: 500,
+                    child: ListView.builder(
+                      itemCount: Provider.of<AudioPlayerProvider>(context).filesList.length,
+                      itemBuilder: (context, index) {
+                        final eachFile = Provider.of<AudioPlayerProvider>(context).filesList[index];
+                        return ListTile(
+                          title: Text(eachFile.path.split('/').last),
+                          subtitle: Text(eachFile.path),
+                          onTap: () {
+                            Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachFile.path);
+                          },
+                        );
+                      },
+                    )),
               ],
             ),
           ),

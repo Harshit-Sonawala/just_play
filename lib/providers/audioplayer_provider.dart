@@ -7,10 +7,12 @@ import 'dart:io';
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
   String currentFilePath = '/storage/emulated/0/Music/09. Alan Walker - Faded.mp3';
+  String currentDirectory = '/storage/emulated/0/Music';
   Duration? currentFileDuration = Duration.zero;
   Duration? currentPlaybackPosition = Duration.zero;
-  bool isPlaying = false;
   bool fileExists = false;
+  bool isPlaying = false;
+  List<FileSystemEntity> filesList = [];
 
   AudioPlayerProvider() {
     initializeAudioPlayerProvider();
@@ -19,6 +21,7 @@ class AudioPlayerProvider with ChangeNotifier {
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     await setAudioPlayerFile(currentFilePath);
+    await listFiles();
     audioPlayer.positionStream.listen((obtainedPosition) {
       currentPlaybackPosition = obtainedPosition;
       notifyListeners();
@@ -71,6 +74,14 @@ class AudioPlayerProvider with ChangeNotifier {
       debugPrint("File doesn't exist.");
       notifyListeners();
     }
+  }
+
+  Future<void> listFiles() async {
+    final directory = Directory(currentDirectory);
+    if (directory.existsSync()) {
+      filesList = directory.listSync(recursive: true);
+    }
+    notifyListeners();
   }
 
   // Future<void> playAudioPlayer() async {
