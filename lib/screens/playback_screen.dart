@@ -15,6 +15,14 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
   final pathTextFieldController = TextEditingController(text: '/storage/emulated/0/Music/03 Majula.mp3');
   bool isPlaying = false;
 
+  String formatDuration(Duration? duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = duration!.inHours;
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return [if (hours > 0) hours, minutes, seconds].map((seg) => seg.toString()).join(':');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +35,13 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('JustPlay!'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                        'JustPlay!',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                    ),
                     IconButton(
                       icon: Icon(Icons.settings),
                       onPressed: () {
@@ -36,26 +50,34 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 40),
-                Text(Provider.of<AudioPlayerProvider>(context).currentFilePath),
+                SizedBox(height: 20),
+                Text(Provider.of<AudioPlayerProvider>(context).currentFilePath.split('/').last),
                 SizedBox(height: 10),
-                Text('Artist'),
                 // LinearProgressIndicator(
                 //   value: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds > 0
                 //       ? Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inMilliseconds /
                 //           Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inMilliseconds
                 //       : 0,
                 // ),
-                SizedBox(height: 20),
-                Slider(
-                  value: Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inSeconds.toDouble(),
-                  min: 0,
-                  max: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
-                  onChanged: (newSeekValue) {
-                    Provider.of<AudioPlayerProvider>(context, listen: false)
-                        .audioPlayer
-                        .seek(Duration(seconds: newSeekValue.toInt()));
-                  },
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(formatDuration(Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition)),
+                    Expanded(
+                      child: Slider(
+                        value: Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inSeconds.toDouble(),
+                        min: 0,
+                        max: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
+                        onChanged: (newSeekValue) {
+                          Provider.of<AudioPlayerProvider>(context, listen: false)
+                              .audioPlayer
+                              .seek(Duration(seconds: newSeekValue.toInt()));
+                        },
+                      ),
+                    ),
+                    Text(formatDuration(Provider.of<AudioPlayerProvider>(context).currentFileDuration)),
+                  ],
                 ),
                 isPlaying
                     ? IconButton(
@@ -82,26 +104,28 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           });
                         },
                       ),
-                SizedBox(height: 40),
-                Text('isPlaying: $isPlaying'),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Path:'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text('Path:', style: Theme.of(context).textTheme.displayMedium),
+                    ),
                     Expanded(
                       child: TextField(
                         controller: pathTextFieldController,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        Provider.of<AudioPlayerProvider>(context, listen: false)
+                            .setAudioPlayerFile(pathTextFieldController.text);
+                      },
+                    ),
                   ],
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  child: Text('Select File'),
-                  onPressed: () {
-                    Provider.of<AudioPlayerProvider>(context, listen: false)
-                        .setAudioPlayerFile(pathTextFieldController.text);
-                  },
                 ),
                 SizedBox(height: 20),
                 SizedBox(

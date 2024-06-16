@@ -23,10 +23,76 @@ class JustPlay extends StatelessWidget {
     return MaterialApp(
       title: 'Just Play',
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
+        primarySwatch: Colors.blue,
         fontFamily: 'ProductSans',
-        primaryColor: Colors.blue,
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff4bdbff),
+          ),
+          displayMedium: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff4bdbff),
+          ),
+          displaySmall: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff4bdbff),
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 18.0,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 16.0,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 14.0,
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          size: 20,
+        ),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        primarySwatch: Colors.blue,
+        fontFamily: 'ProductSans',
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff4bdbff),
+          ),
+          displayMedium: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff4bdbff),
+          ),
+          displaySmall: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff4bdbff),
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 18.0,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 16.0,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 14.0,
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          size: 24,
+          color: Colors.white,
+        ),
       ),
       home: PlaybackScreen(),
     );
