@@ -9,12 +9,12 @@ class CustomCard extends StatefulWidget {
   final Color? color;
 
   const CustomCard({
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(10.0),
     this.borderRadius = 10,
     this.margin,
     this.child,
     this.backgroundImage = '',
-    this.color = const Color.fromARGB(17, 255, 255, 255),
+    this.color = const Color(0xff222222),
     super.key,
   });
 

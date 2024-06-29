@@ -71,7 +71,7 @@ class JustPlay extends StatelessWidget {
           ),
           displayMedium: TextStyle(
             fontSize: 18.0,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
             color: Color(0xff4bdbff),
           ),
           displaySmall: TextStyle(
@@ -83,10 +83,10 @@ class JustPlay extends StatelessWidget {
             fontSize: 18.0,
           ),
           bodyMedium: TextStyle(
-            fontSize: 16.0,
+            fontSize: 14.0,
           ),
           bodySmall: TextStyle(
-            fontSize: 14.0,
+            fontSize: 12.0,
           ),
         ),
         iconTheme: const IconThemeData(

@@ -8,9 +8,10 @@ class CustomListItem extends StatefulWidget {
   final EdgeInsets padding;
   final Widget? child;
   final String? title;
-  final String? body;
+  final String? artist;
+  final String? album;
   final List<String>? images;
-  final List<String>? chips;
+  // final List<String>? chips;
 
   const CustomListItem({
     required this.onPressed,
@@ -18,9 +19,10 @@ class CustomListItem extends StatefulWidget {
     this.padding = const EdgeInsets.all(0.0),
     this.child,
     this.title,
-    this.body,
+    this.artist,
+    this.album,
     this.images,
-    this.chips,
+    // this.chips,
     super.key,
   });
 
@@ -34,19 +36,21 @@ class _CustomListItemState extends State<CustomListItem> {
     return Padding(
       padding: widget.padding,
       child: Ink(
+        height: 70.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: const Color(0xff3d3d3d),
+          color: const Color(0xff222222),
         ),
         child: InkWell(
           onTap: widget.onPressed,
           onLongPress: widget.onLongPress,
           borderRadius: BorderRadius.circular(10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.images != null)
                 Container(
-                  height: 160,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
@@ -72,7 +76,7 @@ class _CustomListItemState extends State<CustomListItem> {
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Text(
                         widget.title!,
                         style: const TextStyle(
@@ -84,20 +88,70 @@ class _CustomListItemState extends State<CustomListItem> {
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     if (widget.images == null)
-                      Text(
-                        widget.title!,
-                        style: Theme.of(context).textTheme.displaySmall,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: const Color(0xff333333),
+                        ),
+                        padding: const EdgeInsets.all(16.0),
+                        child: const Icon(
+                          Icons.music_note,
+                          size: 14.0,
+                        ),
                       ),
-                    if (widget.images == null) const CustomDivider(),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (widget.images == null)
+                            Text(
+                              widget.title!,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          Row(
+                            children: [
+                              if (widget.artist != null)
+                                Text(
+                                  // '${widget.artist!.substring(0, 71)}...',
+                                  'Artist',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              Container(
+                                width: 4.0,
+                                height: 4.0,
+                                margin: const EdgeInsets.all(5.0),
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xfff3f3f3),
+                                ),
+                              ),
+                              if (widget.album != null)
+                                Text(
+                                  // '${widget.artist!.substring(0, 71)}...',
+                                  'Album',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
                     Text(
-                      '${widget.body!.substring(0, 71)}...',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.justify,
+                      '00:00',
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
