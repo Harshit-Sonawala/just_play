@@ -11,7 +11,7 @@ class _CustomDividerState extends State<CustomDivider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
       height: 10,
       width: double.infinity,
       decoration: const BoxDecoration(

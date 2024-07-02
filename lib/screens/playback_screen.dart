@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +5,8 @@ import '../providers/audioplayer_provider.dart';
 
 import '../widgets/custom_list_item.dart';
 import '../widgets/custom_card.dart';
+
+import '../screens/settings_screen.dart';
 
 class PlaybackScreen extends StatefulWidget {
   const PlaybackScreen({super.key});
@@ -31,7 +32,8 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            CustomCard(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -42,16 +44,20 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.search),
+                        icon: const Icon(Icons.search),
                         onPressed: () {
                           debugPrint("Search Button Pressed");
                         },
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       IconButton(
-                        icon: Icon(Icons.settings),
+                        icon: const Icon(Icons.settings),
                         onPressed: () {
-                          debugPrint("Settings Button Pressed");
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) {
+                              return const SettingsScreen();
+                            }),
+                          );
                         },
                       ),
                     ],
@@ -59,30 +65,33 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                // itemExtent: 80.0,
-                itemCount: Provider.of<AudioPlayerProvider>(context).filesList.length,
-                itemBuilder: (context, index) {
-                  final eachFile = Provider.of<AudioPlayerProvider>(context).filesList[index];
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 6.0),
-                    child: CustomListItem(
-                      onPressed: () {
-                        Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachFile.path);
-                      },
-                      onLongPress: () {},
-                      title: eachFile.path.split('/').last,
-                      artist: '',
-                      album: '',
-                      // body: eachFile.path,
-                    ),
-                  );
-                },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: ListView.builder(
+                  // itemExtent: 80.0,
+                  itemCount: Provider.of<AudioPlayerProvider>(context).filesList.length,
+                  itemBuilder: (context, index) {
+                    final eachFile = Provider.of<AudioPlayerProvider>(context).filesList[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: CustomListItem(
+                        onPressed: () {
+                          Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachFile.path);
+                        },
+                        onLongPress: () {},
+                        title: eachFile.path.split('/').last,
+                        artist: '',
+                        album: '',
+                        // body: eachFile.path,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             CustomCard(
               child: Column(
                 children: [
@@ -92,7 +101,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                         : Provider.of<AudioPlayerProvider>(context).currentFilePath.split('/').last,
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -115,7 +124,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                       );
                     },
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
