@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/audioplayer_provider.dart';
+import '../providers/theme_provider.dart';
+
 import '../screens/playback_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<AudioPlayerProvider>(create: (context) => AudioPlayerProvider()),
+        ChangeNotifierProvider<AudioPlayerProvider>(
+          create: (context) => AudioPlayerProvider(),
+        ),
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (context) => ThemeProvider(),
+        ),
       ],
       child: const JustPlay(),
     ),
@@ -19,42 +26,34 @@ class JustPlay extends StatelessWidget {
   const JustPlay({super.key});
   @override
   Widget build(BuildContext context) {
-    // Custom App-wide Colors:
-    const Color appWideAccentColor = Color(0xff4bdbff);
-    const Color appWideDarkBackgroundColor = Color(0xff1d1d1d);
-    const Color appWideDarkMidColor = Color(0xff222222);
-    const Color appWideDarkTopColor = Color(0xff333333);
-    const Color appWideDarkDimForegroundColor = Color(0xff4d4d4d);
-    const Color appWideDarkForegroundColor = Color(0xfff3f3f3);
-
     // Custom App-wide Text Theme:
-    const TextTheme appWideTextTheme = TextTheme(
+    TextTheme appWideTextTheme = TextTheme(
       displayLarge: TextStyle(
         fontSize: 22.0,
         fontWeight: FontWeight.bold,
-        color: appWideAccentColor,
+        color: Provider.of<ThemeProvider>(context).globalAccentColor,
       ),
       displayMedium: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
-        color: appWideAccentColor,
+        color: Provider.of<ThemeProvider>(context).globalAccentColor,
       ),
       displaySmall: TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
-        color: appWideDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
       ),
       bodyLarge: TextStyle(
         fontSize: 18.0,
-        color: appWideDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
       ),
       bodyMedium: TextStyle(
         fontSize: 16.0,
-        color: appWideDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
       ),
       bodySmall: TextStyle(
         fontSize: 14.0,
-        color: appWideDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
       ),
     );
 
@@ -66,15 +65,15 @@ class JustPlay extends StatelessWidget {
       // Light Theme:
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: appWideDarkForegroundColor,
+        scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: appWideAccentColor,
+          secondary: Provider.of<ThemeProvider>(context).globalAccentColor,
         ),
         fontFamily: 'ProductSans',
         textTheme: appWideTextTheme,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           size: 24,
-          color: appWideDarkBackgroundColor,
+          color: Provider.of<ThemeProvider>(context).globalDarkBackgroundColor,
         ),
       ),
 
@@ -84,10 +83,11 @@ class JustPlay extends StatelessWidget {
         useMaterial3: true,
 
         // Base Color Theme:
-        scaffoldBackgroundColor: appWideDarkBackgroundColor,
+        scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkBackgroundColor,
+        splashColor: Provider.of<ThemeProvider>(context).globalAccentColor,
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: appWideAccentColor,
-          secondary: Colors.white,
+          primary: Provider.of<ThemeProvider>(context).globalAccentColor,
+          secondary: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
           brightness: Brightness.dark,
         ),
 
@@ -104,7 +104,7 @@ class JustPlay extends StatelessWidget {
         // Button Theme:
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: appWideDarkTopColor,
+            backgroundColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
             // padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -122,15 +122,15 @@ class JustPlay extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: appWideAccentColor,
+            borderSide: BorderSide(
+              color: Provider.of<ThemeProvider>(context).globalAccentColor,
             ),
           ),
           hintStyle: const TextStyle(
             color: Colors.white,
           ),
-          labelStyle: const TextStyle(
-            color: appWideAccentColor,
+          labelStyle: TextStyle(
+            color: Provider.of<ThemeProvider>(context).globalAccentColor,
           ),
           iconColor: Colors.white,
           prefixIconColor: Colors.white,
