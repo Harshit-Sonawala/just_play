@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../providers/audioplayer_provider.dart';
 
 import '../widgets/custom_divider.dart';
+
+import 'package:file_picker/file_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,8 +15,17 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  TextEditingController musicDirectoryTextFieldController = TextEditingController();
+
+  @override
+  void dispose() {
+    musicDirectoryTextFieldController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).currentDirectory!;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -54,18 +66,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      'Enter or browse for music folder on device:',
+                      'Enter or browse for the music folder on device:',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 20),
-                    const Row(
+                    Row(
                       children: [
                         Expanded(
                           child: TextField(
+                            controller: musicDirectoryTextFieldController,
                             decoration: InputDecoration(
                               labelText: 'Music Directory',
-                              suffixIcon: Icon(
-                                Icons.search,
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.create_new_folder_rounded),
+                                onPressed: () async {
+                                  String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
+                                  if (selectedMusicDirectoryPath != null) {
+                                    setState(() {
+                                      // musicDirectoryTextFieldController.text = selectedMusicDirectoryPath;
+                                      Provider.of<AudioPlayerProvider>(context, listen: false)
+                                          .updateCurrentDirectory(selectedMusicDirectoryPath);
+                                    });
+                                  }
+                                },
                               ),
                             ),
                           ),

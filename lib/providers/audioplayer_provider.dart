@@ -1,14 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io';
 
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
   String currentFilePath = '';
-  String currentDirectory = '/storage/emulated/0/Music';
+  // String currentDirectory = '/storage/emulated/0/Music';
+  late String? currentDirectory;
   Duration? currentFileDuration = Duration.zero;
   Duration? currentPlaybackPosition = Duration.zero;
   bool fileExists = false;
@@ -22,6 +24,7 @@ class AudioPlayerProvider with ChangeNotifier {
 
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
+    currentDirectory = await getCurrentDirectory();
     await listFiles();
     // await setAudioPlayerFile(currentFilePath);
     audioPlayer.positionStream.listen((obtainedPosition) {
@@ -83,11 +86,11 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   Future<void> listFiles() async {
-    final directory = Directory(currentDirectory);
+    final directory = Directory(currentDirectory!);
     if (directory.existsSync()) {
       filesList = directory.listSync(recursive: true);
     } else {
-      debugPrint('Can\'t find directory: $currentDirectory');
+      debugPrint('currentDirectory: $currentDirectory doesn\'t exist.');
     }
     notifyListeners();
   }
@@ -108,9 +111,14 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveCurrentDirectory(String passedNewDirectory) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('musicDirectory', passedNewDirectory);
+  Future<void> updateCurrentDirectory(String passedNewDirectory) async {
+    if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
+      currentDirectory = passedNewDirectory;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('musicDirectory', passedNewDirectory);
+    } else {
+      debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
+    }
   }
 
   Future<String?> getCurrentDirectory() async {
