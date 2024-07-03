@@ -94,41 +94,21 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
             const SizedBox(height: 10),
             CustomCard(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     Provider.of<AudioPlayerProvider>(context).currentFilePath == ""
-                        ? 'Title'
+                        ? 'Track Title'
                         : Provider.of<AudioPlayerProvider>(context).currentFilePath.split('/').last,
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Icon(
-                        isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                        size: 36,
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(
-                        () {
-                          if (isPlaying) {
-                            isPlaying = false;
-                            Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
-                          } else {
-                            isPlaying = true;
-                            Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(formatDuration(Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition)),
+                      Text(
+                        formatDuration(Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                       Expanded(
                         child: Slider(
                           value:
@@ -142,7 +122,59 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           },
                         ),
                       ),
-                      Text(formatDuration(Provider.of<AudioPlayerProvider>(context).currentFileDuration)),
+                      Text(
+                        formatDuration(Provider.of<AudioPlayerProvider>(context).currentFileDuration),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Icon(
+                            Icons.skip_previous_rounded,
+                            size: 36,
+                          ),
+                        ),
+                        onPressed: () {},
+                      ),
+                      const SizedBox(width: 10.0),
+                      ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Icon(
+                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            size: 36,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(
+                            () {
+                              if (isPlaying) {
+                                isPlaying = false;
+                                Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
+                              } else {
+                                isPlaying = true;
+                                Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 10.0),
+                      ElevatedButton(
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Icon(
+                            Icons.skip_next_rounded,
+                            size: 36,
+                          ),
+                        ),
+                        onPressed: () {},
+                      ),
                     ],
                   ),
                 ],

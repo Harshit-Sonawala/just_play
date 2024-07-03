@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
 
 class SettingsScreen extends StatefulWidget {

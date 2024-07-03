@@ -108,6 +108,16 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
+  Future<void> saveCurrentDirectory(String passedNewDirectory) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('musicDirectory', passedNewDirectory);
+  }
+
+  Future<String?> getCurrentDirectory() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('musicDirectory');
+  }
+
   // Future<void> playAudioPlayer() async {
   //   if (fileExists) {
   //     await audioPlayer.play();
