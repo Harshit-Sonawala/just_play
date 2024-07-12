@@ -114,27 +114,49 @@ class JustPlay extends StatelessWidget {
 
         // TextField Theme:
         inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: Colors.white,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalAccentColor,
-            ),
-          ),
           hintStyle: const TextStyle(
             color: Colors.white,
           ),
           labelStyle: TextStyle(
             color: Provider.of<ThemeProvider>(context).globalAccentColor,
           ),
+          filled: true,
+          isDense: true,
+          fillColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
           iconColor: Colors.white,
           prefixIconColor: Colors.white,
           suffixIconColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(
+              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(
+              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(
+              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(
+              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+            ),
+          ),
+        ),
+
+        // Snackbar Theme:
+        snackBarTheme: SnackBarThemeData(
+          backgroundColor: Provider.of<ThemeProvider>(context).globalDarkMidColor,
+          actionBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+          actionTextColor: Provider.of<ThemeProvider>(context).globalAccentColor,
         ),
       ),
       home: const PlaybackScreen(),

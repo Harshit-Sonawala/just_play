@@ -5,14 +5,14 @@ class ThemeProvider with ChangeNotifier {
   bool isDarkTheme = true;
 
   // Global accent color:
-  Color globalAccentColor = Color(0xff4bdbff);
+  Color globalAccentColor = const Color(0xFF4FACD6);
 
   // Global dark theme colors:
-  Color globalDarkBackgroundColor = Color(0xff1d1d1d);
-  Color globalDarkMidColor = Color(0xff222222);
-  Color globalDarkTopColor = Color(0xff333333);
-  Color globalDarkDimForegroundColor = Color(0xff4d4d4d);
-  Color globalDarkForegroundColor = Color(0xfff3f3f3);
+  Color globalDarkBackgroundColor = const Color(0xff1d1d1d);
+  Color globalDarkMidColor = const Color(0xff222222);
+  Color globalDarkTopColor = const Color(0xff2f2f2f);
+  Color globalDarkDimForegroundColor = const Color(0xff4d4d4d);
+  Color globalDarkForegroundColor = const Color(0xfff3f3f3);
 
   void toggleTheme() {
     isDarkTheme = !isDarkTheme;

@@ -16,6 +16,7 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.2.3
   file_picker: ^8.0.6
+  restart_app: ^1.2.1
 
 dev_dependencies:
   flutter_test:

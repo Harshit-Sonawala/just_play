@@ -6,6 +6,7 @@ import '../providers/audioplayer_provider.dart';
 import '../widgets/custom_divider.dart';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:restart_app/restart_app.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -21,6 +22,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     musicDirectoryTextFieldController.dispose();
     super.dispose();
+  }
+
+  void showRestartSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'Restart app to apply changes.',
+        ),
+        action: SnackBarAction(
+          label: 'RESTART',
+          onPressed: () => {Restart.restartApp()},
+        ),
+      ),
+    );
   }
 
   @override
@@ -76,7 +91,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: TextField(
                             controller: musicDirectoryTextFieldController,
                             decoration: InputDecoration(
-                              labelText: 'Music Directory',
                               suffixIcon: IconButton(
                                 icon: const Icon(Icons.create_new_folder_rounded),
                                 onPressed: () async {
@@ -86,6 +100,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       // musicDirectoryTextFieldController.text = selectedMusicDirectoryPath;
                                       Provider.of<AudioPlayerProvider>(context, listen: false)
                                           .updateCurrentDirectory(selectedMusicDirectoryPath);
+                                      showRestartSnackbar();
                                     });
                                   }
                                 },
