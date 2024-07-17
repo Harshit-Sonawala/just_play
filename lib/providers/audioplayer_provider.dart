@@ -8,9 +8,9 @@ import './track.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audiotags/audiotags.dart' as audiotags;
+import 'package:audiotags/audiotags.dart';
 
-List<audiotags.Picture>? audiotagsPictures;
+// List<audiotags.Picture>? audiotagsPictures;
 
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
@@ -104,8 +104,9 @@ class AudioPlayerProvider with ChangeNotifier {
           try {
             // final metadata = await MetadataRetriever.fromFile(eachFile);
             // Metadata metadata = await MetadataGod.readMetadata(file: eachFile.path);
-            audiotags.Tag? metadata = await audiotags.AudioTags.read(eachFile.path);
-            debugPrint('Trying file $counter, ${basenameWithoutExtension(eachFile.path)}');
+            Tag? metadata = await AudioTags.read(eachFile.path);
+            debugPrint(
+                'Trying file $counter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
             trackList.insert(
               counter,
               Track(
@@ -117,7 +118,7 @@ class AudioPlayerProvider with ChangeNotifier {
                 album: metadata?.album,
                 year: metadata?.year,
                 albumArt: metadata?.pictures.isNotEmpty == true ? metadata?.pictures.first.bytes : null,
-                duration: Duration(milliseconds: metadata?.duration ?? 0),
+                duration: Duration(seconds: metadata?.duration ?? 0),
                 genre: metadata?.genre,
                 // bitrate: metadata?.bitrate,
                 playCount: 0,
