@@ -1,10 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:just_audio/just_audio.dart';
+import './track.dart';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:audiotags/audiotags.dart' as audiotags;
+
+List<audiotags.Picture>? audiotagsPictures;
 
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
@@ -15,8 +21,9 @@ class AudioPlayerProvider with ChangeNotifier {
   Duration? currentPlaybackPosition = Duration.zero;
   bool fileExists = false;
   bool isPlaying = false;
-  List<FileSystemEntity> filesList = [];
   String persistentMusicDirectory = "";
+  List<FileSystemEntity> filesList = [];
+  List<Track> trackList = [];
 
   AudioPlayerProvider() {
     initializeAudioPlayerProvider();
@@ -25,7 +32,8 @@ class AudioPlayerProvider with ChangeNotifier {
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     currentDirectory = await getCurrentDirectory();
-    await listFiles();
+    await debugLoadFilePath(); // avoid getting a null for currentDirectory manually
+    await generateTrackList();
     // await setAudioPlayerFile(currentFilePath);
     audioPlayer.positionStream.listen((obtainedPosition) {
       currentPlaybackPosition = obtainedPosition;
@@ -85,10 +93,54 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
+  Future<void> generateTrackList() async {
+    final directory = Directory(currentDirectory!);
+    if (directory.existsSync()) {
+      int counter = 0;
+      directory.listSync(recursive: true).forEach((eachFile) async {
+        // Only if .mp3 file, add to trackList
+        if (eachFile is File && eachFile.path.endsWith('.mp3')) {
+          // Retrieve file metadata
+          try {
+            // final metadata = await MetadataRetriever.fromFile(eachFile);
+            // Metadata metadata = await MetadataGod.readMetadata(file: eachFile.path);
+            audiotags.Tag? metadata = await audiotags.AudioTags.read(eachFile.path);
+            debugPrint('Trying file $counter, ${basenameWithoutExtension(eachFile.path)}');
+            trackList.insert(
+              counter,
+              Track(
+                id: counter,
+                filePath: eachFile.path,
+                fileName: basenameWithoutExtension(eachFile.path),
+                title: metadata?.title,
+                artist: metadata?.trackArtist,
+                album: metadata?.album,
+                year: metadata?.year,
+                albumArt: metadata?.pictures.isNotEmpty == true ? metadata?.pictures.first.bytes : null,
+                duration: Duration(milliseconds: metadata?.duration ?? 0),
+                genre: metadata?.genre,
+                // bitrate: metadata?.bitrate,
+                playCount: 0,
+              ),
+            );
+            counter++;
+          } catch (e) {
+            debugPrint(
+              'Error caught for file $counter, ${basenameWithoutExtension(eachFile.path)}. Error type: ${e.runtimeType}. Error details: $e',
+            );
+          }
+        }
+      });
+    }
+  }
+
   Future<void> listFiles() async {
     final directory = Directory(currentDirectory!);
     if (directory.existsSync()) {
-      filesList = directory.listSync(recursive: true);
+      filesList = directory.listSync(recursive: true).where((eachFile) {
+        // list only files ending with .mp3
+        return eachFile is File && eachFile.path.endsWith('.mp3');
+      }).toList();
     } else {
       debugPrint('currentDirectory: $currentDirectory doesn\'t exist.');
     }
@@ -108,6 +160,15 @@ class AudioPlayerProvider with ChangeNotifier {
         debugPrint("File doesn't exist.");
         notifyListeners();
       }
+    }
+  }
+
+  // Remove after onboarding screen implemented
+  Future<void> debugLoadFilePath() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final fetchedMusicDirectory = prefs.getString('musicDirectory');
+    if (fetchedMusicDirectory == null) {
+      currentDirectory = '/storage/emulated/0/Music/new';
     }
   }
 

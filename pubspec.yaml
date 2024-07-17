@@ -17,6 +17,9 @@ dependencies:
   shared_preferences: ^2.2.3
   file_picker: ^8.0.6
   restart_app: ^1.2.1
+  sqflite: ^2.3.3+1
+  audiotags: ^1.4.0
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:

@@ -90,9 +90,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Expanded(
                           child: TextField(
                             controller: musicDirectoryTextFieldController,
+                            style: Theme.of(context).textTheme.bodySmall,
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
-                                icon: const Icon(Icons.create_new_folder_rounded),
+                                icon: const Icon(Icons.drive_file_move_rounded, size: 28),
                                 onPressed: () async {
                                   String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
                                   if (selectedMusicDirectoryPath != null) {
