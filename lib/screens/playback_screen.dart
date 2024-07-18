@@ -82,16 +82,15 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                       child: CustomListItem(
                         onPressed: () {
                           Provider.of<AudioPlayerProvider>(context, listen: false)
-                              .setAudioPlayerFile(eachTrack.filePath!);
+                              .setAudioPlayerFile(eachTrack.filePath);
                         },
                         onLongPress: () {},
                         fileName: eachTrack.fileName,
                         title: eachTrack.title,
-                        // artist: eachTrack.artists?.join(', '),
                         artist: eachTrack.artist,
                         album: eachTrack.album,
                         albumArt: eachTrack.albumArt,
-                        duration: eachTrack.duration,
+                        duration: eachTrack.fileDuration,
                         // body: eachTrack.path,
                       ),
                     );

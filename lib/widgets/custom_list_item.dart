@@ -53,7 +53,7 @@ class _CustomListItemState extends State<CustomListItem> {
       child: InkWell(
         onTap: widget.onPressed,
         onLongPress: widget.onLongPress,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.0),
         child: Padding(
           padding: widget.padding,
           child: Row(
@@ -63,7 +63,7 @@ class _CustomListItemState extends State<CustomListItem> {
               if (widget.albumArt == null)
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(6.0),
                     color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
                   ),
                   padding: const EdgeInsets.all(10.0),
@@ -75,11 +75,12 @@ class _CustomListItemState extends State<CustomListItem> {
                 )
               else
                 Container(
+                  padding: const EdgeInsets.all(21),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(6.0),
                     image: DecorationImage(
                       image: MemoryImage(widget.albumArt!),
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -90,46 +91,46 @@ class _CustomListItemState extends State<CustomListItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.title ?? widget.fileName!,
+                      '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
                       style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Row(
-                      children: [
-                        if (widget.artist != null)
+                    if (widget.artist != null && widget.artist!.isNotEmpty)
+                      Row(
+                        children: [
                           Flexible(
                             child: Text(
                               // '${widget.artist!.substring(0, 71)}...',
-                              widget.artist!,
+                              '${(widget.artist != null && widget.artist!.isNotEmpty) ? widget.artist : 'Unknown Artist'}',
                               style: Theme.of(context).textTheme.bodySmall,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        // Separator Circle Container
-                        if (widget.artist != null && widget.album != null)
-                          Container(
-                            width: 4.0,
-                            height: 4.0,
-                            margin: const EdgeInsets.all(5.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
-                            ),
-                          ),
-                        if (widget.album != null)
-                          Flexible(
-                            child: Text(
-                              // '${widget.artist!.substring(0, 71)}...',
-                              widget.album!,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                      ],
-                    ),
+                          // // Separator Circle Container
+                          // if (widget.artist != null && widget.album != null)
+                          //   Container(
+                          //     width: 4.0,
+                          //     height: 4.0,
+                          //     margin: const EdgeInsets.all(5.0),
+                          //     decoration: BoxDecoration(
+                          //       shape: BoxShape.circle,
+                          //       color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                          //     ),
+                          //   ),
+                          // if (widget.album != null)
+                          //   Flexible(
+                          //     child: Text(
+                          //       // '${widget.artist!.substring(0, 71)}...',
+                          //       widget.album!,
+                          //       style: Theme.of(context).textTheme.bodySmall,
+                          //       maxLines: 1,
+                          //       overflow: TextOverflow.ellipsis,
+                          //     ),
+                          //   ),
+                        ],
+                      ),
                   ],
                 ),
               ),

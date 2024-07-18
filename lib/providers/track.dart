@@ -1,15 +1,16 @@
 import 'dart:typed_data';
 
 class Track {
-  int? id;
-  String? filePath;
-  String? fileName;
+  int id;
+  String filePath;
+  String fileName;
+  DateTime fileLastModified;
+  Duration fileDuration;
   String? title;
   String? artist;
   String? album;
   int? year;
   Uint8List? albumArt;
-  Duration duration;
   String? genre;
   int? bitrate;
   int? playCount;
@@ -18,12 +19,13 @@ class Track {
     required this.id,
     required this.filePath,
     required this.fileName,
+    required this.fileLastModified,
+    required this.fileDuration,
     this.title,
     this.artist,
     this.album,
     this.year,
     this.albumArt,
-    required this.duration,
     this.genre,
     this.bitrate,
     this.playCount = 0,
