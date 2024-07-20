@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/audioplayer_provider.dart';
 import '../providers/theme_provider.dart';
 
+import '../screens/onboarding_screen.dart';
 import '../screens/playback_screen.dart';
 
 void main() {
@@ -22,8 +24,28 @@ void main() {
   );
 }
 
-class JustPlay extends StatelessWidget {
+class JustPlay extends StatefulWidget {
   const JustPlay({super.key});
+
+  @override
+  State<JustPlay> createState() => _JustPlayState();
+}
+
+class _JustPlayState extends State<JustPlay> {
+  bool? showOnboardingScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeWithSharedPrefs();
+  }
+
+  Future<void> initializeWithSharedPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    showOnboardingScreen = prefs.getBool('showOnboardingScreen');
+    debugPrint('main.dart showOnboardingScreen: $showOnboardingScreen');
+  }
+
   @override
   Widget build(BuildContext context) {
     // Custom App-wide Text Theme:
@@ -34,7 +56,7 @@ class JustPlay extends StatelessWidget {
         color: Provider.of<ThemeProvider>(context).globalAccentColor,
       ),
       displayMedium: TextStyle(
-        fontSize: 20.0,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalAccentColor,
       ),
@@ -105,9 +127,9 @@ class JustPlay extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
-            // padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
         ),
@@ -127,25 +149,25 @@ class JustPlay extends StatelessWidget {
           prefixIconColor: Colors.white,
           suffixIconColor: Colors.white,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
             ),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
             ),
@@ -159,7 +181,10 @@ class JustPlay extends StatelessWidget {
           actionTextColor: Provider.of<ThemeProvider>(context).globalAccentColor,
         ),
       ),
-      home: const PlaybackScreen(),
+      home: (showOnboardingScreen == null || showOnboardingScreen == true)
+          ? const OnboardingScreen()
+          : const OnboardingScreen(),
+      // : const PlaybackScreen(),
     );
   }
 }

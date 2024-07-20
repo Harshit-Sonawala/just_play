@@ -18,7 +18,7 @@ class CustomListItem extends StatefulWidget {
   const CustomListItem({
     required this.onPressed,
     this.onLongPress,
-    this.padding = const EdgeInsets.all(8.0),
+    this.padding = const EdgeInsets.fromLTRB(4.0, 4.0, 8.0, 4.0),
     required this.fileName,
     this.title,
     this.artist,
@@ -45,7 +45,7 @@ class _CustomListItemState extends State<CustomListItem> {
   Widget build(BuildContext context) {
     return Ink(
       // padding: widget.padding,
-      height: 60.0,
+      height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Provider.of<ThemeProvider>(context).globalDarkMidColor,
@@ -53,7 +53,7 @@ class _CustomListItemState extends State<CustomListItem> {
       child: InkWell(
         onTap: widget.onPressed,
         onLongPress: widget.onLongPress,
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(10),
         child: Padding(
           padding: widget.padding,
           child: Row(
@@ -63,21 +63,21 @@ class _CustomListItemState extends State<CustomListItem> {
               if (widget.albumArt == null)
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
+                    borderRadius: BorderRadius.circular(10),
                     color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
                   ),
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(14.0),
                   child: Icon(
                     Icons.music_note,
-                    size: 22.0,
+                    size: 24.0,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 )
               else
                 Container(
-                  padding: const EdgeInsets.all(21),
+                  padding: const EdgeInsets.all(26.0),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
+                    borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
                       image: MemoryImage(widget.albumArt!),
                       fit: BoxFit.cover,

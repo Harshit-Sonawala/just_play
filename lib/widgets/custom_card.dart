@@ -9,7 +9,7 @@ class CustomCard extends StatefulWidget {
   final Color? color;
 
   const CustomCard({
-    this.padding = const EdgeInsets.all(10.0),
+    this.padding = const EdgeInsets.all(10),
     this.borderRadius = 10,
     this.margin,
     this.child,

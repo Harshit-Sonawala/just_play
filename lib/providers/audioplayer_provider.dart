@@ -10,13 +10,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audiotags/audiotags.dart';
 
-// List<audiotags.Picture>? audiotagsPictures;
-
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
   String currentFilePath = '';
   // String currentDirectory = '/storage/emulated/0/Music';
-  late String? currentDirectory;
+  String? currentDirectory;
   Duration? currentFileDuration = Duration.zero;
   Duration? currentPlaybackPosition = Duration.zero;
   bool fileExists = false;
@@ -102,11 +100,8 @@ class AudioPlayerProvider with ChangeNotifier {
         if (eachFile is File && eachFile.path.endsWith('.mp3')) {
           // Retrieve file metadata
           try {
-            // final metadata = await MetadataRetriever.fromFile(eachFile);
-            // Metadata metadata = await MetadataGod.readMetadata(file: eachFile.path);
             Tag? metadata = await AudioTags.read(eachFile.path);
-            debugPrint(
-                'Trying file $counter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
+            // debugPrint('Trying file $counter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
             trackList.insert(
               counter,
               Track(
@@ -174,6 +169,11 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
+  Future<String?> getCurrentDirectory() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('musicDirectory');
+  }
+
   Future<void> updateCurrentDirectory(String passedNewDirectory) async {
     if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
       currentDirectory = passedNewDirectory;
@@ -182,11 +182,6 @@ class AudioPlayerProvider with ChangeNotifier {
     } else {
       debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
     }
-  }
-
-  Future<String?> getCurrentDirectory() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('musicDirectory');
   }
 
   // Future<void> playAudioPlayer() async {

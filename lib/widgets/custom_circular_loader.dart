@@ -20,7 +20,7 @@ class _CustomCircularLoaderState extends State<CustomCircularLoader> {
     return SizedBox(
       height: 150,
       child: CustomCard(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,

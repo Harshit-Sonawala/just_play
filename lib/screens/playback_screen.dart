@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/audioplayer_provider.dart';
+import '../providers/theme_provider.dart';
 
 import '../widgets/custom_list_item.dart';
 import '../widgets/custom_card.dart';
@@ -35,7 +36,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
             Container(
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -71,9 +72,9 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
             const SizedBox(height: 10),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: ListView.builder(
-                  // itemExtent: 80.0,
+                  // itemExtent: 80,
                   itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
                   itemBuilder: (context, index) {
                     final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
@@ -103,6 +104,19 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Decoration Handle Rectangle Container
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      width: 24.0,
+                      height: 4.0,
+                      decoration: BoxDecoration(
+                        color: Provider.of<ThemeProvider>(context).globalDarkDimForegroundColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   Text(
                     Provider.of<AudioPlayerProvider>(context).currentFilePath == ""
                         ? 'Select a file and JustPlay!'
@@ -140,7 +154,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                     children: [
                       ElevatedButton(
                         child: const Padding(
-                          padding: EdgeInsets.all(10.0),
+                          padding: EdgeInsets.all(10),
                           child: Icon(
                             Icons.skip_previous_rounded,
                             size: 36,
@@ -148,10 +162,10 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                         ),
                         onPressed: () {},
                       ),
-                      const SizedBox(width: 10.0),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(10),
                           child: Icon(
                             isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                             size: 36,
@@ -171,10 +185,10 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           });
                         },
                       ),
-                      const SizedBox(width: 10.0),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         child: const Padding(
-                          padding: EdgeInsets.all(10.0),
+                          padding: EdgeInsets.all(10),
                           child: Icon(
                             Icons.skip_next_rounded,
                             size: 36,

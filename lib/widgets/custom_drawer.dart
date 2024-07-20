@@ -20,7 +20,7 @@ class CustomDrawer extends StatelessWidget {
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10),
                   child: CustomCard(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -45,7 +45,7 @@ class CustomDrawer extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10.0),
+                        const SizedBox(height: 10),
                         Text(
                           'Version 0.1.0',
                           style: Theme.of(context).textTheme.bodyMedium,
