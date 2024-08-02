@@ -13,7 +13,14 @@ class ThemeProvider with ChangeNotifier {
   Color globalDarkTopColor = const Color(0xff2f2f2f);
   Color globalDarkDimForegroundColor = const Color(0xffa5a5a5);
   Color globalDarkForegroundColor = const Color(0xfff3f3f3);
-  Color globalDarkImageBackgroundColor = Color(0xFFBAD4E2);
+  Color globalDarkImageBackgroundColor = const Color(0xFFBAD4E2);
+
+  ButtonStyle altButtonStyle = ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xff4facd6),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  );
 
   void toggleTheme() {
     isDarkTheme = !isDarkTheme;

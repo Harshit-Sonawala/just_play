@@ -30,8 +30,8 @@ class AudioPlayerProvider with ChangeNotifier {
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     currentDirectory = await getCurrentDirectory();
-    await debugLoadFilePath(); // avoid getting a null for currentDirectory manually
-    await generateTrackList();
+    // await debugLoadFilePath(); // avoid getting a null for currentDirectory manually
+    // await generateTrackList();
     // await setAudioPlayerFile(currentFilePath);
     audioPlayer.positionStream.listen((obtainedPosition) {
       currentPlaybackPosition = obtainedPosition;

@@ -65,6 +65,21 @@ class _JustPlayState extends State<JustPlay> {
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
       ),
+      titleLarge: TextStyle(
+        fontSize: 22.0,
+        fontWeight: FontWeight.bold,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.bold,
+        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+      ),
       bodyLarge: TextStyle(
         fontSize: 18.0,
         color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,

@@ -41,6 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).currentDirectory!;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -96,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 icon: const Icon(Icons.drive_file_move_rounded, size: 28),
                                 onPressed: () async {
                                   String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
-                                  if (selectedMusicDirectoryPath != null) {
+                                  if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
                                     setState(() {
                                       // musicDirectoryTextFieldController.text = selectedMusicDirectoryPath;
                                       Provider.of<AudioPlayerProvider>(context, listen: false)

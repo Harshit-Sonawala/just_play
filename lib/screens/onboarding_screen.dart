@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:provider/provider.dart';
+import '../providers/audioplayer_provider.dart';
 import '../providers/theme_provider.dart';
 
 import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
+import '../screens/playback_screen.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:file_picker/file_picker.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -20,11 +23,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   PageController pageViewController = PageController();
   int currentPageViewIndex = 0;
   bool? showOnboardingScreen;
+  TextEditingController musicDirectoryTextFieldController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     initializeWithSharedPrefs();
+  }
+
+  @override
+  void dispose() {
+    musicDirectoryTextFieldController.dispose();
+    super.dispose();
   }
 
   Future<void> initializeWithSharedPrefs() async {
@@ -34,205 +44,322 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     debugPrint('onboarding_screen.dart showOnboardingScreen: $showOnboardingScreen');
   }
 
+  void showRestartSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'Please provide a music directory.',
+        ),
+        action: SnackBarAction(
+          label: 'BROWSE',
+          onPressed: () => {},
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
+        Provider.of<AudioPlayerProvider>(context).currentDirectory != '') {
+      musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).currentDirectory!;
+    } else {
+      musicDirectoryTextFieldController.text = '/storage/emulated/0/';
+    }
+
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView(
-              controller: pageViewController,
-              onPageChanged: (newIndex) => {
-                setState(() {
-                  currentPageViewIndex = newIndex;
-                }),
-              },
-              children: [
-                // Page 1
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: CustomCard(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
-                              ),
-                              height: 300,
-                              width: 300,
-                              padding: const EdgeInsets.all(30),
-                              child: Center(
-                                child: SvgPicture.asset(
-                                  'assets/images/storyset_welcome_amico.svg',
-                                  height: 250,
-                                  width: 250,
-                                ),
-                              ),
-                            ),
+      body: SafeArea(
+        child: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: pageViewController,
+          onPageChanged: (newIndex) => {
+            setState(() {
+              currentPageViewIndex = newIndex;
+            }),
+          },
+          children: [
+            // Page 1
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: CustomCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
+                        ),
+                        height: 300,
+                        width: 300,
+                        padding: const EdgeInsets.all(30),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/images/storyset_welcome_amico.svg',
+                            height: 250,
+                            width: 250,
                           ),
-                          const SizedBox(height: 40),
-                          Text('Welcome to JustPlay!', style: Theme.of(context).textTheme.displayLarge),
-                          const CustomDivider(),
-                          const SizedBox(height: 20),
-                          Text(
-                            'A beautiful and straighforward app for quickly playing all your local audio files.',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                // Page 2
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: CustomCard(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
-                              ),
-                              height: 300,
-                              width: 300,
-                              padding: const EdgeInsets.all(30),
-                              child: Center(
-                                child: SvgPicture.asset(
-                                  'assets/images/storyset_upload_amico.svg',
-                                  height: 250,
-                                  width: 250,
-                                ),
-                              ),
+                    const SizedBox(height: 40),
+                    Text('Welcome to JustPlay!', style: Theme.of(context).textTheme.displayLarge),
+                    const CustomDivider(),
+                    const SizedBox(height: 20),
+                    Text(
+                      'A beautiful app for quickly playing all your local audio files.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Please provide the file and audio playback permissions when prompted on the next screen.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () => {
+                        pageViewController.nextPage(
+                          duration: const Duration(
+                            milliseconds: 250,
+                          ),
+                          curve: Curves.linear,
+                        ),
+                      },
+                      style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Start',
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                          Text('Load your local music library', style: Theme.of(context).textTheme.displayLarge),
-                          const CustomDivider(),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Just browse for your device folder, to load all files within.',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                            const SizedBox(width: 10),
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 24,
+                              color: Provider.of<ThemeProvider>(context, listen: false).globalDarkForegroundColor,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                // Page 3
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: CustomCard(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
-                              ),
-                              height: 300,
-                              width: 300,
-                              padding: const EdgeInsets.all(30),
-                              child: Center(
-                                child: SvgPicture.asset(
-                                  'assets/images/storyset_music_amico.svg',
-                                  height: 250,
-                                  width: 250,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          Text('All Set!', style: Theme.of(context).textTheme.displayLarge),
-                          const CustomDivider(),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Ready to go! Select a file and play!',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: (currentPageViewIndex <= 1)
-                ? ElevatedButton(
-                    onPressed: () => {
-                      pageViewController.nextPage(
-                        duration: const Duration(
-                          milliseconds: 250,
+            // Page 2
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: CustomCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
                         ),
-                        curve: Curves.linear,
-                      ),
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Next',
-                            style: Theme.of(context).textTheme.displayMedium,
+                        height: 300,
+                        width: 300,
+                        padding: const EdgeInsets.all(30),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/images/storyset_upload_amico.svg',
+                            height: 250,
+                            width: 250,
                           ),
-                          const SizedBox(width: 10),
-                          const Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 24,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  )
-                : ElevatedButton(
-                    onPressed: () => {
-                      pageViewController.nextPage(
-                        duration: const Duration(
-                          milliseconds: 250,
-                        ),
-                        curve: Curves.linear,
-                      ),
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Start Playing',
-                            style: Theme.of(context).textTheme.displayMedium,
+                    const SizedBox(height: 40),
+                    Text('Load your local music library', style: Theme.of(context).textTheme.displayLarge),
+                    const CustomDivider(),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Just browse for your device folder, to load all files within.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Music Library:',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            readOnly: true,
+                            controller: musicDirectoryTextFieldController,
+                            style: Theme.of(context).textTheme.bodySmall,
+                            // decoration: InputDecoration(
+                            //   suffixIcon: IconButton(
+                            //     icon: const Icon(
+                            //       Icons.drive_file_move_rounded,
+                            //       size: 28,
+                            //     ),
+                            //     onPressed: () async {
+                            //       String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
+                            //       if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
+                            //         setState(() {
+                            //           Provider.of<AudioPlayerProvider>(context, listen: false)
+                            //               .updateCurrentDirectory(selectedMusicDirectoryPath);
+                            //         });
+                            //       }
+                            //     },
+                            //   ),
+                            // ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
+                        Provider.of<AudioPlayerProvider>(context).currentDirectory != '')
+                      ElevatedButton(
+                        onPressed: () async {
+                          String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
+                          if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
+                            setState(() {
+                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                  .updateCurrentDirectory(selectedMusicDirectoryPath);
+                              Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
+                            });
+                          }
+                        },
+                        // style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Browse',
+                                style: Theme.of(context).textTheme.displayMedium,
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                Icons.drive_file_move_rounded,
+                                size: 24,
+                                color: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () => {
+                        pageViewController.nextPage(
+                          duration: const Duration(
+                            milliseconds: 250,
+                          ),
+                          curve: Curves.linear,
+                        ),
+                      },
+                      style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Continue',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 24,
+                              color: Provider.of<ThemeProvider>(context, listen: false).globalDarkForegroundColor,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-          ),
-        ],
+                  ],
+                ),
+              ),
+            ),
+            // Page 3
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: CustomCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
+                        ),
+                        height: 300,
+                        width: 300,
+                        padding: const EdgeInsets.all(30),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/images/storyset_music_amico.svg',
+                            height: 250,
+                            width: 250,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Text('All Set!', style: Theme.of(context).textTheme.displayLarge),
+                    const CustomDivider(),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Ready to go! Select a file and play!',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () => {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const PlaybackScreen(),
+                          ),
+                        ),
+                      },
+                      style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Start Playing',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

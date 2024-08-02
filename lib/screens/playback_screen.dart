@@ -57,9 +57,9 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           icon: const Icon(Icons.settings),
                           onPressed: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return const SettingsScreen();
-                              }),
+                              MaterialPageRoute(
+                                builder: (context) => const SettingsScreen(),
+                              ),
                             );
                           },
                         ),
