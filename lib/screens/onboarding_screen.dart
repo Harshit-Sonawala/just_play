@@ -11,6 +11,7 @@ import '../screens/playback_screen.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -116,10 +117,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Please provide the file and audio playback permissions when prompted on the next screen.',
+                      'Please provide the file and audio playback permissions whenever prompted.',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 40),
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: SmoothPageIndicator(
+                        controller: pageViewController,
+                        count: 3,
+                        effect: WormEffect(
+                          dotHeight: 10,
+                          dotWidth: 10,
+                          dotColor: Provider.of<ThemeProvider>(context, listen: false).globalDarkDimForegroundColor,
+                          activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () => {
                         pageViewController.nextPage(
@@ -187,7 +202,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const CustomDivider(),
                     const SizedBox(height: 20),
                     Text(
-                      'Just browse for your device folder, to load all files within.',
+                      'Just browse for your device folder to load all your music files.',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 20),
@@ -239,7 +254,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: SmoothPageIndicator(
+                        controller: pageViewController,
+                        count: 3,
+                        effect: WormEffect(
+                          dotHeight: 10,
+                          dotWidth: 10,
+                          dotColor: Provider.of<ThemeProvider>(context, listen: false).globalDarkDimForegroundColor,
+                          activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
                         Provider.of<AudioPlayerProvider>(context).currentDirectory != '')
                       ElevatedButton(
@@ -312,7 +341,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       'Ready to go! Select a file and play!',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 40),
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: SmoothPageIndicator(
+                        controller: pageViewController,
+                        count: 3,
+                        effect: WormEffect(
+                          dotHeight: 10,
+                          dotWidth: 10,
+                          dotColor: Provider.of<ThemeProvider>(context, listen: false).globalDarkDimForegroundColor,
+                          activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () => {
                         Navigator.of(context).pushReplacement(

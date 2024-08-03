@@ -196,10 +196,10 @@ class _JustPlayState extends State<JustPlay> {
           actionTextColor: Provider.of<ThemeProvider>(context).globalAccentColor,
         ),
       ),
-      home: (showOnboardingScreen == null || showOnboardingScreen == true)
+      home: (showOnboardingScreen != null && showOnboardingScreen == false)
+          // ? const PlaybackScreen()
           ? const OnboardingScreen()
-          // : const OnboardingScreen(),
-          : const PlaybackScreen(),
+          : const OnboardingScreen(),
     );
   }
 }

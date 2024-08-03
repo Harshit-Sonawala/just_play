@@ -18,18 +18,18 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
-  // Future<void>? trackListFuture;
+  Future<void>? trackListFuture;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   callGenerateTrackList();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    callGenerateTrackList();
+  }
 
-  // Future<void> callGenerateTrackList() async {
-  //   trackListFuture = Provider.of<AudioPlayerProvider>(context)
-  //       .generateTrackList(); // no await as this is just a Future we are passing to the FutureBuilder, and not a value
-  // }
+  Future<void> callGenerateTrackList() async {
+    trackListFuture = Provider.of<AudioPlayerProvider>(context, listen: false)
+        .generateTrackList(); // no await as this is just a Future we are passing to the FutureBuilder, and not a value
+  }
 
   String formatDurationToString(Duration? duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
@@ -44,7 +44,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<void>(
-          future: Provider.of<AudioPlayerProvider>(context).generateTrackList(),
+          future: trackListFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
