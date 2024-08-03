@@ -198,8 +198,8 @@ class _JustPlayState extends State<JustPlay> {
       ),
       home: (showOnboardingScreen == null || showOnboardingScreen == true)
           ? const OnboardingScreen()
-          : const OnboardingScreen(),
-      // : const PlaybackScreen(),
+          // : const OnboardingScreen(),
+          : const PlaybackScreen(),
     );
   }
 }

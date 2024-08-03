@@ -64,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Provider.of<AudioPlayerProvider>(context).currentDirectory != '') {
       musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).currentDirectory!;
     } else {
-      musicDirectoryTextFieldController.text = '/storage/emulated/0/';
+      musicDirectoryTextFieldController.text = '';
     }
 
     return Scaffold(
@@ -203,73 +203,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             readOnly: true,
                             controller: musicDirectoryTextFieldController,
                             style: Theme.of(context).textTheme.bodySmall,
-                            // decoration: InputDecoration(
-                            //   suffixIcon: IconButton(
-                            //     icon: const Icon(
-                            //       Icons.drive_file_move_rounded,
-                            //       size: 28,
-                            //     ),
-                            //     onPressed: () async {
-                            //       String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
-                            //       if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
-                            //         setState(() {
-                            //           Provider.of<AudioPlayerProvider>(context, listen: false)
-                            //               .updateCurrentDirectory(selectedMusicDirectoryPath);
-                            //         });
-                            //       }
-                            //     },
-                            //   ),
-                            // ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
-                        Provider.of<AudioPlayerProvider>(context).currentDirectory != '')
-                      ElevatedButton(
-                        onPressed: () async {
-                          String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
-                          if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
-                            setState(() {
-                              Provider.of<AudioPlayerProvider>(context, listen: false)
-                                  .updateCurrentDirectory(selectedMusicDirectoryPath);
-                              Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
-                            });
-                          }
-                        },
-                        // style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Browse',
-                                style: Theme.of(context).textTheme.displayMedium,
-                              ),
-                              const SizedBox(width: 10),
-                              Icon(
-                                Icons.drive_file_move_rounded,
-                                size: 24,
-                                color: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 40),
                     ElevatedButton(
-                      onPressed: () => {
-                        pageViewController.nextPage(
-                          duration: const Duration(
-                            milliseconds: 250,
-                          ),
-                          curve: Curves.linear,
-                        ),
+                      onPressed: () async {
+                        String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
+                        if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
+                          setState(() {
+                            Provider.of<AudioPlayerProvider>(context, listen: false)
+                                .updateCurrentDirectory(selectedMusicDirectoryPath);
+                            Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
+                          });
+                        }
                       },
-                      style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
                         child: Row(
@@ -277,19 +226,52 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Continue',
-                              style: Theme.of(context).textTheme.titleMedium,
+                              'Browse',
+                              style: Theme.of(context).textTheme.displayMedium,
                             ),
                             const SizedBox(width: 10),
                             Icon(
-                              Icons.arrow_forward_rounded,
+                              Icons.drive_file_move_rounded,
                               size: 24,
-                              color: Provider.of<ThemeProvider>(context, listen: false).globalDarkForegroundColor,
+                              color: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
                             ),
                           ],
                         ),
                       ),
                     ),
+                    const SizedBox(height: 40),
+                    if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
+                        Provider.of<AudioPlayerProvider>(context).currentDirectory != '')
+                      ElevatedButton(
+                        onPressed: () => {
+                          pageViewController.nextPage(
+                            duration: const Duration(
+                              milliseconds: 250,
+                            ),
+                            curve: Curves.linear,
+                          ),
+                        },
+                        style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Continue',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 24,
+                                color: Provider.of<ThemeProvider>(context, listen: false).globalDarkForegroundColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

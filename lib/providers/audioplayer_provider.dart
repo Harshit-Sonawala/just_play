@@ -95,15 +95,16 @@ class AudioPlayerProvider with ChangeNotifier {
     final directory = Directory(currentDirectory!);
     if (directory.existsSync()) {
       int counter = 0;
-      directory.listSync(recursive: true).forEach((eachFile) async {
+      final files = directory.listSync(recursive: true);
+      for (var eachFile in files) {
         // Only if .mp3 file, add to trackList
         if (eachFile is File && eachFile.path.endsWith('.mp3')) {
           // Retrieve file metadata
           try {
             Tag? metadata = await AudioTags.read(eachFile.path);
             // debugPrint('Trying file $counter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
-            trackList.insert(
-              counter,
+            trackList.add(
+              // counter,
               Track(
                 id: counter,
                 filePath: eachFile.path,
@@ -127,7 +128,7 @@ class AudioPlayerProvider with ChangeNotifier {
             );
           }
         }
-      });
+      }
     }
   }
 

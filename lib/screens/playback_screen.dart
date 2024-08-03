@@ -18,6 +18,18 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
+  // Future<void>? trackListFuture;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   callGenerateTrackList();
+  // }
+
+  // Future<void> callGenerateTrackList() async {
+  //   trackListFuture = Provider.of<AudioPlayerProvider>(context)
+  //       .generateTrackList(); // no await as this is just a Future we are passing to the FutureBuilder, and not a value
+  // }
 
   String formatDurationToString(Duration? duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
@@ -31,177 +43,201 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'JustPlay!',
-                      style: Theme.of(context).textTheme.displayLarge,
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.search),
-                          onPressed: () {
-                            debugPrint("Search Button Pressed");
-                          },
-                        ),
-                        const SizedBox(width: 5),
-                        IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const SettingsScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.builder(
-                  // itemExtent: 80,
-                  itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
-                  itemBuilder: (context, index) {
-                    final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 6.0),
-                      child: CustomListItem(
-                        onPressed: () {
-                          Provider.of<AudioPlayerProvider>(context, listen: false)
-                              .setAudioPlayerFile(eachTrack.filePath);
-                        },
-                        onLongPress: () {},
-                        fileName: eachTrack.fileName,
-                        title: eachTrack.title,
-                        artist: eachTrack.artist,
-                        album: eachTrack.album,
-                        albumArt: eachTrack.albumArt,
-                        duration: eachTrack.fileDuration,
-                        // body: eachTrack.path,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            CustomCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: FutureBuilder<void>(
+          future: Provider.of<AudioPlayerProvider>(context).generateTrackList(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return Column(
                 children: [
-                  // Decoration Handle Rectangle Container
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      width: 24.0,
-                      height: 4.0,
-                      decoration: BoxDecoration(
-                        color: Provider.of<ThemeProvider>(context).globalDarkDimForegroundColor,
-                        borderRadius: BorderRadius.circular(10),
+                  Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'JustPlay!',
+                            style: Theme.of(context).textTheme.displayLarge,
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: () {
+                                  debugPrint("Search Button Pressed");
+                                },
+                              ),
+                              const SizedBox(width: 5),
+                              IconButton(
+                                icon: const Icon(Icons.settings),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const SettingsScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    Provider.of<AudioPlayerProvider>(context).currentFilePath == ""
-                        ? 'Select a file and JustPlay!'
-                        : Provider.of<AudioPlayerProvider>(context).currentFilePath.split('/').last,
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        formatDurationToString(Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      Expanded(
-                        child: Slider(
-                          value:
-                              Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition!.inSeconds.toDouble(),
-                          min: 0,
-                          max: Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
-                          onChanged: (newSeekValue) {
-                            Provider.of<AudioPlayerProvider>(context, listen: false)
-                                .audioPlayer
-                                .seek(Duration(seconds: newSeekValue.toInt()));
-                          },
-                        ),
-                      ),
-                      Text(
-                        formatDurationToString(Provider.of<AudioPlayerProvider>(context).currentFileDuration),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        child: const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Icon(
-                            Icons.skip_previous_rounded,
-                            size: 36,
-                          ),
-                        ),
-                        onPressed: () {},
-                      ),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Icon(
-                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                            size: 36,
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            if (Provider.of<AudioPlayerProvider>(context, listen: false).currentFilePath != '') {
-                              if (isPlaying) {
-                                isPlaying = false;
-                                Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
-                              } else {
-                                isPlaying = true;
-                                Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
-                              }
-                            }
-                          });
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ListView.builder(
+                        // itemExtent: 80,
+                        itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
+                        itemBuilder: (context, index) {
+                          final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 6.0),
+                            child: CustomListItem(
+                              onPressed: () {
+                                Provider.of<AudioPlayerProvider>(context, listen: false)
+                                    .setAudioPlayerFile(eachTrack.filePath);
+                              },
+                              onLongPress: () {},
+                              fileName: eachTrack.fileName,
+                              title: eachTrack.title,
+                              artist: eachTrack.artist,
+                              album: eachTrack.album,
+                              albumArt: eachTrack.albumArt,
+                              duration: eachTrack.fileDuration,
+                              // body: eachTrack.path,
+                            ),
+                          );
                         },
                       ),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                        child: const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Icon(
-                            Icons.skip_next_rounded,
-                            size: 36,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Decoration Handle Rectangle Container
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            width: 24.0,
+                            height: 4.0,
+                            decoration: BoxDecoration(
+                              color: Provider.of<ThemeProvider>(context).globalDarkDimForegroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
-                        onPressed: () {},
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        Text(
+                          Provider.of<AudioPlayerProvider>(context).currentFilePath == ""
+                              ? 'Select a file and JustPlay!'
+                              : Provider.of<AudioPlayerProvider>(context).currentFilePath.split('/').last,
+                          style: Theme.of(context).textTheme.displayMedium,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              formatDurationToString(Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            Expanded(
+                              child: Slider(
+                                value: Provider.of<AudioPlayerProvider>(context)
+                                    .currentPlaybackPosition!
+                                    .inSeconds
+                                    .toDouble(),
+                                min: 0,
+                                max:
+                                    Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
+                                onChanged: (newSeekValue) {
+                                  Provider.of<AudioPlayerProvider>(context, listen: false)
+                                      .audioPlayer
+                                      .seek(Duration(seconds: newSeekValue.toInt()));
+                                },
+                              ),
+                            ),
+                            Text(
+                              formatDurationToString(Provider.of<AudioPlayerProvider>(context).currentFileDuration),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.skip_previous_rounded,
+                                  size: 36,
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                            const SizedBox(width: 10),
+                            ElevatedButton(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Icon(
+                                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                  size: 36,
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (Provider.of<AudioPlayerProvider>(context, listen: false).currentFilePath != '') {
+                                    if (isPlaying) {
+                                      isPlaying = false;
+                                      Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
+                                    } else {
+                                      isPlaying = true;
+                                      Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
+                                    }
+                                  }
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            ElevatedButton(
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.skip_next_rounded,
+                                  size: 36,
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-            ),
-          ],
+              );
+            } else {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else {
+                return Center(
+                  child: Text('$snapshot'),
+                );
+              }
+            }
+          },
         ),
       ),
     );
