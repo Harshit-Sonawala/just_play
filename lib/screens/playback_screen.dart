@@ -47,8 +47,16 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
           future: trackListFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('Loading files...', style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 20),
+                    const CircularProgressIndicator(),
+                  ],
+                ),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               return Column(
