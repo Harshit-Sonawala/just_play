@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../providers/audioplayer_provider.dart';
-import '../providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/onboarding_screen.dart';
 import '../screens/playback_screen.dart';
+import '../providers/audioplayer_provider.dart';
+import '../providers/database_provider.dart';
+import '../providers/theme_provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<AudioPlayerProvider>(
-          create: (context) => AudioPlayerProvider(),
-        ),
         ChangeNotifierProvider<ThemeProvider>(
           create: (context) => ThemeProvider(),
+        ),
+        ChangeNotifierProvider<DatabaseProvider>(
+          create: (context) => DatabaseProvider(),
+        ),
+        ChangeNotifierProxyProvider<DatabaseProvider, AudioPlayerProvider>(
+          create: (context) => AudioPlayerProvider(context.read<DatabaseProvider>()),
+          update: (context, databaseProvider, audioPlayerProvider) => audioPlayerProvider!,
         ),
       ],
       child: const JustPlay(),
@@ -197,8 +201,7 @@ class _JustPlayState extends State<JustPlay> {
         ),
       ),
       home: (showOnboardingScreen != null && showOnboardingScreen == false)
-          // ? const PlaybackScreen()
-          ? const OnboardingScreen()
+          ? const PlaybackScreen()
           : const OnboardingScreen(),
     );
   }

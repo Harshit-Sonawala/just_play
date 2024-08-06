@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/audioplayer_provider.dart';
-import '../providers/theme_provider.dart';
-
 import '../widgets/custom_list_item.dart';
 import '../widgets/custom_card.dart';
-
 import '../screens/settings_screen.dart';
+import '../models/track.dart';
+import '../providers/audioplayer_provider.dart';
+import '../providers/database_provider.dart';
+import '../providers/theme_provider.dart';
 
 class PlaybackScreen extends StatefulWidget {
   const PlaybackScreen({super.key});
@@ -18,17 +18,13 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
-  Future<void>? trackListFuture;
+  Future<List<Track>>? trackListFuture;
 
   @override
   void initState() {
     super.initState();
-    callGenerateTrackList();
-  }
-
-  Future<void> callGenerateTrackList() async {
-    trackListFuture = Provider.of<AudioPlayerProvider>(context, listen: false)
-        .generateTrackList(); // no await as this is just a Future we are passing to the FutureBuilder, and not a value
+    // no await as this is just a Future we are passing to the FutureBuilder, and not a value
+    trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).getAllTracks();
   }
 
   String formatDurationToString(Duration? duration) {
@@ -43,22 +39,23 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: FutureBuilder<void>(
+        child: FutureBuilder<List<Track>>(
           future: trackListFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Expanded(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Loading files...', style: Theme.of(context).textTheme.titleMedium),
+                    Text('Loading Media...', style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 20),
                     const CircularProgressIndicator(),
                   ],
                 ),
               );
-            } else if (snapshot.connectionState == ConnectionState.done) {
+            } else if (snapshot.hasData) {
+              debugPrint('snapshot.data: ${snapshot.data}');
               return Column(
                 children: [
                   Container(
@@ -103,9 +100,11 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ListView.builder(
                         // itemExtent: 80,
-                        itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
+                        // itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
+                        itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
+                          // final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
+                          Track eachTrack = snapshot.data![index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 6.0),
                             child: CustomListItem(
@@ -234,16 +233,16 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                   ),
                 ],
               );
+            } else if (snapshot.hasError) {
+              // unexpected case and encounterred error
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
             } else {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              } else {
-                return Center(
-                  child: Text('$snapshot'),
-                );
-              }
+              // unexpected case but no error encountered
+              return Center(
+                child: Text('$snapshot'),
+              );
             }
           },
         ),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
-
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../providers/theme_provider.dart';
 
 class OnboardingPage1 extends StatefulWidget {
   final PageController pageViewController;

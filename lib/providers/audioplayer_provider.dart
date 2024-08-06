@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import './track.dart';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audiotags/audiotags.dart';
+
+import '../models/track.dart';
+import './database_provider.dart';
 
 class AudioPlayerProvider with ChangeNotifier {
   final audioPlayer = AudioPlayer();
@@ -22,8 +22,9 @@ class AudioPlayerProvider with ChangeNotifier {
   String persistentMusicDirectory = "";
   List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
+  var databaseProvider = DatabaseProvider();
 
-  AudioPlayerProvider() {
+  AudioPlayerProvider(this.databaseProvider) {
     initializeAudioPlayerProvider();
   }
 
@@ -103,24 +104,24 @@ class AudioPlayerProvider with ChangeNotifier {
           try {
             Tag? metadata = await AudioTags.read(eachFile.path);
             // debugPrint('Trying file $counter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
-            trackList.add(
-              // counter,
-              Track(
-                id: counter,
-                filePath: eachFile.path,
-                fileName: basenameWithoutExtension(eachFile.path),
-                fileLastModified: eachFile.lastModifiedSync(),
-                fileDuration: Duration(seconds: metadata?.duration ?? 0),
-                title: metadata?.title,
-                artist: metadata?.trackArtist,
-                album: metadata?.album,
-                year: metadata?.year,
-                albumArt: metadata?.pictures.isNotEmpty == true ? metadata?.pictures.first.bytes : null,
-                genre: metadata?.genre,
-                // bitrate: metadata?.bitrate,
-                playCount: 0,
-              ),
+            Track tempTrack = Track(
+              id: counter,
+              filePath: eachFile.path,
+              fileName: basenameWithoutExtension(eachFile.path),
+              fileLastModified: eachFile.lastModifiedSync(),
+              fileDuration: Duration(seconds: metadata?.duration ?? 0),
+              title: metadata?.title,
+              artist: metadata?.trackArtist,
+              album: metadata?.album,
+              year: metadata?.year,
+              albumArt: (metadata?.pictures.isNotEmpty == true) ? metadata?.pictures.first.bytes : null,
+              genre: metadata?.genre,
+              // bitrate: metadata?.bitrate,
+              playCount: 0,
             );
+            // trackList.insert (counter,tempTrack);
+            // trackList.add(tempTrack);
+            await databaseProvider.insertTrack(tempTrack);
             counter++;
           } catch (e) {
             debugPrint(
@@ -162,13 +163,13 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   // Remove after onboarding screen implemented
-  Future<void> debugLoadFilePath() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final fetchedMusicDirectory = prefs.getString('musicDirectory');
-    if (fetchedMusicDirectory == null) {
-      currentDirectory = '/storage/emulated/0/Music/new';
-    }
-  }
+  // Future<void> debugLoadFilePath() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final fetchedMusicDirectory = prefs.getString('musicDirectory');
+  //   if (fetchedMusicDirectory == null) {
+  //     currentDirectory = '/storage/emulated/0/Music/new';
+  //   }
+  // }
 
   Future<String?> getCurrentDirectory() async {
     final prefs = await SharedPreferences.getInstance();
