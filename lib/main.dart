@@ -41,14 +41,18 @@ class _JustPlayState extends State<JustPlay> {
   @override
   void initState() {
     super.initState();
-    initializeWithSharedPrefs();
+    initializeDatabase();
   }
 
-  Future<void> initializeWithSharedPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    showOnboardingScreen = prefs.getBool('showOnboardingScreen');
-    debugPrint('main.dart showOnboardingScreen: $showOnboardingScreen');
+  Future<void> initializeDatabase() async {
+    await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
   }
+
+  // Future<void> initializeWithSharedPrefs() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   showOnboardingScreen = prefs.getBool('showOnboardingScreen');
+  //   debugPrint('main.dart showOnboardingScreen: $showOnboardingScreen');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -200,9 +204,44 @@ class _JustPlayState extends State<JustPlay> {
           actionTextColor: Provider.of<ThemeProvider>(context).globalAccentColor,
         ),
       ),
-      home: (showOnboardingScreen != null && showOnboardingScreen == false)
-          ? const PlaybackScreen()
-          : const OnboardingScreen(),
+      // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const PlaybackScreen(),
+      home: FutureBuilder<SharedPreferences>(
+        future: SharedPreferences.getInstance(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Loading Media...', style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 20),
+                  const CircularProgressIndicator(),
+                ],
+              ),
+            );
+          } else if (snapshot.hasData) {
+            debugPrint('Main snapshot.data: ${snapshot.data}');
+            showOnboardingScreen = snapshot.data?.getBool('showOnboardingScreen');
+            debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
+            if (showOnboardingScreen == null) {
+              return const OnboardingScreen();
+            } else {
+              return const PlaybackScreen();
+            }
+          } else if (snapshot.hasError) {
+            // unexpected case and encounterred error
+            return Center(
+              child: Text('Main Error: ${snapshot.error}'),
+            );
+          } else {
+            // unexpected case but no error encountered
+            return Center(
+              child: Text('Main Unexpected: $snapshot'),
+            );
+          }
+        },
+      ),
     );
   }
 }

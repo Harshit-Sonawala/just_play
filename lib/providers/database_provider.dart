@@ -7,11 +7,12 @@ import '../models/track.dart';
 class DatabaseProvider with ChangeNotifier {
   Database? trackDatabase;
 
-  DatabaseProvider() {
-    initializeTrackDatabase();
-  }
+  // DatabaseProvider() {
+  //   initializeTrackDatabase();
+  // }
 
   Future<void> initializeTrackDatabase() async {
+    debugPrint('database_provider: Initializing Track Database.');
     WidgetsFlutterBinding.ensureInitialized(); // avoid errors
     trackDatabase = await openDatabase(
       join(await getDatabasesPath(), 'track_database.db'),
@@ -60,9 +61,26 @@ class DatabaseProvider with ChangeNotifier {
   // }
 
   Future<List<Track>> getAllTracks() async {
-    final List<Map<String, dynamic>> allTrackMaps = await trackDatabase!.query('tracks');
-    return List.generate(allTrackMaps.length, (i) {
-      return Track.fromMap(allTrackMaps[i]);
-    });
+    final List<Map<String, dynamic>> allTrackMaps = [];
+    int offset = 0;
+    const int limit = 100;
+
+    while (true) {
+      List<Map<String, dynamic>> batch = await trackDatabase!.query(
+        'tracks',
+        limit: limit,
+        offset: offset,
+      );
+      if (batch.isEmpty) {
+        break;
+      }
+      allTrackMaps.addAll(batch);
+      offset += limit;
+    }
+
+    return List.generate(
+      allTrackMaps.length,
+      (eachTrackMap) => Track.fromMap(allTrackMaps[eachTrackMap]),
+    );
   }
 }

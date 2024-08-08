@@ -42,32 +42,12 @@ class AudioPlayerProvider with ChangeNotifier {
 
   Future<void> requestPermission() async {
     final android = await DeviceInfoPlugin().androidInfo;
+    int androidVersionSdkInt = android.version.sdkInt;
     PermissionStatus storagePermissionStatus;
     PermissionStatus audioPermissionStatus;
 
-    storagePermissionStatus = await Permission.storage.status;
-    // debugPrint('Initial storage permission status: $storagePermissionStatus');
-    if (storagePermissionStatus.isDenied) {
-      storagePermissionStatus = await Permission.storage.request();
-      // debugPrint('After requested permission status: $storagePermissionStatus');
-    }
-    if (storagePermissionStatus.isGranted) {
-      debugPrint('Storage permission granted.');
-      if (currentFilePath != '' && android.version.sdkInt < 33 && File(currentFilePath).existsSync()) {
-        fileExists = true;
-        notifyListeners();
-      } else {
-        fileExists = false;
-        debugPrint("File doesn't exist.");
-        notifyListeners();
-      }
-    } else {
-      debugPrint('Storage permission denied.');
-      // Handle permission denial with popup dialogue box
-      // openAppSettings();
-    }
-
-    if (android.version.sdkInt >= 33) {
+    // storage permission is deprecated for sdkInt >= 33, needs specific type of storage permission like audio
+    if (androidVersionSdkInt >= 33) {
       audioPermissionStatus = await Permission.audio.status;
       // debugPrint('Initial audio permission status: $audioPermissionStatus');
       if (audioPermissionStatus.isDenied) {
@@ -76,7 +56,7 @@ class AudioPlayerProvider with ChangeNotifier {
       }
       if (audioPermissionStatus.isGranted) {
         debugPrint('Audio permission granted.');
-        if (currentFilePath != '' && android.version.sdkInt >= 33 && File(currentFilePath).existsSync()) {
+        if (currentFilePath != '' && File(currentFilePath).existsSync()) {
           fileExists = true;
           notifyListeners();
         } else {
@@ -86,6 +66,28 @@ class AudioPlayerProvider with ChangeNotifier {
         }
       } else {
         debugPrint('Audio permission denied.');
+        // Handle permission denial with popup dialogue box
+        // openAppSettings();
+      }
+    } else {
+      storagePermissionStatus = await Permission.storage.status;
+      // debugPrint('Initial storage permission status: $storagePermissionStatus');
+      if (storagePermissionStatus.isDenied) {
+        storagePermissionStatus = await Permission.storage.request();
+        // debugPrint('After requested permission status: $storagePermissionStatus');
+      }
+      if (storagePermissionStatus.isGranted) {
+        debugPrint('Storage permission granted.');
+        if (currentFilePath != '' && File(currentFilePath).existsSync()) {
+          fileExists = true;
+          notifyListeners();
+        } else {
+          fileExists = false;
+          debugPrint('currentFilePath: $currentFilePath, android.version.sdkInt: $androidVersionSdkInt');
+          notifyListeners();
+        }
+      } else {
+        debugPrint('Storage permission status: $storagePermissionStatus');
         // Handle permission denial with popup dialogue box
         // openAppSettings();
       }

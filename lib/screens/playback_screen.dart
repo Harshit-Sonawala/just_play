@@ -18,14 +18,14 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
-  Future<List<Track>>? trackListFuture;
+  // Future<List<Track>>? trackListFuture;
 
-  @override
-  void initState() {
-    super.initState();
-    // no await as this is just a Future we are passing to the FutureBuilder, and not a value
-    trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).getAllTracks();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // no await as this is just a Future we are passing to the FutureBuilder, and not a value
+  //   trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).getAllTracks();
+  // }
 
   String formatDurationToString(Duration? duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
@@ -40,7 +40,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<List<Track>>(
-          future: trackListFuture,
+          future: Provider.of<DatabaseProvider>(context, listen: false).getAllTracks(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -55,7 +55,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 ),
               );
             } else if (snapshot.hasData) {
-              debugPrint('snapshot.data: ${snapshot.data}');
+              debugPrint('PlaybackScreen snapshot.data: ${snapshot.data}');
               return Column(
                 children: [
                   Container(
@@ -236,12 +236,12 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
             } else if (snapshot.hasError) {
               // unexpected case and encounterred error
               return Center(
-                child: Text('Error: ${snapshot.error}'),
+                child: Text('PlaybackScreen Error: ${snapshot.error}'),
               );
             } else {
               // unexpected case but no error encountered
               return Center(
-                child: Text('$snapshot'),
+                child: Text('PlaybackScreen Unexpected: $snapshot'),
               );
             }
           },
