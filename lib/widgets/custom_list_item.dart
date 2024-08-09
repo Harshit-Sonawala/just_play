@@ -13,7 +13,7 @@ class CustomListItem extends StatefulWidget {
   final String? artist;
   final String? album;
   final Uint8List? albumArt;
-  final Duration? duration;
+  final int duration;
 
   const CustomListItem({
     required this.onPressed,
@@ -24,7 +24,7 @@ class CustomListItem extends StatefulWidget {
     this.artist,
     this.album,
     this.albumArt,
-    this.duration,
+    required this.duration,
     super.key,
   });
 
@@ -33,12 +33,15 @@ class CustomListItem extends StatefulWidget {
 }
 
 class _CustomListItemState extends State<CustomListItem> {
-  String formatDurationToString(Duration? duration) {
+  // Convert fileDuration in seconds to formatted string of type 00:00
+  String formatDurationIntToString(int fileDuration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = duration!.inHours;
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return [if (hours > 0) hours, minutes, seconds].map((seg) => seg.toString()).join(':');
+
+    final hours = fileDuration ~/ 3600;
+    final minutes = (fileDuration % 3600) ~/ 60;
+    final seconds = fileDuration % 60;
+
+    return [if (hours > 0) hours, minutes, seconds].map((seg) => twoDigits(seg)).join(':');
   }
 
   @override
@@ -136,7 +139,7 @@ class _CustomListItemState extends State<CustomListItem> {
               ),
               const SizedBox(width: 8.0),
               Text(
-                formatDurationToString(widget.duration),
+                formatDurationIntToString(widget.duration),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],

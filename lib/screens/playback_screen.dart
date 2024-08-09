@@ -18,21 +18,24 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
-  // Future<List<Track>>? trackListFuture;
+  Future<List<Track>>? trackListFuture;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // no await as this is just a Future we are passing to the FutureBuilder, and not a value
-  //   trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).getAllTracks();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    // no await as this is just a Future we are passing to the FutureBuilder, and not a value
+    trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).getAllTracks();
+  }
 
-  String formatDurationToString(Duration? duration) {
+  // Convert fileDuration in seconds to formatted string of type 00:00
+  String formatDurationIntToString(int fileDuration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = duration!.inHours;
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return [if (hours > 0) hours, minutes, seconds].map((seg) => seg.toString()).join(':');
+
+    final hours = fileDuration ~/ 3600;
+    final minutes = (fileDuration % 3600) ~/ 60;
+    final seconds = fileDuration % 60;
+
+    return [if (hours > 0) hours, minutes, seconds].map((seg) => twoDigits(seg)).join(':');
   }
 
   @override
@@ -40,7 +43,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<List<Track>>(
-          future: Provider.of<DatabaseProvider>(context, listen: false).getAllTracks(),
+          future: trackListFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -154,18 +157,15 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              formatDurationToString(Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition),
+                              formatDurationIntToString(
+                                  Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                             Expanded(
                               child: Slider(
-                                value: Provider.of<AudioPlayerProvider>(context)
-                                    .currentPlaybackPosition!
-                                    .inSeconds
-                                    .toDouble(),
+                                value: Provider.of<AudioPlayerProvider>(context).currentPlaybackPosition.toDouble(),
                                 min: 0,
-                                max:
-                                    Provider.of<AudioPlayerProvider>(context).currentFileDuration!.inSeconds.toDouble(),
+                                max: Provider.of<AudioPlayerProvider>(context).currentFileDuration.toDouble(),
                                 onChanged: (newSeekValue) {
                                   Provider.of<AudioPlayerProvider>(context, listen: false)
                                       .audioPlayer
@@ -174,7 +174,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                               ),
                             ),
                             Text(
-                              formatDurationToString(Provider.of<AudioPlayerProvider>(context).currentFileDuration),
+                              formatDurationIntToString(Provider.of<AudioPlayerProvider>(context).currentFileDuration),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -234,12 +234,14 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 ],
               );
             } else if (snapshot.hasError) {
-              // unexpected case and encounterred error
+              // unexpected case and encounterred error\
+              debugPrint('PlaybackScreen Error: ${snapshot.error}');
               return Center(
                 child: Text('PlaybackScreen Error: ${snapshot.error}'),
               );
             } else {
               // unexpected case but no error encountered
+              debugPrint('PlaybackScreen Unexpected: $snapshot');
               return Center(
                 child: Text('PlaybackScreen Unexpected: $snapshot'),
               );

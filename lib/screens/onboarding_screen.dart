@@ -17,39 +17,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentPageViewIndex = 0;
   bool? showOnboardingScreen;
 
-  @override
-  void initState() {
-    super.initState();
-    initializeWithSharedPrefs();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   initializeWithSharedPrefs();
+  // }
 
   Future<void> initializeWithSharedPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showOnboardingScreen', false);
     showOnboardingScreen = prefs.getBool('showOnboardingScreen');
-    debugPrint('onboarding_screen.dart showOnboardingScreen: $showOnboardingScreen');
+    debugPrint('OnboardingScreen showOnboardingScreen: $showOnboardingScreen');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: pageViewController,
-          onPageChanged: (newIndex) => {
-            setState(() {
-              currentPageViewIndex = newIndex;
-            }),
+        child: FutureBuilder<void>(
+          future: initializeWithSharedPrefs(),
+          builder: (context, snapshot) {
+            return PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: pageViewController,
+              onPageChanged: (newIndex) => {
+                setState(() {
+                  currentPageViewIndex = newIndex;
+                }),
+              },
+              children: [
+                // Page 1
+                OnboardingPage1(pageViewController: pageViewController),
+                // Page 2
+                OnboardingPage2(pageViewController: pageViewController),
+                // Page 3
+                OnboardingPage3(pageViewController: pageViewController),
+              ],
+            );
           },
-          children: [
-            // Page 1
-            OnboardingPage1(pageViewController: pageViewController),
-            // Page 2
-            OnboardingPage2(pageViewController: pageViewController),
-            // Page 3
-            OnboardingPage3(pageViewController: pageViewController),
-          ],
         ),
       ),
     );

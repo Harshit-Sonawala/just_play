@@ -1,0 +1,94 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4810691331485070816",
+      "lastPropertyId": "13:545978304038549274",
+      "name": "Track",
+      "properties": [
+        {
+          "id": "1:3912121030096502859",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:7423643678348096998",
+          "name": "filePath",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "1:6021391348314730205"
+        },
+        {
+          "id": "3:759464259765673022",
+          "name": "fileName",
+          "type": 9
+        },
+        {
+          "id": "4:5394030504563815917",
+          "name": "fileLastModified",
+          "type": 10
+        },
+        {
+          "id": "5:8954593062369846334",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "6:2211192380553340196",
+          "name": "artist",
+          "type": 9
+        },
+        {
+          "id": "7:1029935180016040375",
+          "name": "album",
+          "type": 9
+        },
+        {
+          "id": "8:1966638548942276706",
+          "name": "year",
+          "type": 6
+        },
+        {
+          "id": "9:7328033861079498065",
+          "name": "albumArt",
+          "type": 23
+        },
+        {
+          "id": "10:5818632799779148717",
+          "name": "genre",
+          "type": 9
+        },
+        {
+          "id": "11:829866455504761161",
+          "name": "bitrate",
+          "type": 6
+        },
+        {
+          "id": "12:1583432758962991661",
+          "name": "playCount",
+          "type": 6
+        },
+        {
+          "id": "13:545978304038549274",
+          "name": "fileDuration",
+          "type": 6
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:4810691331485070816",
+  "lastIndexId": "1:6021391348314730205",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

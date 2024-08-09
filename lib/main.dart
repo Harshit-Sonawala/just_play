@@ -38,21 +38,16 @@ class JustPlay extends StatefulWidget {
 class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
 
-  @override
-  void initState() {
-    super.initState();
-    initializeDatabase();
-  }
-
-  Future<void> initializeDatabase() async {
-    await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
-  }
-
-  // Future<void> initializeWithSharedPrefs() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   showOnboardingScreen = prefs.getBool('showOnboardingScreen');
-  //   debugPrint('main.dart showOnboardingScreen: $showOnboardingScreen');
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   initializeSharedPrefsAndDatabase();
   // }
+
+  Future<SharedPreferences> initializeDatabaseGetSharedPrefs() async {
+    await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
+    return SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +201,7 @@ class _JustPlayState extends State<JustPlay> {
       ),
       // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const PlaybackScreen(),
       home: FutureBuilder<SharedPreferences>(
-        future: SharedPreferences.getInstance(),
+        future: initializeDatabaseGetSharedPrefs(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -231,11 +226,13 @@ class _JustPlayState extends State<JustPlay> {
             }
           } else if (snapshot.hasError) {
             // unexpected case and encounterred error
+            debugPrint('Main Error: ${snapshot.error}');
             return Center(
               child: Text('Main Error: ${snapshot.error}'),
             );
           } else {
             // unexpected case but no error encountered
+            debugPrint('Main Unexpected: $snapshot');
             return Center(
               child: Text('Main Unexpected: $snapshot'),
             );

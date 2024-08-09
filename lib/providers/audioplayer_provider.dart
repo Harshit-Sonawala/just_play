@@ -15,8 +15,8 @@ class AudioPlayerProvider with ChangeNotifier {
   String currentFilePath = '';
   // String currentDirectory = '/storage/emulated/0/Music';
   String? currentDirectory;
-  Duration? currentFileDuration = Duration.zero;
-  Duration? currentPlaybackPosition = Duration.zero;
+  int currentFileDuration = 0;
+  int currentPlaybackPosition = 0;
   bool fileExists = false;
   bool isPlaying = false;
   String persistentMusicDirectory = "";
@@ -35,7 +35,7 @@ class AudioPlayerProvider with ChangeNotifier {
     // await generateTrackList();
     // await setAudioPlayerFile(currentFilePath);
     audioPlayer.positionStream.listen((obtainedPosition) {
-      currentPlaybackPosition = obtainedPosition;
+      currentPlaybackPosition = obtainedPosition.inSeconds;
       notifyListeners();
     });
   }
@@ -111,7 +111,8 @@ class AudioPlayerProvider with ChangeNotifier {
               filePath: eachFile.path,
               fileName: basenameWithoutExtension(eachFile.path),
               fileLastModified: eachFile.lastModifiedSync(),
-              fileDuration: Duration(seconds: metadata?.duration ?? 0),
+              // fileDuration: Duration(seconds: metadata?.duration ?? 0),
+              fileDuration: metadata?.duration ?? 0,
               title: metadata?.title,
               artist: metadata?.trackArtist,
               album: metadata?.album,
@@ -122,8 +123,8 @@ class AudioPlayerProvider with ChangeNotifier {
               playCount: 0,
             );
             // trackList.insert (counter,tempTrack);
-            // trackList.add(tempTrack);
-            await databaseProvider.insertTrack(tempTrack);
+            trackList.add(tempTrack);
+            await databaseProvider.insertTrackList(trackList);
             counter++;
           } catch (e) {
             debugPrint(
@@ -154,7 +155,8 @@ class AudioPlayerProvider with ChangeNotifier {
       if (File(currentFilePath).existsSync()) {
         fileExists = true;
         await audioPlayer.setFilePath(currentFilePath);
-        currentFileDuration = await audioPlayer.load();
+        currentFileDuration = (await audioPlayer.load())!.inSeconds;
+
         notifyListeners();
       } else {
         fileExists = false;
@@ -163,15 +165,6 @@ class AudioPlayerProvider with ChangeNotifier {
       }
     }
   }
-
-  // Remove after onboarding screen implemented
-  // Future<void> debugLoadFilePath() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final fetchedMusicDirectory = prefs.getString('musicDirectory');
-  //   if (fetchedMusicDirectory == null) {
-  //     currentDirectory = '/storage/emulated/0/Music/new';
-  //   }
-  // }
 
   Future<String?> getCurrentDirectory() async {
     final prefs = await SharedPreferences.getInstance();
@@ -187,37 +180,4 @@ class AudioPlayerProvider with ChangeNotifier {
       debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
     }
   }
-
-  // Future<void> playAudioPlayer() async {
-  //   if (fileExists) {
-  //     await audioPlayer.play();
-  //     isPlaying = true;
-  //     debugPrint('Playback started.');
-  //   } else {
-  //     debugPrint('File not found. Cannot start playback.');
-  //   }
-  //   notifyListeners();
-  // }
-
-  // Future<void> pauseAudioPlayer() async {
-  //   if (isPlaying) {
-  //     await audioPlayer.pause();
-  //     debugPrint('Playback paused.');
-  //     isPlaying = false;
-  //   } else {
-  //     debugPrint('Not playing. Cannot pause playback.');
-  //   }
-  //   notifyListeners();
-  // }
-
-  // Future<void> stopAudioPlayer() async {
-  //   if (isPlaying) {
-  //     await audioPlayer.stop();
-  //     debugPrint('Playback stopped.');
-  //     isPlaying = false;
-  //   } else {
-  //     debugPrint('Not playing. Cannot stop playback.');
-  //   }
-  //   notifyListeners();
-  // }
 }
