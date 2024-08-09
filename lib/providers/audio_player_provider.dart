@@ -24,7 +24,7 @@ class AudioPlayerProvider with ChangeNotifier {
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
 
-  AudioPlayerProvider(this.databaseProvider) {
+  AudioPlayerProvider() {
     initializeAudioPlayerProvider();
   }
 
@@ -94,20 +94,22 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
-  Future<void> generateTrackList() async {
+  Future<List<Track>> generateTrackList() async {
     final directory = Directory(currentDirectory!);
+    trackList = []; // empty the existingTrackList every time
+
     if (directory.existsSync()) {
-      int counter = 0;
+      int fileCounter = 0;
       final files = directory.listSync(recursive: true);
       for (var eachFile in files) {
         // Only if .mp3 file, add to trackList
         if (eachFile is File && eachFile.path.endsWith('.mp3')) {
-          // Retrieve file metadata
+          // Retrieve file metadata or catch error
           try {
             Tag? metadata = await AudioTags.read(eachFile.path);
-            // debugPrint('Trying file $counter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
+            // debugPrint('Trying file $fileCounter, ${basenameWithoutExtension(eachFile.path)}, duration: ${metadata?.duration}');
             Track tempTrack = Track(
-              id: counter,
+              id: fileCounter,
               filePath: eachFile.path,
               fileName: basenameWithoutExtension(eachFile.path),
               fileLastModified: eachFile.lastModifiedSync(),
@@ -122,19 +124,21 @@ class AudioPlayerProvider with ChangeNotifier {
               // bitrate: metadata?.bitrate,
               playCount: 0,
             );
-            // trackList.insert (counter,tempTrack);
+            // trackList.insert (fileCounter,tempTrack);
             trackList.add(tempTrack);
-            // TODO: Completely clear the existing database here first
-            await databaseProvider.insertTrackList(trackList);
-            counter++;
+            // await databaseProvider.insertTrackList(trackList);
+            fileCounter++;
           } catch (e) {
             debugPrint(
-              'Error caught for file $counter, ${basenameWithoutExtension(eachFile.path)}. Error type: ${e.runtimeType}. Error details: $e',
+              'AudioPlayerProvider generateTrackList(), Error caught for file $fileCounter, ${basenameWithoutExtension(eachFile.path)}. Error type: ${e.runtimeType}. Error details: $e',
             );
           }
         }
       }
+    } else {
+      debugPrint('AudioPlayerProvider generateTrackList(), currentDirectory: $currentDirectory doesn\'t exist');
     }
+    return trackList;
   }
 
   Future<void> listFiles() async {

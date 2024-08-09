@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../screens/onboarding_screen.dart';
 import '../screens/playback_screen.dart';
-import '../providers/audioplayer_provider.dart';
-import '../providers/database_provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/database_provider.dart';
+import 'providers/audio_player_provider.dart';
 
 void main() {
   runApp(
@@ -18,10 +18,13 @@ void main() {
         ChangeNotifierProvider<DatabaseProvider>(
           create: (context) => DatabaseProvider(),
         ),
-        ChangeNotifierProxyProvider<DatabaseProvider, AudioPlayerProvider>(
-          create: (context) => AudioPlayerProvider(context.read<DatabaseProvider>()),
-          update: (context, databaseProvider, audioPlayerProvider) => audioPlayerProvider!,
+        ChangeNotifierProvider<AudioPlayerProvider>(
+          create: (context) => AudioPlayerProvider(),
         ),
+        // ChangeNotifierProxyProvider<DatabaseProvider, AudioPlayerProvider>(
+        //   create: (context) => AudioPlayerProvider(context.read<DatabaseProvider>()),
+        //   update: (context, databaseProvider, audioPlayerProvider) => audioPlayerProvider!,
+        // ),
       ],
       child: const JustPlay(),
     ),
@@ -37,12 +40,6 @@ class JustPlay extends StatefulWidget {
 
 class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   initializeSharedPrefsAndDatabase();
-  // }
 
   Future<SharedPreferences> initializeDatabaseGetSharedPrefs() async {
     await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
@@ -218,7 +215,8 @@ class _JustPlayState extends State<JustPlay> {
           } else if (snapshot.hasData) {
             // debugPrint('Main snapshot.data: ${snapshot.data}');
             showOnboardingScreen = snapshot.data?.getBool('showOnboardingScreen');
-            debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
+            // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
+            snapshot.data?.setBool('showOnboardingScreen', false);
             if (showOnboardingScreen == null) {
               return const OnboardingScreen();
             } else {

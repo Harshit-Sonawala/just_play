@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import '../providers/audioplayer_provider.dart';
+import '../providers/audio_player_provider.dart';
 
 import '../widgets/custom_divider.dart';
 

@@ -6,8 +6,10 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
 import '../screens/playback_screen.dart';
-import '../providers/audioplayer_provider.dart';
+import '../models/track.dart';
 import '../providers/theme_provider.dart';
+import '../providers/database_provider.dart';
+import '../providers/audio_player_provider.dart';
 
 class OnboardingPage3 extends StatefulWidget {
   final PageController pageViewController;
@@ -27,7 +29,12 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
   @override
   void initState() {
     super.initState();
-    buildLibraryFuture = Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
+    buildLibraryFuture = buildLibrary();
+  }
+
+  Future<void> buildLibrary() async {
+    List<Track> trackList = await Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
+    await Provider.of<DatabaseProvider>(context, listen: false).insertTrackList(trackList);
   }
 
   @override
@@ -46,6 +53,8 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('Building Media Library...', style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 5),
+                    Text('Will only need to do this once.', style: Theme.of(context).textTheme.bodySmall),
                     const SizedBox(height: 20),
                     const CircularProgressIndicator(),
                   ],

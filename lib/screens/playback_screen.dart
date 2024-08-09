@@ -5,7 +5,7 @@ import '../widgets/custom_list_item.dart';
 import '../widgets/custom_card.dart';
 import '../screens/settings_screen.dart';
 import '../models/track.dart';
-import '../providers/audioplayer_provider.dart';
+import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
 import '../providers/theme_provider.dart';
 
@@ -153,7 +153,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           Provider.of<AudioPlayerProvider>(context).currentFilePath == ""
                               ? 'Select a file and JustPlay!'
                               : Provider.of<AudioPlayerProvider>(context).currentFilePath.split('/').last,
-                          style: Theme.of(context).textTheme.displayMedium,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

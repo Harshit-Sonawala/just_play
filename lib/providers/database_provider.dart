@@ -17,6 +17,8 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   Future<void> insertTrackList(List<Track> trackList) async {
+    // TODO: Completely clear the existing database here first
+
     trackStore.runInTransaction(TxMode.write, () {
       for (var track in trackList) {
         trackBox.put(track);
@@ -28,4 +30,8 @@ class DatabaseProvider with ChangeNotifier {
   Future<List<Track>> getAllTracks() async {
     return trackBox.getAll();
   }
+
+  // TODO: Update Database entry upon manually updating song metadata
+
+  // TODO: Clear Database for an updated library location loading
 }

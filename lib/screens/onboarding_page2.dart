@@ -6,7 +6,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
-import '../providers/audioplayer_provider.dart';
+import '../providers/audio_player_provider.dart';
 import '../providers/theme_provider.dart';
 
 class OnboardingPage2 extends StatefulWidget {
