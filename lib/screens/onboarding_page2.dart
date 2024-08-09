@@ -99,7 +99,6 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
                   setState(() {
                     Provider.of<AudioPlayerProvider>(context, listen: false)
                         .updateCurrentDirectory(selectedMusicDirectoryPath);
-                    Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
                   });
                 }
               },
@@ -168,6 +167,13 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
                       ),
                     ],
                   ),
+                ),
+              )
+            else
+              Center(
+                child: Text(
+                  'Select a folder to continue',
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
           ],

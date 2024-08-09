@@ -124,6 +124,7 @@ class AudioPlayerProvider with ChangeNotifier {
             );
             // trackList.insert (counter,tempTrack);
             trackList.add(tempTrack);
+            // TODO: Completely clear the existing database here first
             await databaseProvider.insertTrackList(trackList);
             counter++;
           } catch (e) {

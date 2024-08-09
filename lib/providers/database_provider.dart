@@ -29,15 +29,3 @@ class DatabaseProvider with ChangeNotifier {
     return trackBox.getAll();
   }
 }
-
-  // Future<void> initializeTrackDatabase() async {
-  //   debugPrint('database_provider Initializing Track Database.');
-  //   final appDocumentsDir = await getApplicationDocumentsDirectory();
-  //   trackStore = Store(
-  //     getObjectBoxModel(),
-  //     directory: '${appDocumentsDir.path}/objectBoxTrackStore',
-  //   );
-
-  //   trackBox = trackStore.box<Track>();
-  //   notifyListeners();
-  // }

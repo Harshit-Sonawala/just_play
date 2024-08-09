@@ -216,7 +216,7 @@ class _JustPlayState extends State<JustPlay> {
               ),
             );
           } else if (snapshot.hasData) {
-            debugPrint('Main snapshot.data: ${snapshot.data}');
+            // debugPrint('Main snapshot.data: ${snapshot.data}');
             showOnboardingScreen = snapshot.data?.getBool('showOnboardingScreen');
             debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
             if (showOnboardingScreen == null) {

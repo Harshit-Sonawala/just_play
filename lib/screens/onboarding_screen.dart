@@ -16,6 +16,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   PageController pageViewController = PageController();
   int currentPageViewIndex = 0;
   bool? showOnboardingScreen;
+  int ctr = 0;
 
   // @override
   // void initState() {
@@ -24,10 +25,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // }
 
   Future<void> initializeWithSharedPrefs() async {
+    debugPrint('Running this ${ctr++}');
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showOnboardingScreen', false);
-    showOnboardingScreen = prefs.getBool('showOnboardingScreen');
-    debugPrint('OnboardingScreen showOnboardingScreen: $showOnboardingScreen');
+    // showOnboardingScreen = prefs.getBool('showOnboardingScreen');
+    // debugPrint('OnboardingScreen showOnboardingScreen: $showOnboardingScreen');
   }
 
   @override

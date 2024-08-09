@@ -58,7 +58,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                 ),
               );
             } else if (snapshot.hasData) {
-              debugPrint('PlaybackScreen snapshot.data: ${snapshot.data}');
+              // debugPrint('PlaybackScreen snapshot.data: ${snapshot.data}');
               return Column(
                 children: [
                   Container(
@@ -115,7 +115,9 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                 Provider.of<AudioPlayerProvider>(context, listen: false)
                                     .setAudioPlayerFile(eachTrack.filePath);
                               },
-                              onLongPress: () {},
+                              onLongPress: () {
+                                // Play next / some playlist functionality
+                              },
                               fileName: eachTrack.fileName,
                               title: eachTrack.title,
                               artist: eachTrack.artist,
