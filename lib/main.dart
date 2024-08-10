@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/onboarding_screen.dart';
@@ -41,9 +40,9 @@ class JustPlay extends StatefulWidget {
 class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
 
-  Future<SharedPreferences> initializeDatabaseGetSharedPrefs() async {
+  Future<void> initializeDatabaseGetSharedPrefs() async {
     await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
-    return SharedPreferences.getInstance();
+    return Provider.of<AudioPlayerProvider>(context, listen: false).initializeSharedPrefs();
   }
 
   @override
@@ -139,9 +138,9 @@ class _JustPlayState extends State<JustPlay> {
         textTheme: appWideTextTheme,
 
         // Icon Theme:
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           size: 24,
-          color: Colors.white,
+          color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
         ),
 
         // Button Theme:
@@ -201,28 +200,45 @@ class _JustPlayState extends State<JustPlay> {
           actionBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
           actionTextColor: Provider.of<ThemeProvider>(context).globalAccentColor,
         ),
+
+        // Menu Theme:
+        menuTheme: MenuThemeData(
+          style: MenuStyle(
+            backgroundColor: WidgetStateProperty.all(Provider.of<ThemeProvider>(context).globalDarkTopColor),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ),
       ),
       // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const PlaybackScreen(),
-      home: FutureBuilder<SharedPreferences>(
+      home: FutureBuilder<void>(
         future: initializeDatabaseGetSharedPrefs(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Loading Media...', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 20),
-                  const CircularProgressIndicator(),
-                ],
+            return Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Loading Media...', style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 20),
+                      const CircularProgressIndicator(),
+                    ],
+                  ),
+                ),
               ),
             );
-          } else if (snapshot.hasData) {
+          } else if (snapshot.connectionState == ConnectionState.done) {
             // debugPrint('Main snapshot.data: ${snapshot.data}');
-            showOnboardingScreen = snapshot.data?.getBool('showOnboardingScreen');
+            showOnboardingScreen =
+                Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.getBool('showOnboardingScreen');
             // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
-            snapshot.data?.setBool('showOnboardingScreen', false);
+            Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.setBool('showOnboardingScreen', false);
             if (showOnboardingScreen == null) {
               return const OnboardingScreen();
             } else {
@@ -231,14 +247,22 @@ class _JustPlayState extends State<JustPlay> {
           } else if (snapshot.hasError) {
             // unexpected case and encounterred error
             debugPrint('Main Error: ${snapshot.error}');
-            return Center(
-              child: Text('Main Error: ${snapshot.error}'),
+            return Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: Text('Main Error: ${snapshot.error}'),
+                ),
+              ),
             );
           } else {
             // unexpected case but no error encountered
             debugPrint('Main Unexpected: $snapshot');
-            return Center(
-              child: Text('Main Unexpected: $snapshot'),
+            return Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: Text('Main Unexpected: $snapshot'),
+                ),
+              ),
             );
           }
         },

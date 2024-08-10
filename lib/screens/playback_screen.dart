@@ -9,6 +9,8 @@ import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
 import '../providers/theme_provider.dart';
 
+import '../objectbox.g.dart';
+
 class PlaybackScreen extends StatefulWidget {
   const PlaybackScreen({super.key});
 
@@ -19,7 +21,7 @@ class PlaybackScreen extends StatefulWidget {
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
   Future<List<Track>>? trackListFuture;
-  int sortBy = 3; // read& write from sharedprefs
+  int sortByInt = 3; // read from sharedprefs
 
   @override
   void initState() {
@@ -29,14 +31,20 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
   }
 
   void readTracksFromDatabase() {
-    if (sortBy == 1) {
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracks();
-    } else if (sortBy == 2) {
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracksSortedByDateModified();
-    } else if (sortBy == 3) {
-      trackListFuture =
-          Provider.of<DatabaseProvider>(context, listen: false).readAllTracksSortedByDateModified(descending: true);
+    if (sortByInt == 1) {
+      // Alphabetical Desc
+      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
+          .readAllTracksSorted(trackProperty: Track_.fileName, descending: true);
+    } else if (sortByInt == 2) {
+      // DateModified Asc
+      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
+          .readAllTracksSorted(trackProperty: Track_.fileLastModified);
+    } else if (sortByInt == 3) {
+      // DateModified Desc
+      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
+          .readAllTracksSorted(trackProperty: Track_.fileLastModified, descending: true);
     } else {
+      // Alphabetical Asc & Default
       trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracks();
     }
   }
@@ -118,30 +126,50 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                 },
                                 menuChildren: [
                                   MenuItemButton(
+                                    leadingIcon: Icon(
+                                      Icons.keyboard_double_arrow_up_rounded,
+                                      color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                    ),
                                     child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
                                     onPressed: () => setState(() {
-                                      sortBy = 0;
+                                      sortByInt = 0;
+                                      Provider.of<AudioPlayerProvider>(context).prefs?.setInt('sortByInt', 0);
                                       readTracksFromDatabase();
                                     }),
                                   ),
                                   MenuItemButton(
+                                    leadingIcon: Icon(
+                                      Icons.keyboard_double_arrow_down_rounded,
+                                      color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                    ),
                                     child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
                                     onPressed: () => setState(() {
-                                      sortBy = 1;
+                                      sortByInt = 1;
+                                      Provider.of<AudioPlayerProvider>(context).prefs?.setInt('sortByInt', 1);
                                       readTracksFromDatabase();
                                     }),
                                   ),
                                   MenuItemButton(
+                                    leadingIcon: Icon(
+                                      Icons.keyboard_double_arrow_up_rounded,
+                                      color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                    ),
                                     child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
                                     onPressed: () => setState(() {
-                                      sortBy = 2;
+                                      sortByInt = 2;
+                                      Provider.of<AudioPlayerProvider>(context).prefs?.setInt('sortByInt', 2);
                                       readTracksFromDatabase();
                                     }),
                                   ),
                                   MenuItemButton(
+                                    leadingIcon: Icon(
+                                      Icons.keyboard_double_arrow_down_rounded,
+                                      color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                    ),
                                     child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
                                     onPressed: () => setState(() {
-                                      sortBy = 3;
+                                      sortByInt = 3;
+                                      Provider.of<AudioPlayerProvider>(context).prefs?.setInt('sortByInt', 3);
                                       readTracksFromDatabase();
                                     }),
                                   ),

@@ -23,21 +23,24 @@ class AudioPlayerProvider with ChangeNotifier {
   List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
+  SharedPreferences? prefs;
 
   AudioPlayerProvider() {
     initializeAudioPlayerProvider();
+    initializeSharedPrefs();
   }
 
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     currentDirectory = await getCurrentDirectory();
-    // await debugLoadFilePath(); // avoid getting a null for currentDirectory manually
-    // await generateTrackList();
-    // await setAudioPlayerFile(currentFilePath);
     audioPlayer.positionStream.listen((obtainedPosition) {
       currentPlaybackPosition = obtainedPosition.inSeconds;
       notifyListeners();
     });
+  }
+
+  Future<void> initializeSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> requestPermission() async {
@@ -172,15 +175,13 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   Future<String?> getCurrentDirectory() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('musicDirectory');
+    return prefs?.getString('musicDirectory');
   }
 
   Future<void> updateCurrentDirectory(String passedNewDirectory) async {
     if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
       currentDirectory = passedNewDirectory;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('musicDirectory', passedNewDirectory);
+      await prefs?.setString('musicDirectory', passedNewDirectory);
     } else {
       debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
     }

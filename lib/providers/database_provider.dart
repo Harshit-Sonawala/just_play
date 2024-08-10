@@ -24,10 +24,12 @@ class DatabaseProvider with ChangeNotifier {
     return await trackBox.getAllAsync();
   }
 
-  // Read all tracks sorted by date modified
-  Future<List<Track>> readAllTracksSortedByDateModified({bool descending = false}) async {
-    QueryBuilder<Track> queryBuilder = trackBox.query()
-      ..order(Track_.fileLastModified, flags: descending ? Order.descending : 0);
+  // Read all tracks sorted by specified property, call with an underscore
+  Future<List<Track>> readAllTracksSorted({
+    required QueryProperty<Track, dynamic> trackProperty,
+    bool descending = false,
+  }) async {
+    QueryBuilder<Track> queryBuilder = trackBox.query()..order(trackProperty, flags: descending ? Order.descending : 0);
 
     Query<Track> sortedQuery = queryBuilder.build();
     List<Track> result = await sortedQuery.findAsync();
