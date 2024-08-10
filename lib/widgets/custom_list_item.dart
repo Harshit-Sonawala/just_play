@@ -71,7 +71,7 @@ class _CustomListItemState extends State<CustomListItem> {
                   ),
                   padding: const EdgeInsets.all(14.0),
                   child: Icon(
-                    Icons.music_note,
+                    Icons.music_note_rounded,
                     size: 24.0,
                     color: Theme.of(context).colorScheme.primary,
                   ),

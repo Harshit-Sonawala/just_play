@@ -19,12 +19,26 @@ class PlaybackScreen extends StatefulWidget {
 class _PlaybackScreenState extends State<PlaybackScreen> {
   bool isPlaying = false;
   Future<List<Track>>? trackListFuture;
+  int sortBy = 3; // read& write from sharedprefs
 
   @override
   void initState() {
     super.initState();
     // no await as this is just a Future we are passing to the FutureBuilder, and not a value
-    trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).getAllTracks();
+    readTracksFromDatabase();
+  }
+
+  void readTracksFromDatabase() {
+    if (sortBy == 1) {
+      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracks();
+    } else if (sortBy == 2) {
+      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracksSortedByDateModified();
+    } else if (sortBy == 3) {
+      trackListFuture =
+          Provider.of<DatabaseProvider>(context, listen: false).readAllTracksSortedByDateModified(descending: true);
+    } else {
+      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracks();
+    }
   }
 
   // Convert fileDuration in seconds to formatted string of type 00:00
@@ -79,6 +93,59 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                 onPressed: () {
                                   debugPrint("Search Button Pressed");
                                 },
+                              ),
+                              const SizedBox(width: 5),
+                              // PopupMenuButton(
+                              //   itemBuilder: (context) => [
+                              //     PopupMenuItem(child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall), value: 0),
+                              //     PopupMenuItem(child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall), value: 1),
+                              //     PopupMenuItem(child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall), value: 2),
+                              //     PopupMenuItem(child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall), value: 3),
+                              //   ],
+                              // ),
+                              MenuAnchor(
+                                builder: (BuildContext context, MenuController menuAnchorController, Widget? child) {
+                                  return IconButton(
+                                    onPressed: () {
+                                      if (menuAnchorController.isOpen) {
+                                        menuAnchorController.close();
+                                      } else {
+                                        menuAnchorController.open();
+                                      }
+                                    },
+                                    icon: const Icon(Icons.sort_rounded),
+                                  );
+                                },
+                                menuChildren: [
+                                  MenuItemButton(
+                                    child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
+                                    onPressed: () => setState(() {
+                                      sortBy = 0;
+                                      readTracksFromDatabase();
+                                    }),
+                                  ),
+                                  MenuItemButton(
+                                    child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
+                                    onPressed: () => setState(() {
+                                      sortBy = 1;
+                                      readTracksFromDatabase();
+                                    }),
+                                  ),
+                                  MenuItemButton(
+                                    child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
+                                    onPressed: () => setState(() {
+                                      sortBy = 2;
+                                      readTracksFromDatabase();
+                                    }),
+                                  ),
+                                  MenuItemButton(
+                                    child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
+                                    onPressed: () => setState(() {
+                                      sortBy = 3;
+                                      readTracksFromDatabase();
+                                    }),
+                                  ),
+                                ],
                               ),
                               const SizedBox(width: 5),
                               IconButton(

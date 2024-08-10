@@ -47,6 +47,12 @@ class _JustPlayState extends State<JustPlay> {
   }
 
   @override
+  void dispose() {
+    Provider.of<DatabaseProvider>(context, listen: false).closeTrackDatabase();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Custom App-wide Text Theme:
     TextTheme appWideTextTheme = TextTheme(
