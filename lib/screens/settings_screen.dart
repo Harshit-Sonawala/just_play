@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import '../providers/database_provider.dart';
 import '../providers/audio_player_provider.dart';
-
 import '../widgets/custom_divider.dart';
+import '../models/track.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:restart_app/restart_app.dart';
@@ -36,6 +37,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> buildLibrary() async {
+    List<Track> trackList = await Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
+    await Provider.of<DatabaseProvider>(context, listen: false).deleteAllTracks();
+    await Provider.of<DatabaseProvider>(context, listen: false).insertTrackList(trackList);
   }
 
   @override
@@ -102,6 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       // musicDirectoryTextFieldController.text = selectedMusicDirectoryPath;
                                       Provider.of<AudioPlayerProvider>(context, listen: false)
                                           .updateCurrentDirectory(selectedMusicDirectoryPath);
+                                      buildLibrary();
                                       showRestartSnackbar();
                                     });
                                   }

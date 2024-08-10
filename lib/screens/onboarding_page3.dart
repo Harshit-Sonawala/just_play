@@ -34,6 +34,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
 
   Future<void> buildLibrary() async {
     List<Track> trackList = await Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
+    await Provider.of<DatabaseProvider>(context, listen: false).deleteAllTracks();
     await Provider.of<DatabaseProvider>(context, listen: false).insertTrackList(trackList);
   }
 
