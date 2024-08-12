@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).currentDirectory!;
+    musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).libraryDirectory!;
 
     return Scaffold(
       body: SafeArea(
@@ -108,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     setState(() {
                                       // musicDirectoryTextFieldController.text = selectedMusicDirectoryPath;
                                       Provider.of<AudioPlayerProvider>(context, listen: false)
-                                          .updateCurrentDirectory(selectedMusicDirectoryPath);
+                                          .updateLibraryDirectory(selectedMusicDirectoryPath);
                                       buildLibrary();
                                       showRestartSnackbar();
                                     });

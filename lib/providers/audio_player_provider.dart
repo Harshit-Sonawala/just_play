@@ -11,15 +11,13 @@ import '../models/track.dart';
 import './database_provider.dart';
 
 class AudioPlayerProvider with ChangeNotifier {
-  final audioPlayer = AudioPlayer();
-  String currentFilePath = '';
-  // String currentDirectory = '/storage/emulated/0/Music';
-  String? currentDirectory;
-  int currentFileDuration = 0;
-  int currentPlaybackPosition = 0;
-  bool fileExists = false;
-  bool isPlaying = false;
   String persistentMusicDirectory = "";
+  String? libraryDirectory;
+  final audioPlayer = AudioPlayer();
+  bool isPlaying = false;
+  Track? nowPlayingTrack;
+  int nowPlayingTotalDuration = 0;
+  int nowPlayingPosition = 0;
   List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
@@ -32,9 +30,9 @@ class AudioPlayerProvider with ChangeNotifier {
 
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
-    currentDirectory = await getCurrentDirectory();
+    libraryDirectory = await getLibraryDirectory();
     audioPlayer.positionStream.listen((obtainedPosition) {
-      currentPlaybackPosition = obtainedPosition.inSeconds;
+      nowPlayingPosition = obtainedPosition.inSeconds;
       notifyListeners();
     });
   }
@@ -49,48 +47,48 @@ class AudioPlayerProvider with ChangeNotifier {
     PermissionStatus storagePermissionStatus;
     PermissionStatus audioPermissionStatus;
 
-    // storage permission is deprecated for sdkInt >= 33, needs specific type of storage permission like audio
+    // storage permission is deprecated for sdkInt >= 33, needs specific type like audio permission
     if (androidVersionSdkInt >= 33) {
       audioPermissionStatus = await Permission.audio.status;
-      // debugPrint('Initial audio permission status: $audioPermissionStatus');
+      // debugPrint('androidVersionSdkInt >= 33. Initial audio permission status: $audioPermissionStatus');
       if (audioPermissionStatus.isDenied) {
         audioPermissionStatus = await Permission.audio.request();
-        // debugPrint('After requested permission status: $audioPermissionStatus');
+        // debugPrint('androidVersionSdkInt >= 33. After requested permission status: $audioPermissionStatus');
       }
       if (audioPermissionStatus.isGranted) {
-        debugPrint('Audio permission granted.');
-        if (currentFilePath != '' && File(currentFilePath).existsSync()) {
-          fileExists = true;
-          notifyListeners();
+        if (nowPlayingTrack != null &&
+            nowPlayingTrack!.filePath != '' &&
+            File(nowPlayingTrack!.filePath).existsSync()) {
+          debugPrint(
+              "androidVersionSdkInt >= 33. Audio permission granted. nowPlayingTrack: ${nowPlayingTrack!.fileName}");
         } else {
-          fileExists = false;
-          debugPrint("File doesn't exist.");
-          notifyListeners();
+          debugPrint("androidVersionSdkInt >= 33. Audio permission granted. No track loaded.");
         }
       } else {
-        debugPrint('Audio permission denied.');
+        debugPrint('androidVersionSdkInt >= 33. Audio permission denied.');
         // Handle permission denial with popup dialogue box
         // openAppSettings();
       }
     } else {
+      // androidVersionSdkInt < 33, needs storage permission
       storagePermissionStatus = await Permission.storage.status;
-      // debugPrint('Initial storage permission status: $storagePermissionStatus');
+      // debugPrint('androidVersionSdkInt < 33. Initial storage permission status: $storagePermissionStatus');
       if (storagePermissionStatus.isDenied) {
         storagePermissionStatus = await Permission.storage.request();
-        // debugPrint('After requested permission status: $storagePermissionStatus');
+        // debugPrint('androidVersionSdkInt < 33. After requested permission status: $storagePermissionStatus');
       }
       if (storagePermissionStatus.isGranted) {
-        debugPrint('Storage permission granted.');
-        if (currentFilePath != '' && File(currentFilePath).existsSync()) {
-          fileExists = true;
-          notifyListeners();
+        debugPrint('androidVersionSdkInt < 33. Storage permission granted.');
+        if (nowPlayingTrack != null &&
+            nowPlayingTrack!.filePath != '' &&
+            File(nowPlayingTrack!.filePath).existsSync()) {
+          debugPrint(
+              "androidVersionSdkInt < 33. Storage permission granted. nowPlayingTrack: ${nowPlayingTrack!.fileName}");
         } else {
-          fileExists = false;
-          debugPrint('currentFilePath: $currentFilePath, android.version.sdkInt: $androidVersionSdkInt');
-          notifyListeners();
+          debugPrint('androidVersionSdkInt < 33. Storage permission granted. No track loaded.');
         }
       } else {
-        debugPrint('Storage permission status: $storagePermissionStatus');
+        debugPrint('androidVersionSdkInt < 33. Storage permission denied.');
         // Handle permission denial with popup dialogue box
         // openAppSettings();
       }
@@ -98,7 +96,7 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   Future<List<Track>> generateTrackList() async {
-    final directory = Directory(currentDirectory!);
+    final directory = Directory(libraryDirectory!);
     trackList = []; // empty the existingTrackList every time
 
     if (directory.existsSync()) {
@@ -139,48 +137,44 @@ class AudioPlayerProvider with ChangeNotifier {
         }
       }
     } else {
-      debugPrint('AudioPlayerProvider generateTrackList(), currentDirectory: $currentDirectory doesn\'t exist');
+      debugPrint('AudioPlayerProvider generateTrackList(), libraryDirectory: $libraryDirectory doesn\'t exist');
     }
     return trackList;
   }
 
   Future<void> listFiles() async {
-    final directory = Directory(currentDirectory!);
+    final directory = Directory(libraryDirectory!);
     if (directory.existsSync()) {
       filesList = directory.listSync(recursive: true).where((eachFile) {
         // list only files ending with .mp3
         return eachFile is File && eachFile.path.endsWith('.mp3');
       }).toList();
     } else {
-      debugPrint('currentDirectory: $currentDirectory doesn\'t exist.');
+      debugPrint('libraryDirectory: $libraryDirectory doesn\'t exist.');
     }
     notifyListeners();
   }
 
-  Future<void> setAudioPlayerFile(String newFilePath) async {
-    if (newFilePath != "") {
-      currentFilePath = newFilePath;
-      if (File(currentFilePath).existsSync()) {
-        fileExists = true;
-        await audioPlayer.setFilePath(currentFilePath);
-        currentFileDuration = (await audioPlayer.load())!.inSeconds;
-
-        notifyListeners();
-      } else {
-        fileExists = false;
-        debugPrint("File doesn't exist.");
-        notifyListeners();
-      }
+  Future<void> setAudioPlayerFile(Track trackToPlay) async {
+    if (File(trackToPlay.filePath).existsSync()) {
+      nowPlayingTrack = trackToPlay;
+      await audioPlayer.setFilePath(trackToPlay.filePath);
+      nowPlayingTotalDuration = (await audioPlayer.load())!.inSeconds;
+      notifyListeners();
+    } else {
+      debugPrint("File ${trackToPlay.filePath} doesn't exist.");
     }
   }
 
-  Future<String?> getCurrentDirectory() async {
+  // Get library directory from SharedPrefs
+  Future<String?> getLibraryDirectory() async {
     return prefs?.getString('musicDirectory');
   }
 
-  Future<void> updateCurrentDirectory(String passedNewDirectory) async {
+  // Set/update library directory in SharedPrefs
+  Future<void> updateLibraryDirectory(String passedNewDirectory) async {
     if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
-      currentDirectory = passedNewDirectory;
+      libraryDirectory = passedNewDirectory;
       await prefs?.setString('musicDirectory', passedNewDirectory);
     } else {
       debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');

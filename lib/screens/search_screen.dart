@@ -35,10 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.search),
-                    onPressed: () {
-                      Provider.of<AudioPlayerProvider>(context, listen: false)
-                          .setAudioPlayerFile(pathTextFieldController.text);
-                    },
+                    onPressed: () {},
                   ),
                 ],
               ),

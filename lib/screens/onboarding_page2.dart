@@ -32,9 +32,9 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
-        Provider.of<AudioPlayerProvider>(context).currentDirectory != '') {
-      musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).currentDirectory!;
+    if (Provider.of<AudioPlayerProvider>(context).libraryDirectory != null &&
+        Provider.of<AudioPlayerProvider>(context).libraryDirectory != '') {
+      musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).libraryDirectory!;
     } else {
       musicDirectoryTextFieldController.text = '';
     }
@@ -98,7 +98,7 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
                 if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
                   setState(() {
                     Provider.of<AudioPlayerProvider>(context, listen: false)
-                        .updateCurrentDirectory(selectedMusicDirectoryPath);
+                        .updateLibraryDirectory(selectedMusicDirectoryPath);
                   });
                 }
               },
@@ -137,8 +137,8 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
               ),
             ),
             const SizedBox(height: 20),
-            if (Provider.of<AudioPlayerProvider>(context).currentDirectory != null &&
-                Provider.of<AudioPlayerProvider>(context).currentDirectory != '')
+            if (Provider.of<AudioPlayerProvider>(context).libraryDirectory != null &&
+                Provider.of<AudioPlayerProvider>(context).libraryDirectory != '')
               ElevatedButton(
                 onPressed: () => {
                   widget.pageViewController.nextPage(

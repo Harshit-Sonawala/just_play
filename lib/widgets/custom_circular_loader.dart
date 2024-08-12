@@ -25,16 +25,16 @@ class _CustomCircularLoaderState extends State<CustomCircularLoader> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            const SizedBox(height: 20),
             Text(
               widget.title,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ],
         ),
