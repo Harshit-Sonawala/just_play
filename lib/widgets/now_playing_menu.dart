@@ -38,10 +38,12 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
         maxChildSize: 1.0,
         builder: (context, nowPlayingScrollController) {
           return CustomCard(
+            padding: const EdgeInsets.all(8),
             child: SingleChildScrollView(
               controller: nowPlayingScrollController,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Decoration Handle Rectangle Container
                   Align(
@@ -55,7 +57,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,8 +132,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
 
                   // Expanded full-screen content
                   // Big Album Art / Placeholder Icon
-                  Center(
-                    child: Container(
+                  if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ||
+                      Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt == null)
+                    Container(
                       height: 350,
                       width: 350,
                       decoration: BoxDecoration(
@@ -141,11 +144,23 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                       padding: const EdgeInsets.all(14.0),
                       child: Icon(
                         Icons.music_note_rounded,
-                        size: 48.0,
+                        size: 24.0,
                         color: Theme.of(context).colorScheme.primary,
                       ),
+                    )
+                  else
+                    Container(
+                      height: 350,
+                      width: 350,
+                      padding: const EdgeInsets.all(26.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                          image: MemoryImage(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 25),
 
                   // Track Information
