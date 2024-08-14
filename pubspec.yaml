@@ -24,7 +24,6 @@ dependencies:
   objectbox: ^4.0.1
   objectbox_flutter_libs: ^4.0.1
   mini_music_visualizer: ^1.1.4
-  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:

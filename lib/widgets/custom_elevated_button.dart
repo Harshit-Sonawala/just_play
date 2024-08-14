@@ -57,7 +57,7 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
               padding: const EdgeInsets.only(right: 5),
               child: Icon(
                 widget.icon,
-                color: widget.iconColor,
+                color: widget.iconColor ?? Theme.of(context).colorScheme.onSurface,
                 size: widget.iconSize,
               ),
             ),
@@ -71,7 +71,7 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
               padding: const EdgeInsets.only(left: 5),
               child: Icon(
                 widget.trailingIcon,
-                color: widget.iconColor,
+                color: widget.iconColor ?? Theme.of(context).colorScheme.onSurface,
                 size: widget.iconSize,
               ),
             ),

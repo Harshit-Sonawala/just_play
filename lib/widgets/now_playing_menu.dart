@@ -14,15 +14,14 @@ class NowPlayingMenu extends StatefulWidget {
 
 class _NowPlayingMenuState extends State<NowPlayingMenu> {
   bool isPlaying = false;
+  DraggableScrollableController draggableScrollableSheetController = DraggableScrollableController();
 
   // Convert fileDuration in seconds to formatted string of type 00:00
   String formatDurationIntToString(int fileDuration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-
     final hours = fileDuration ~/ 3600;
     final minutes = (fileDuration % 3600) ~/ 60;
     final seconds = fileDuration % 60;
-
     return [if (hours > 0) hours, minutes, seconds].map((seg) => twoDigits(seg)).join(':');
   }
 
@@ -32,6 +31,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
       return Container(); // empty container
     } else {
       return DraggableScrollableSheet(
+        controller: draggableScrollableSheetController,
         initialChildSize: 0.1,
         minChildSize: 0.1,
         maxChildSize: 1,
@@ -159,7 +159,6 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                           Container(
                             height: 350,
                             width: 350,
-                            // padding: const EdgeInsets.all(26),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
@@ -238,7 +237,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     borderRadius: 50,
                                     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
                                     icon: Icons.edit_rounded,
-                                    iconSize: 18,
+                                    iconSize: 22,
                                     title: 'Tags',
                                     titleStyle: Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -328,8 +327,11 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     }
                                   });
                                 },
-                                icon: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                    size: 34, color: Theme.of(context).colorScheme.surfaceBright),
+                                icon: Icon(
+                                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                  size: 36,
+                                  color: Theme.of(context).colorScheme.surfaceBright,
+                                ),
                               ),
                             ),
                             IconButton(

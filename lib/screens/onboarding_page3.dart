@@ -3,12 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
 import '../widgets/custom_elevated_button.dart';
 import '../screens/playback_screen.dart';
 import '../models/track.dart';
-import '../providers/theme_provider.dart';
 import '../providers/database_provider.dart';
 import '../providers/audio_player_provider.dart';
 
@@ -42,100 +40,133 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
-      child: CustomCard(
-        padding: const EdgeInsets.all(20),
-        child: FutureBuilder<void>(
-          future: buildLibraryFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('Building Media Library...', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 5),
-                    Text('Will only need to do this once.', style: Theme.of(context).textTheme.bodySmall),
-                    const SizedBox(height: 20),
-                    const CircularProgressIndicator(),
-                  ],
+      padding: const EdgeInsets.all(40),
+      child: FutureBuilder<void>(
+        future: buildLibraryFuture,
+        builder: (context, snapshot) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.secondary),
+                  height: 300,
+                  width: 300,
+                  padding: const EdgeInsets.all(30),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/images/storyset_music_amico.svg',
+                      height: 250,
+                      width: 250,
+                    ),
+                  ),
                 ),
-              );
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.secondary),
-                      height: 300,
-                      width: 300,
-                      padding: const EdgeInsets.all(30),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/images/storyset_music_amico.svg',
-                          height: 250,
-                          width: 250,
+              ),
+              const SizedBox(height: 40),
+              if (snapshot.connectionState == ConnectionState.waiting)
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Building Library...',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                      const CustomDivider(),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Scanning all files and extracting metadata. Will only need to do this once.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 20),
+                      const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      const Spacer(),
+                      Center(
+                        child: SmoothPageIndicator(
+                          controller: widget.pageViewController,
+                          count: 3,
+                          effect: WormEffect(
+                            dotHeight: 10,
+                            dotWidth: 10,
+                            dotColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                            activeDotColor: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Text('All Set!', style: Theme.of(context).textTheme.displayLarge),
-                  const CustomDivider(),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Ready to go! Select a file and play!',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const Spacer(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: SmoothPageIndicator(
-                      controller: widget.pageViewController,
-                      count: 3,
-                      effect: WormEffect(
-                        dotHeight: 10,
-                        dotWidth: 10,
-                        dotColor: Provider.of<ThemeProvider>(context, listen: false).globalOnSurfaceVariantColor,
-                        activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalPrimaryColor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  CustomElevatedButton(
-                    onPressed: () => {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const PlaybackScreen(),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          'Please wait while library is built',
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
-                    },
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-                    title: 'Start Playing',
-                    titleStyle: Theme.of(context).textTheme.titleMedium,
+                    ],
                   ),
-                ],
-              );
-            } else {
-              // unexpected case
-              if (snapshot.hasError) {
+                )
+              else if (snapshot.connectionState == ConnectionState.done)
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'All Set!',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                      const CustomDivider(),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Ready to go! Select a file and play!',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const Spacer(),
+                      Center(
+                        child: SmoothPageIndicator(
+                          controller: widget.pageViewController,
+                          count: 3,
+                          effect: WormEffect(
+                            dotHeight: 10,
+                            dotWidth: 10,
+                            dotColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                            activeDotColor: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      CustomElevatedButton(
+                        onPressed: () => {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const PlaybackScreen(),
+                            ),
+                          ),
+                        },
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                        title: 'Start Playing',
+                        titleStyle: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                )
+              else if (snapshot.hasError)
                 // unexpected case and encounterred error
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              } else {
+                Text(
+                  'Error: ${snapshot.error}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+              else
                 // unexpected case but no error encountered
-                return Center(
-                  child: Text('$snapshot'),
-                );
-              }
-            }
-          },
-        ),
+                Text(
+                  '$snapshot',
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+            ],
+          );
+        },
       ),
     );
   }
