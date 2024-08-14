@@ -58,44 +58,44 @@ class _JustPlayState extends State<JustPlay> {
       displayLarge: TextStyle(
         fontSize: 22.0,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalAccentColor,
+        color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displayMedium: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalAccentColor,
+        color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displaySmall: TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       titleLarge: TextStyle(
         fontSize: 22.0,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       titleMedium: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       titleSmall: TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodyLarge: TextStyle(
         fontSize: 18.0,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodyMedium: TextStyle(
         fontSize: 16.0,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodySmall: TextStyle(
         fontSize: 14.0,
-        color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
     );
 
@@ -107,15 +107,15 @@ class _JustPlayState extends State<JustPlay> {
       // Light Theme:
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: Provider.of<ThemeProvider>(context).globalAccentColor,
+          secondary: Provider.of<ThemeProvider>(context).globalPrimaryColor,
         ),
         fontFamily: 'ProductSans',
         textTheme: appWideTextTheme,
         iconTheme: IconThemeData(
-          size: 24,
-          color: Provider.of<ThemeProvider>(context).globalDarkBackgroundColor,
+          size: 26,
+          color: Provider.of<ThemeProvider>(context).globalDarkSurfaceDimColor,
         ),
       ),
 
@@ -125,28 +125,35 @@ class _JustPlayState extends State<JustPlay> {
         useMaterial3: true,
 
         // Base Color Theme:
-        scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkBackgroundColor,
-        splashColor: Provider.of<ThemeProvider>(context).globalAccentColor,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: Provider.of<ThemeProvider>(context).globalAccentColor,
-          secondary: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+        scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkSurfaceDimColor,
+        splashColor: Provider.of<ThemeProvider>(context).globalPrimaryColor,
+        colorScheme: ColorScheme.dark(
           brightness: Brightness.dark,
+          primary: Provider.of<ThemeProvider>(context).globalPrimaryColor,
+          // onPrimary: Provider.of<ThemeProvider>(context).globalOnPrimaryColor,
+          secondary: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          // onSecondary: Provider.of<ThemeProvider>(context).globalOnSecondaryColor,
+          surface: Provider.of<ThemeProvider>(context).globalDarkSurfaceColor,
+          surfaceBright: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
+          surfaceDim: Provider.of<ThemeProvider>(context).globalDarkSurfaceDimColor,
+          onSurface: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+          onSurfaceVariant: Provider.of<ThemeProvider>(context).globalOnSurfaceVariantColor,
         ),
 
-        // Icon Theme:
+        // Font Theme:
         fontFamily: 'ProductSans',
         textTheme: appWideTextTheme,
 
         // Icon Theme:
         iconTheme: IconThemeData(
           size: 24,
-          color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+          color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
         ),
 
         // Button Theme:
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+            backgroundColor: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -160,51 +167,51 @@ class _JustPlayState extends State<JustPlay> {
             color: Colors.white,
           ),
           labelStyle: TextStyle(
-            color: Provider.of<ThemeProvider>(context).globalAccentColor,
+            color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
           ),
           filled: true,
           isDense: true,
-          fillColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+          fillColor: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
           iconColor: Colors.white,
           prefixIconColor: Colors.white,
           suffixIconColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
         ),
 
         // Snackbar Theme:
         snackBarTheme: SnackBarThemeData(
-          backgroundColor: Provider.of<ThemeProvider>(context).globalDarkMidColor,
-          actionBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkTopColor,
-          actionTextColor: Provider.of<ThemeProvider>(context).globalAccentColor,
+          backgroundColor: Provider.of<ThemeProvider>(context).globalDarkSurfaceColor,
+          actionBackgroundColor: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
+          actionTextColor: Provider.of<ThemeProvider>(context).globalPrimaryColor,
         ),
 
         // Menu Theme:
         menuTheme: MenuThemeData(
           style: MenuStyle(
-            backgroundColor: WidgetStateProperty.all(Provider.of<ThemeProvider>(context).globalDarkTopColor),
+            backgroundColor: WidgetStateProperty.all(Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),

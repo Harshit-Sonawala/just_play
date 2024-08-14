@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomDivider extends StatefulWidget {
-  const CustomDivider({super.key});
+  final EdgeInsets padding;
+  final EdgeInsets margin;
+
+  const CustomDivider({
+    this.margin = const EdgeInsets.symmetric(vertical: 5),
+    this.padding = const EdgeInsets.all(0),
+    super.key,
+  });
 
   @override
   State<CustomDivider> createState() => _CustomDividerState();
@@ -11,13 +18,14 @@ class _CustomDividerState extends State<CustomDivider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5.0),
+      margin: widget.margin,
+      padding: widget.padding,
       height: 10,
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Color(0xff4d4d4d),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             width: 1.4,
           ),
         ),

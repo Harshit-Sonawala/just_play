@@ -1,8 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/theme_provider.dart';
 
 class CustomListItem extends StatefulWidget {
   final VoidCallback? onPressed;
@@ -51,7 +48,7 @@ class _CustomListItemState extends State<CustomListItem> {
       height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Provider.of<ThemeProvider>(context).globalDarkMidColor,
+        color: Theme.of(context).colorScheme.surface,
       ),
       child: InkWell(
         onTap: widget.onPressed,
@@ -67,7 +64,7 @@ class _CustomListItemState extends State<CustomListItem> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Provider.of<ThemeProvider>(context).globalDarkTopColor,
+                    color: Theme.of(context).colorScheme.surfaceBright,
                   ),
                   padding: const EdgeInsets.all(14.0),
                   child: Icon(
@@ -111,27 +108,30 @@ class _CustomListItemState extends State<CustomListItem> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          // // Separator Circle Container
-                          // if (widget.artist != null && widget.album != null)
-                          //   Container(
-                          //     width: 4.0,
-                          //     height: 4.0,
-                          //     margin: const EdgeInsets.all(5.0),
-                          //     decoration: BoxDecoration(
-                          //       shape: BoxShape.circle,
-                          //       color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
-                          //     ),
-                          //   ),
-                          // if (widget.album != null)
-                          //   Flexible(
-                          //     child: Text(
-                          //       // '${widget.artist!.substring(0, 71)}...',
-                          //       widget.album!,
-                          //       style: Theme.of(context).textTheme.bodySmall,
-                          //       maxLines: 1,
-                          //       overflow: TextOverflow.ellipsis,
-                          //     ),
-                          //   ),
+                          // Separator Circle Container
+                          if (widget.artist != null &&
+                              widget.artist!.isNotEmpty &&
+                              widget.album != null &&
+                              widget.album!.isNotEmpty)
+                            Container(
+                              width: 4.0,
+                              height: 4.0,
+                              margin: const EdgeInsets.all(5.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                          if (widget.album != null)
+                            Flexible(
+                              child: Text(
+                                // '${widget.artist!.substring(0, 71)}...',
+                                widget.album!,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                         ],
                       ),
                   ],

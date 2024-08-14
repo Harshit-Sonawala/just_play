@@ -33,7 +33,7 @@ class _CustomCircularLoaderState extends State<CustomCircularLoader> {
             const SizedBox(height: 20),
             Center(
               child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ],

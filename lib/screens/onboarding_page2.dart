@@ -6,6 +6,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
+import '../widgets/custom_elevated_button.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/theme_provider.dart';
 
@@ -50,10 +51,7 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
             Align(
               alignment: Alignment.center,
               child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.secondary),
                 height: 300,
                 width: 300,
                 padding: const EdgeInsets.all(30),
@@ -92,7 +90,7 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
               ],
             ),
             const SizedBox(height: 10),
-            ElevatedButton(
+            CustomElevatedButton(
               onPressed: () async {
                 String? selectedMusicDirectoryPath = await FilePicker.platform.getDirectoryPath();
                 if (selectedMusicDirectoryPath != null && selectedMusicDirectoryPath != '') {
@@ -102,25 +100,11 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
                   });
                 }
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Browse',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    const SizedBox(width: 10),
-                    Icon(
-                      Icons.drive_file_move_rounded,
-                      size: 24,
-                      color: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
-                    ),
-                  ],
-                ),
-              ),
+              backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+              title: 'Browse',
+              titleStyle: Theme.of(context).textTheme.displayMedium,
+              trailingIcon: Icons.drive_file_move_rounded,
+              iconColor: Theme.of(context).colorScheme.primary,
             ),
             const Spacer(),
             Align(
@@ -131,15 +115,15 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
                 effect: WormEffect(
                   dotHeight: 10,
                   dotWidth: 10,
-                  dotColor: Provider.of<ThemeProvider>(context, listen: false).globalDarkDimForegroundColor,
-                  activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
+                  dotColor: Provider.of<ThemeProvider>(context, listen: false).globalOnSurfaceVariantColor,
+                  activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalPrimaryColor,
                 ),
               ),
             ),
             const SizedBox(height: 20),
             if (Provider.of<AudioPlayerProvider>(context).libraryDirectory != null &&
                 Provider.of<AudioPlayerProvider>(context).libraryDirectory != '')
-              ElevatedButton(
+              CustomElevatedButton(
                 onPressed: () => {
                   widget.pageViewController.nextPage(
                     duration: const Duration(
@@ -148,26 +132,9 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
                     curve: Curves.linear,
                   ),
                 },
-                style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Continue',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 24,
-                        color: Provider.of<ThemeProvider>(context, listen: false).globalDarkForegroundColor,
-                      ),
-                    ],
-                  ),
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                title: 'Continue',
+                trailingIcon: Icons.arrow_forward_rounded,
               )
             else
               Center(

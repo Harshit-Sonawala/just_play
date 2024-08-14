@@ -14,7 +14,7 @@ class CustomCard extends StatefulWidget {
     this.margin,
     this.child,
     this.backgroundImage = '',
-    this.color = const Color(0xff222222),
+    this.color,
     super.key,
   });
 
@@ -44,7 +44,7 @@ class _CustomCardState extends State<CustomCard> {
               ),
             )
           : BoxDecoration(
-              color: widget.color,
+              color: widget.color ?? Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(10),
             ),
       child: widget.child,

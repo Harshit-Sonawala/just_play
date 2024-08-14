@@ -63,13 +63,13 @@ class _CustomTextButtonState extends State<CustomTextButton> {
           //   const SizedBox(width: 10),
           //   Text(
           //     widget.title!,
-          //     style: TextStyle(fontSize: widget.fontSize, color: Theme.of(context).primaryColor),
+          //     style: TextStyle(fontSize: widget.fontSize, color: Theme.of(context).colorScheme.primary),
           //   ),
           // ],
           // widget.title != null
           //     ? Text(
           //         widget.title!,
-          //         style: TextStyle(fontSize: widget.fontSize, color: Theme.of(context).primaryColor),
+          //         style: TextStyle(fontSize: widget.fontSize, color: Theme.of(context).colorScheme.primary),
           //       )
           //     : Container(),
           widget.child ?? Container(),

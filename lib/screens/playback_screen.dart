@@ -7,7 +7,6 @@ import '../screens/settings_screen.dart';
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
-import '../providers/theme_provider.dart';
 
 import '../objectbox.g.dart';
 
@@ -119,7 +118,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       MenuItemButton(
                                         leadingIcon: Icon(
                                           Icons.keyboard_double_arrow_up_rounded,
-                                          color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
                                         onPressed: () => setState(() {
@@ -133,7 +132,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       MenuItemButton(
                                         leadingIcon: Icon(
                                           Icons.keyboard_double_arrow_down_rounded,
-                                          color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
                                         onPressed: () => setState(() {
@@ -147,7 +146,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       MenuItemButton(
                                         leadingIcon: Icon(
                                           Icons.keyboard_double_arrow_up_rounded,
-                                          color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
                                         onPressed: () => setState(() {
@@ -161,7 +160,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       MenuItemButton(
                                         leadingIcon: Icon(
                                           Icons.keyboard_double_arrow_down_rounded,
-                                          color: Provider.of<ThemeProvider>(context).globalDarkForegroundColor,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
                                         onPressed: () => setState(() {

@@ -5,6 +5,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../widgets/custom_card.dart';
 import '../widgets/custom_divider.dart';
+import '../widgets/custom_elevated_button.dart';
 import '../providers/theme_provider.dart';
 
 class OnboardingPage1 extends StatefulWidget {
@@ -35,7 +36,7 @@ class _OnboardingPage1State extends State<OnboardingPage1> {
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Provider.of<ThemeProvider>(context).globalDarkImageBackgroundColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 height: 300,
                 width: 300,
@@ -71,13 +72,13 @@ class _OnboardingPage1State extends State<OnboardingPage1> {
                 effect: WormEffect(
                   dotHeight: 10,
                   dotWidth: 10,
-                  dotColor: Provider.of<ThemeProvider>(context, listen: false).globalDarkDimForegroundColor,
-                  activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalAccentColor,
+                  dotColor: Provider.of<ThemeProvider>(context, listen: false).globalOnSurfaceVariantColor,
+                  activeDotColor: Provider.of<ThemeProvider>(context, listen: false).globalPrimaryColor,
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomElevatedButton(
               onPressed: () => {
                 widget.pageViewController.nextPage(
                   duration: const Duration(
@@ -86,26 +87,10 @@ class _OnboardingPage1State extends State<OnboardingPage1> {
                   curve: Curves.linear,
                 ),
               },
-              style: Provider.of<ThemeProvider>(context, listen: false).altButtonStyle,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Start',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(width: 10),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 24,
-                      color: Provider.of<ThemeProvider>(context, listen: false).globalDarkForegroundColor,
-                    ),
-                  ],
-                ),
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+              title: 'Start',
+              titleStyle: Theme.of(context).textTheme.titleMedium,
+              trailingIcon: Icons.arrow_forward_rounded,
             ),
           ],
         ),
