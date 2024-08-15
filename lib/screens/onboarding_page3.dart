@@ -35,6 +35,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
     List<Track> trackList = await Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
     await Provider.of<DatabaseProvider>(context, listen: false).deleteAllTracks();
     await Provider.of<DatabaseProvider>(context, listen: false).insertTrackList(trackList);
+    Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.setBool('showOnboardingScreen', false);
   }
 
   @override
@@ -50,7 +51,10 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
             children: [
               Center(
                 child: Container(
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.secondary),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
                   height: 300,
                   width: 300,
                   padding: const EdgeInsets.all(30),

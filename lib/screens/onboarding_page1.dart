@@ -30,7 +30,7 @@ class _OnboardingPage1State extends State<OnboardingPage1> {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.tertiary,
               ),
               height: 300,
               width: 300,

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-import '../providers/audio_player_provider.dart';
-
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -11,37 +8,60 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final pathTextFieldController = TextEditingController(text: '/storage/emulated/0/Music/03 Majula.mp3');
+  final pathTextFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Path:', style: Theme.of(context).textTheme.displayMedium),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: pathTextFieldController,
-                      style: Theme.of(context).textTheme.bodySmall,
+        child: Column(
+          children: [
+            Container(
+              color: Theme.of(context).colorScheme.surfaceDim,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () => {
+                        Navigator.of(context).pop(),
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'Search',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: pathTextFieldController,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    decoration: InputDecoration(
+                      hintText: 'Enter search query...',
+                      icon: IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {},
+                      ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

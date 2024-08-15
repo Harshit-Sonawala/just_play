@@ -46,7 +46,10 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
         children: [
           Center(
             child: Container(
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.secondary),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
               height: 300,
               width: 300,
               padding: const EdgeInsets.all(30),

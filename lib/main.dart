@@ -5,7 +5,7 @@ import '../screens/onboarding_screen.dart';
 import '../screens/playback_screen.dart';
 import '../providers/theme_provider.dart';
 import '../providers/database_provider.dart';
-import 'providers/audio_player_provider.dart';
+import '../providers/audio_player_provider.dart';
 
 void main() {
   runApp(
@@ -56,7 +56,7 @@ class _JustPlayState extends State<JustPlay> {
     // Custom App-wide Text Theme:
     TextTheme appWideTextTheme = TextTheme(
       displayLarge: TextStyle(
-        fontSize: 22.0,
+        fontSize: 22,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
@@ -66,35 +66,35 @@ class _JustPlayState extends State<JustPlay> {
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displaySmall: TextStyle(
-        fontSize: 16.0,
+        fontSize: 16,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+        color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       titleLarge: TextStyle(
-        fontSize: 22.0,
+        fontSize: 22,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+        color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       titleMedium: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+        color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       titleSmall: TextStyle(
-        fontSize: 16.0,
+        fontSize: 16,
         fontWeight: FontWeight.bold,
-        color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+        color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       bodyLarge: TextStyle(
-        fontSize: 18.0,
+        fontSize: 18,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16.0,
+        fontSize: 16,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodySmall: TextStyle(
-        fontSize: 14.0,
+        fontSize: 14,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
     );
@@ -132,6 +132,7 @@ class _JustPlayState extends State<JustPlay> {
           primary: Provider.of<ThemeProvider>(context).globalPrimaryColor,
           // onPrimary: Provider.of<ThemeProvider>(context).globalOnPrimaryColor,
           secondary: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          tertiary: Provider.of<ThemeProvider>(context).globalTertiaryColor,
           // onSecondary: Provider.of<ThemeProvider>(context).globalOnSecondaryColor,
           surface: Provider.of<ThemeProvider>(context).globalDarkSurfaceColor,
           surfaceBright: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
@@ -147,7 +148,7 @@ class _JustPlayState extends State<JustPlay> {
         // Icon Theme:
         iconTheme: IconThemeData(
           size: 24,
-          color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+          color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
         ),
 
         // Button Theme:
@@ -163,18 +164,19 @@ class _JustPlayState extends State<JustPlay> {
 
         // TextField Theme:
         inputDecorationTheme: InputDecorationTheme(
-          hintStyle: const TextStyle(
-            color: Colors.white,
+          hintStyle: TextStyle(
+            color: Provider.of<ThemeProvider>(context).globalOnSurfaceVariantColor,
+            fontSize: 16,
           ),
           labelStyle: TextStyle(
-            color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
+            color: Provider.of<ThemeProvider>(context).globalTertiaryColor,
           ),
           filled: true,
           isDense: true,
           fillColor: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
-          iconColor: Colors.white,
-          prefixIconColor: Colors.white,
-          suffixIconColor: Colors.white,
+          iconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          prefixIconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          suffixIconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
@@ -245,7 +247,6 @@ class _JustPlayState extends State<JustPlay> {
             showOnboardingScreen =
                 Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.getBool('showOnboardingScreen');
             // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
-            Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.setBool('showOnboardingScreen', false);
             if (showOnboardingScreen == null) {
               return const OnboardingScreen();
             } else {

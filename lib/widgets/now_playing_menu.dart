@@ -14,7 +14,8 @@ class NowPlayingMenu extends StatefulWidget {
 
 class _NowPlayingMenuState extends State<NowPlayingMenu> {
   bool isPlaying = false;
-  DraggableScrollableController draggableScrollableSheetController = DraggableScrollableController();
+  bool sheetExpanded = false;
+  final DraggableScrollableController draggableScrollableSheetController = DraggableScrollableController();
 
   // Convert fileDuration in seconds to formatted string of type 00:00
   String formatDurationIntToString(int fileDuration) {
@@ -26,6 +27,14 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    draggableScrollableSheetController.addListener(() {
+      setState(() => sheetExpanded = draggableScrollableSheetController.size >= 0.5);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null) {
       return Container(); // empty container
@@ -34,7 +43,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
         controller: draggableScrollableSheetController,
         initialChildSize: 0.1,
         minChildSize: 0.1,
-        maxChildSize: 1,
+        maxChildSize: 1.0,
+        snap: true,
+        snapSizes: const [0.1, 1.0],
         builder: (context, nowPlayingScrollController) {
           return CustomCard(
             color: Theme.of(context).colorScheme.surfaceDim,
@@ -60,72 +71,74 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                   const SizedBox(height: 5),
 
                   // Minimized content
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Mini Album Art / Placeholder Icon
-                      if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ||
-                          Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt == null)
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).colorScheme.surfaceBright,
-                          ),
-                          padding: const EdgeInsets.all(14),
-                          child: Icon(
-                            Icons.album_rounded,
-                            size: 28,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        )
-                      else
-                        Container(
-                          padding: const EdgeInsets.all(26),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: MemoryImage(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt!),
-                              fit: BoxFit.cover,
+                  if (!sheetExpanded)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Mini Album Art / Placeholder Icon
+                        if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ||
+                            Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt == null)
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).colorScheme.surfaceBright,
+                            ),
+                            padding: const EdgeInsets.all(14),
+                            child: Icon(
+                              Icons.album_rounded,
+                              size: 28,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          )
+                        else
+                          Container(
+                            padding: const EdgeInsets.all(26),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image:
+                                    MemoryImage(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt!),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                      const SizedBox(width: 8),
+                        const SizedBox(width: 8),
 
-                      // Mini Track Title / File Name
-                      Expanded(
-                        child: Text(
-                          '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title : Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.fileName}',
-                          // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          // maxLines: 1,
-                          // overflow: TextOverflow.ellipsis,
+                        // Mini Track Title / File Name
+                        Expanded(
+                          child: Text(
+                            '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title : Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.fileName}',
+                            // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            // maxLines: 1,
+                            // overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
+                        const SizedBox(width: 8),
 
-                      // Mini Controls
-                      IconButton(
-                        padding: const EdgeInsets.all(10),
-                        onPressed: () {
-                          setState(() {
-                            if (isPlaying) {
-                              Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
-                              isPlaying = false;
-                            } else {
-                              Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
-                              isPlaying = true;
-                            }
-                          });
-                        },
-                        icon: Icon(
-                          isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 32,
+                        // Mini Controls
+                        IconButton(
+                          padding: const EdgeInsets.all(10),
+                          onPressed: () {
+                            setState(() {
+                              if (isPlaying) {
+                                Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.pause();
+                                isPlaying = false;
+                              } else {
+                                Provider.of<AudioPlayerProvider>(context, listen: false).audioPlayer.play();
+                                isPlaying = true;
+                              }
+                            });
+                          },
+                          icon: Icon(
+                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 32,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   const SizedBox(height: 20),
 
                   // Expanded full-screen content
@@ -142,7 +155,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               width: 350,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: Theme.of(context).colorScheme.tertiary,
                               ),
                               padding: const EdgeInsets.all(100),
                               child: SizedBox(
@@ -315,7 +328,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 shape: BoxShape.circle,
                               ),
                               child: IconButton(
-                                padding: const EdgeInsets.all(15),
+                                padding: const EdgeInsets.all(10),
                                 onPressed: () {
                                   setState(() {
                                     if (isPlaying) {
@@ -329,7 +342,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 },
                                 icon: Icon(
                                   isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                  size: 36,
+                                  size: 40,
                                   color: Theme.of(context).colorScheme.surfaceBright,
                                 ),
                               ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:just_play/widgets/custom_divider.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/custom_list_item.dart';
 import '../widgets/now_playing_menu.dart';
 import '../screens/settings_screen.dart';
+import '../screens/search_screen.dart';
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
@@ -19,18 +21,19 @@ class PlaybackScreen extends StatefulWidget {
 
 class _PlaybackScreenState extends State<PlaybackScreen> {
   Future<List<Track>>? trackListFuture;
-  int sortByInt = 3; // read from sharedprefs
+  int? sortByInt;
 
   @override
   void initState() {
     super.initState();
-    // no await as this is just a Future we are passing to the FutureBuilder, and not a value
     readTracksFromDatabase();
   }
 
   void readTracksFromDatabase() {
+    sortByInt = Provider.of<AudioPlayerProvider>(context, listen: false).prefs!.getInt('sortByInt') ?? 3;
     if (sortByInt == 1) {
       // Alphabetical Desc
+      // no 'await' ketword as its a future we are passing to the FutureBuilder
       trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
           .readAllTracksSorted(trackProperty: Track_.fileName, descending: true);
     } else if (sortByInt == 2) {
@@ -72,8 +75,9 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                   // debugPrint('PlaybackScreen snapshot.data: ${snapshot.data}');
                   return Column(
                     children: [
+                      // Appbar
                       Container(
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme.of(context).colorScheme.surfaceDim,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
@@ -87,19 +91,15 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.search),
-                                    onPressed: () {
-                                      debugPrint("Search Button Pressed");
+                                    onPressed: () => {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const SearchScreen(),
+                                        ),
+                                      ),
                                     },
                                   ),
                                   const SizedBox(width: 5),
-                                  // PopupMenuButton(
-                                  //   itemBuilder: (context) => [
-                                  //     PopupMenuItem(child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall), value: 0),
-                                  //     PopupMenuItem(child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall), value: 1),
-                                  //     PopupMenuItem(child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall), value: 2),
-                                  //     PopupMenuItem(child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall), value: 3),
-                                  //   ],
-                                  // ),
                                   MenuAnchor(
                                     builder:
                                         (BuildContext context, MenuController menuAnchorController, Widget? child) {
@@ -115,9 +115,24 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       );
                                     },
                                     menuChildren: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 20,
+                                          top: 10,
+                                          right: 20,
+                                        ),
+                                        child: Text(
+                                          'Sort By:',
+                                          style: Theme.of(context).textTheme.displaySmall,
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                        child: CustomDivider(),
+                                      ),
                                       MenuItemButton(
                                         leadingIcon: Icon(
-                                          Icons.keyboard_double_arrow_up_rounded,
+                                          Icons.keyboard_arrow_up_rounded,
                                           color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
@@ -131,7 +146,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       ),
                                       MenuItemButton(
                                         leadingIcon: Icon(
-                                          Icons.keyboard_double_arrow_down_rounded,
+                                          Icons.keyboard_arrow_down_rounded,
                                           color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
@@ -145,7 +160,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       ),
                                       MenuItemButton(
                                         leadingIcon: Icon(
-                                          Icons.keyboard_double_arrow_up_rounded,
+                                          Icons.keyboard_arrow_up_rounded,
                                           color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
@@ -159,7 +174,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       ),
                                       MenuItemButton(
                                         leadingIcon: Icon(
-                                          Icons.keyboard_double_arrow_down_rounded,
+                                          Icons.keyboard_arrow_down_rounded,
                                           color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
