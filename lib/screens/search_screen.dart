@@ -24,10 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_rounded,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      icon: const Icon(Icons.arrow_back_rounded),
                       onPressed: () => {
                         Navigator.of(context).pop(),
                       },
@@ -52,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: Theme.of(context).textTheme.bodySmall,
                     decoration: InputDecoration(
                       hintText: 'Enter search query...',
-                      icon: IconButton(
+                      suffixIcon: IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () {},
                       ),

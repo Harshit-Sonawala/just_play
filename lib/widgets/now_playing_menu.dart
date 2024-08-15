@@ -48,7 +48,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
         snapSizes: const [0.1, 1.0],
         builder: (context, nowPlayingScrollController) {
           return CustomCard(
-            color: Theme.of(context).colorScheme.surfaceDim,
+            color: Theme.of(context).colorScheme.surface,
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             child: SingleChildScrollView(
               controller: nowPlayingScrollController,

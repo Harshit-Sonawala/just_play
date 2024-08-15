@@ -22,6 +22,7 @@ class PlaybackScreen extends StatefulWidget {
 class _PlaybackScreenState extends State<PlaybackScreen> {
   Future<List<Track>>? trackListFuture;
   int? sortByInt;
+  final searchTextFieldController = TextEditingController();
 
   @override
   void initState() {
@@ -79,127 +80,152 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                       Container(
                         color: Theme.of(context).colorScheme.surfaceDim,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                          child: Column(
                             children: [
-                              Text(
-                                'JustPlay!',
-                                style: Theme.of(context).textTheme.displayLarge,
-                              ),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.search),
-                                    onPressed: () => {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => const SearchScreen(),
-                                        ),
-                                      ),
-                                    },
+                                  Text(
+                                    'JustPlay!',
+                                    style: Theme.of(context).textTheme.displayLarge,
                                   ),
-                                  const SizedBox(width: 5),
-                                  MenuAnchor(
-                                    builder:
-                                        (BuildContext context, MenuController menuAnchorController, Widget? child) {
-                                      return IconButton(
-                                        onPressed: () {
-                                          if (menuAnchorController.isOpen) {
-                                            menuAnchorController.close();
-                                          } else {
-                                            menuAnchorController.open();
-                                          }
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.search),
+                                        onPressed: () => {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => const SearchScreen(),
+                                            ),
+                                          ),
                                         },
-                                        icon: const Icon(Icons.sort_rounded),
-                                      );
-                                    },
-                                    menuChildren: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 20,
-                                          top: 10,
-                                          right: 20,
-                                        ),
-                                        child: Text(
-                                          'Sort By:',
-                                          style: Theme.of(context).textTheme.displaySmall,
-                                        ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 20),
-                                        child: CustomDivider(),
+                                      const SizedBox(width: 5),
+                                      MenuAnchor(
+                                        builder:
+                                            (BuildContext context, MenuController menuAnchorController, Widget? child) {
+                                          return IconButton(
+                                            onPressed: () {
+                                              if (menuAnchorController.isOpen) {
+                                                menuAnchorController.close();
+                                              } else {
+                                                menuAnchorController.open();
+                                              }
+                                            },
+                                            icon: const Icon(Icons.sort_rounded),
+                                          );
+                                        },
+                                        menuChildren: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 20,
+                                              top: 10,
+                                              right: 20,
+                                            ),
+                                            child: Text(
+                                              'Sort By:',
+                                              style: Theme.of(context).textTheme.titleSmall,
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 20),
+                                            child: CustomDivider(),
+                                          ),
+                                          MenuItemButton(
+                                            leadingIcon: Icon(
+                                              Icons.keyboard_arrow_up_rounded,
+                                              color: Theme.of(context).colorScheme.onSurface,
+                                            ),
+                                            child:
+                                                Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
+                                            onPressed: () => setState(() {
+                                              sortByInt = 0;
+                                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                  .prefs
+                                                  ?.setInt('sortByInt', 0);
+                                              readTracksFromDatabase();
+                                            }),
+                                          ),
+                                          MenuItemButton(
+                                            leadingIcon: Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Theme.of(context).colorScheme.onSurface,
+                                            ),
+                                            child:
+                                                Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
+                                            onPressed: () => setState(() {
+                                              sortByInt = 1;
+                                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                  .prefs
+                                                  ?.setInt('sortByInt', 1);
+                                              readTracksFromDatabase();
+                                            }),
+                                          ),
+                                          MenuItemButton(
+                                            leadingIcon: Icon(
+                                              Icons.keyboard_arrow_up_rounded,
+                                              color: Theme.of(context).colorScheme.onSurface,
+                                            ),
+                                            child:
+                                                Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
+                                            onPressed: () => setState(() {
+                                              sortByInt = 2;
+                                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                  .prefs
+                                                  ?.setInt('sortByInt', 2);
+                                              readTracksFromDatabase();
+                                            }),
+                                          ),
+                                          MenuItemButton(
+                                            leadingIcon: Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Theme.of(context).colorScheme.onSurface,
+                                            ),
+                                            child: Text('Date Modified Desc',
+                                                style: Theme.of(context).textTheme.bodySmall),
+                                            onPressed: () => setState(() {
+                                              sortByInt = 3;
+                                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                  .prefs
+                                                  ?.setInt('sortByInt', 3);
+                                              readTracksFromDatabase();
+                                            }),
+                                          ),
+                                        ],
                                       ),
-                                      MenuItemButton(
-                                        leadingIcon: Icon(
-                                          Icons.keyboard_arrow_up_rounded,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                        ),
-                                        child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
-                                        onPressed: () => setState(() {
-                                          sortByInt = 0;
-                                          Provider.of<AudioPlayerProvider>(context, listen: false)
-                                              .prefs
-                                              ?.setInt('sortByInt', 0);
-                                          readTracksFromDatabase();
-                                        }),
-                                      ),
-                                      MenuItemButton(
-                                        leadingIcon: Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                        ),
-                                        child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
-                                        onPressed: () => setState(() {
-                                          sortByInt = 1;
-                                          Provider.of<AudioPlayerProvider>(context, listen: false)
-                                              .prefs
-                                              ?.setInt('sortByInt', 1);
-                                          readTracksFromDatabase();
-                                        }),
-                                      ),
-                                      MenuItemButton(
-                                        leadingIcon: Icon(
-                                          Icons.keyboard_arrow_up_rounded,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                        ),
-                                        child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
-                                        onPressed: () => setState(() {
-                                          sortByInt = 2;
-                                          Provider.of<AudioPlayerProvider>(context, listen: false)
-                                              .prefs
-                                              ?.setInt('sortByInt', 2);
-                                          readTracksFromDatabase();
-                                        }),
-                                      ),
-                                      MenuItemButton(
-                                        leadingIcon: Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                        ),
-                                        child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
-                                        onPressed: () => setState(() {
-                                          sortByInt = 3;
-                                          Provider.of<AudioPlayerProvider>(context, listen: false)
-                                              .prefs
-                                              ?.setInt('sortByInt', 3);
-                                          readTracksFromDatabase();
-                                        }),
+                                      const SizedBox(width: 5),
+                                      IconButton(
+                                        icon: const Icon(Icons.settings),
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => const SettingsScreen(),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(width: 5),
-                                  IconButton(
-                                    icon: const Icon(Icons.settings),
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => const SettingsScreen(),
-                                        ),
-                                      );
-                                    },
-                                  ),
                                 ],
+                              ),
+                              const SizedBox(height: 10),
+                              TextField(
+                                controller: searchTextFieldController,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                decoration: InputDecoration(
+                                  hintText: 'Enter search query...',
+                                  suffixIcon: IconButton(
+                                    padding: const EdgeInsets.all(0),
+                                    icon: Icon(
+                                      Icons.search,
+                                      size: 24,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                ),
                               ),
                             ],
                           ),

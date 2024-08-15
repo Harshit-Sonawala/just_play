@@ -164,6 +164,7 @@ class _JustPlayState extends State<JustPlay> {
 
         // TextField Theme:
         inputDecorationTheme: InputDecorationTheme(
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           hintStyle: TextStyle(
             color: Provider.of<ThemeProvider>(context).globalOnSurfaceVariantColor,
             fontSize: 16,
@@ -178,25 +179,25 @@ class _JustPlayState extends State<JustPlay> {
           prefixIconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           suffixIconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(
               color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
             ),
@@ -221,7 +222,16 @@ class _JustPlayState extends State<JustPlay> {
             ),
           ),
         ),
+
+        // Slider Theme:
+        sliderTheme: SliderThemeData(
+          activeTrackColor: Provider.of<ThemeProvider>(context).globalTertiaryColor,
+          inactiveTrackColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          thumbColor: Provider.of<ThemeProvider>(context).globalPrimaryColor,
+          thumbShape: SliderComponentShape.noThumb,
+        ),
       ),
+
       // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const PlaybackScreen(),
       home: FutureBuilder<void>(
         future: initializeDatabaseGetSharedPrefs(),

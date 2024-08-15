@@ -6,7 +6,7 @@ class ThemeProvider with ChangeNotifier {
 
   // Global main colors:
   Color globalPrimaryColor = const Color(0xFF43D0F6);
-  Color globalSecondaryColor = const Color(0xFF7E8BFF);
+  Color globalSecondaryColor = Color.fromARGB(255, 139, 97, 255);
   Color globalTertiaryColor = const Color(0xFF9BE2F5);
 
   // Global dark theme foreground & background colors:
@@ -14,7 +14,7 @@ class ThemeProvider with ChangeNotifier {
   Color globalDarkSurfaceBrightColor = const Color(0xFF242D2F);
   Color globalDarkSurfaceDimColor = const Color(0xFF0D1517);
   Color globalOnSurfaceColor = const Color(0xFFF3F3F3);
-  Color globalOnSurfaceVariantColor = const Color(0xFFA5A5A5);
+  Color globalOnSurfaceVariantColor = Color(0xFF777777);
 
   void toggleTheme() {
     isDarkTheme = !isDarkTheme;
