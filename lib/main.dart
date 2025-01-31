@@ -148,7 +148,7 @@ class _JustPlayState extends State<JustPlay> {
         // Icon Theme:
         iconTheme: IconThemeData(
           size: 24,
-          color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
         ),
 
         // Button Theme:
@@ -164,13 +164,15 @@ class _JustPlayState extends State<JustPlay> {
 
         // TextField Theme:
         inputDecorationTheme: InputDecorationTheme(
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
           hintStyle: TextStyle(
             color: Provider.of<ThemeProvider>(context).globalOnSurfaceVariantColor,
             fontSize: 16,
+            height: 0.5,
           ),
           labelStyle: TextStyle(
-            color: Provider.of<ThemeProvider>(context).globalTertiaryColor,
+            color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+            height: 0.5,
           ),
           filled: true,
           isDense: true,
@@ -178,30 +180,20 @@ class _JustPlayState extends State<JustPlay> {
           iconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           prefixIconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           suffixIconColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
-            ),
-          ),
-          disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
-            ),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
+          // disabledBorder: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(50),
+          //   borderSide: BorderSide(
+          //     color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
+          //   ),
+          // ),
+          // focusedBorder: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(50),
+          //   borderSide: BorderSide(
+          //     color: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,
+          //   ),
+          // ),
         ),
 
         // Snackbar Theme:
@@ -228,7 +220,7 @@ class _JustPlayState extends State<JustPlay> {
           activeTrackColor: Provider.of<ThemeProvider>(context).globalTertiaryColor,
           inactiveTrackColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           thumbColor: Provider.of<ThemeProvider>(context).globalPrimaryColor,
-          thumbShape: SliderComponentShape.noThumb,
+          // thumbShape: SliderComponentShape.noThumb,
         ),
       ),
 
