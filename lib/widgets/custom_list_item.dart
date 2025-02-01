@@ -32,11 +32,18 @@ class CustomListItem extends StatefulWidget {
 class _CustomListItemState extends State<CustomListItem> {
   // Convert fileDuration in seconds to formatted string of type 00:00
   String formatDurationIntToString(int fileDuration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
     final hours = fileDuration ~/ 3600;
     final minutes = (fileDuration % 3600) ~/ 60;
     final seconds = fileDuration % 60;
-    return [if (hours > 0) hours, minutes, seconds].map((seg) => twoDigits(seg)).join(':');
+
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+
+    if (hours > 0) {
+      return '$hours:${twoDigits(minutes)}:${twoDigits(seconds)}';
+    } else {
+      return '$minutes:${twoDigits(seconds)}';
+    }
+    // return [if (hours > 0) hours, minutes, seconds].map((seg) => twoDigits(seg)).join(':');
   }
 
   @override

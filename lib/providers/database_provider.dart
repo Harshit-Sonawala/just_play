@@ -10,8 +10,8 @@ class DatabaseProvider with ChangeNotifier {
 
   Future<void> initializeTrackDatabase() async {
     debugPrint('DatabaseProvider Initializing Track Database.');
-    trackStore = await openStore();
-    trackBox = trackStore.box<Track>();
+    trackStore = await openStore(); // Create Database
+    trackBox = trackStore.box<Track>(); // Create Table
     notifyListeners();
   }
 

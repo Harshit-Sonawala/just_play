@@ -116,7 +116,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                                     icon: Icon(
                                                       Icons.search,
                                                       size: 24,
-                                                      color: Theme.of(context).colorScheme.primary,
+                                                      color: Theme.of(context).colorScheme.secondary,
                                                     ),
                                                     onPressed: () {},
                                                   ),
