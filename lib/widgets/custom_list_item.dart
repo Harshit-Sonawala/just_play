@@ -45,13 +45,13 @@ class _CustomListItemState extends State<CustomListItem> {
       // padding: widget.padding,
       height: 60,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         color: Theme.of(context).colorScheme.surface,
       ),
       child: InkWell(
         onTap: widget.onPressed,
         onLongPress: widget.onLongPress,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: widget.padding,
           child: Row(
@@ -61,10 +61,10 @@ class _CustomListItemState extends State<CustomListItem> {
               if (widget.albumArt == null)
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                     color: Theme.of(context).colorScheme.surfaceBright,
                   ),
-                  padding: const EdgeInsets.all(14.0),
+                  padding: const EdgeInsets.all(14),
                   child: Icon(
                     Icons.music_note_rounded,
                     size: 24.0,
@@ -73,9 +73,9 @@ class _CustomListItemState extends State<CustomListItem> {
                 )
               else
                 Container(
-                  padding: const EdgeInsets.all(26.0),
+                  padding: const EdgeInsets.all(26),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                     image: DecorationImage(
                       image: MemoryImage(widget.albumArt!),
                       fit: BoxFit.cover,

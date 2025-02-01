@@ -56,32 +56,32 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Decoration Handle Rectangle Container
+                  // Decoration Player Handle Rectangle Container
                   Align(
                     alignment: Alignment.topCenter,
                     child: Container(
                       width: 40,
-                      height: 5,
+                      height: 4,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.secondary,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                   ),
                   const SizedBox(height: 5),
 
-                  // Minimized content
+                  // Minimized Player
                   if (!sheetExpanded)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Mini Album Art / Placeholder Icon
+                        // Mini Player Album Art / Placeholder Icon
                         if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ||
                             Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt == null)
                           Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(5),
                               color: Theme.of(context).colorScheme.surfaceBright,
                             ),
                             padding: const EdgeInsets.all(14),
@@ -95,7 +95,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                           Container(
                             padding: const EdgeInsets.all(26),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(5),
                               image: DecorationImage(
                                 image:
                                     MemoryImage(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt!),
@@ -105,19 +105,45 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                           ),
                         const SizedBox(width: 8),
 
-                        // Mini Track Title / File Name
+                        // Mini Player Track Title / File Name
                         Expanded(
-                          child: Text(
-                            '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title : Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.fileName}',
-                            // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            // maxLines: 1,
-                            // overflow: TextOverflow.ellipsis,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title : Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.fileName}',
+                                // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                // maxLines: 1,
+                                // overflow: TextOverflow.ellipsis,
+                              ),
+
+                              // Mini Player Now Playing Current Position
+                              Row(
+                                children: [
+                                  Text(
+                                    formatDurationIntToString(
+                                        Provider.of<AudioPlayerProvider>(context).nowPlayingPosition),
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  Text(
+                                    ' / ',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  // Mini Player Now Playing Total Duration
+                                  Text(
+                                    formatDurationIntToString(
+                                        Provider.of<AudioPlayerProvider>(context).nowPlayingTotalDuration),
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 8),
 
-                        // Mini Controls
+                        // Mini Player Controls
                         IconButton(
                           padding: const EdgeInsets.all(10),
                           onPressed: () {
@@ -141,12 +167,12 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                     ),
                   const SizedBox(height: 20),
 
-                  // Expanded full-screen content
+                  // Expanded Player full-screen content
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       children: [
-                        // Big Album Art / Placeholder Icon
+                        // Expanded Player Album Art / Placeholder Icon
                         if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ||
                             Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.albumArt == null)
                           Center(
@@ -183,26 +209,26 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                           ),
                         const SizedBox(height: 20),
 
-                        // Info Section
+                        // Expanded Player Info Section
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Track Title / File Name
+                              // Expanded Player Track Title / File Name
                               Text(
                                 '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.title : Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.fileName}',
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.displayLarge,
                                 // overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
 
-                              // Artist
+                              // Expanded Player Artist
                               if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist != null &&
                                   Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist!.isNotEmpty)
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
+                                  padding: const EdgeInsets.only(bottom: 5),
                                   child: Text(
                                     // '${widget.artist!.substring(0, 71)}...',
                                     '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist : 'Unknown Artist'}',
@@ -211,11 +237,11 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                   ),
                                 ),
 
-                              // Album
+                              // Expanded Player Album
                               if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.album != null &&
                                   Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.album!.isNotEmpty)
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
+                                  padding: const EdgeInsets.only(bottom: 5),
                                   child: Text(
                                     // '${widget.album!.substring(0, 71)}...',
                                     '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.album != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.album!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.album : 'Unknown Album'}',
@@ -224,7 +250,8 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                   ),
                                 ),
 
-                              // Info Section Controls
+                              // Expanded Player Extra Controls
+                              const SizedBox(height: 15),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -259,8 +286,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                             ],
                           ),
                         ),
+                        const SizedBox(height: 10),
 
-                        // Seek Slider & Duration Progress
+                        // Expanded Player Seek Slider & Duration Progress
                         Column(
                           children: [
                             // Seek Slider
@@ -275,21 +303,21 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               },
                             ),
 
-                            // Seek Durations
+                            // Expanded Player Seek Durations
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // Now Playing Position
+                                  // Expanded Player Now Playing Current Position
                                   Text(
                                     formatDurationIntToString(
                                         Provider.of<AudioPlayerProvider>(context).nowPlayingPosition),
                                     style: Theme.of(context).textTheme.bodySmall,
                                   ),
 
-                                  // Now Playing Total Duration
+                                  // Expanded Player Now Playing Total Duration
                                   Text(
                                     formatDurationIntToString(
                                         Provider.of<AudioPlayerProvider>(context).nowPlayingTotalDuration),
@@ -302,7 +330,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                         ),
                         const SizedBox(height: 10),
 
-                        // Full Controls
+                        // Expanded Player Full Controls
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -311,14 +339,14 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               onPressed: () {},
                               icon: const Icon(
                                 Icons.shuffle_rounded,
-                                size: 24,
+                                size: 26,
                               ),
                             ),
                             IconButton(
                               onPressed: () {},
                               icon: const Icon(
                                 Icons.skip_previous_rounded,
-                                size: 32,
+                                size: 36,
                               ),
                             ),
                             Container(
@@ -328,7 +356,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 shape: BoxShape.circle,
                               ),
                               child: IconButton(
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(14),
                                 onPressed: () {
                                   setState(() {
                                     if (isPlaying) {
@@ -351,14 +379,14 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               onPressed: () {},
                               icon: const Icon(
                                 Icons.skip_next_rounded,
-                                size: 32,
+                                size: 36,
                               ),
                             ),
                             IconButton(
                               onPressed: () {},
                               icon: const Icon(
                                 Icons.repeat_rounded,
-                                size: 24,
+                                size: 26,
                               ),
                             ),
                           ],

@@ -56,16 +56,19 @@ class _JustPlayState extends State<JustPlay> {
     // Custom App-wide Text Theme:
     TextTheme appWideTextTheme = TextTheme(
       displayLarge: TextStyle(
+        fontFamily: 'ProductSans',
         fontSize: 22,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displayMedium: TextStyle(
+        fontFamily: 'ProductSans',
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displaySmall: TextStyle(
+        fontFamily: 'ProductSans',
         fontSize: 16,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
@@ -86,15 +89,17 @@ class _JustPlayState extends State<JustPlay> {
         color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       bodyLarge: TextStyle(
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16,
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
       bodySmall: TextStyle(
-        fontSize: 14,
+        fontSize: 13,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
     );
@@ -111,7 +116,7 @@ class _JustPlayState extends State<JustPlay> {
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Provider.of<ThemeProvider>(context).globalPrimaryColor,
         ),
-        fontFamily: 'ProductSans',
+        fontFamily: 'Inter',
         textTheme: appWideTextTheme,
         iconTheme: IconThemeData(
           size: 26,
@@ -142,7 +147,7 @@ class _JustPlayState extends State<JustPlay> {
         ),
 
         // Font Theme:
-        fontFamily: 'ProductSans',
+        fontFamily: 'Inter',
         textTheme: appWideTextTheme,
 
         // Icon Theme:
@@ -217,9 +222,12 @@ class _JustPlayState extends State<JustPlay> {
 
         // Slider Theme:
         sliderTheme: SliderThemeData(
-          activeTrackColor: Provider.of<ThemeProvider>(context).globalTertiaryColor,
-          inactiveTrackColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
-          thumbColor: Provider.of<ThemeProvider>(context).globalPrimaryColor,
+          trackHeight: 2,
+          activeTrackColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          inactiveTrackColor: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
+          thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+          thumbColor: Provider.of<ThemeProvider>(context).globalSecondaryColor,
+          overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
           // thumbShape: SliderComponentShape.noThumb,
         ),
       ),
