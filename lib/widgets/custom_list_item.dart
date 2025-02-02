@@ -15,7 +15,7 @@ class CustomListItem extends StatefulWidget {
   const CustomListItem({
     required this.onPressed,
     this.onLongPress,
-    this.padding = const EdgeInsets.fromLTRB(4.0, 4.0, 8.0, 4.0),
+    this.padding = const EdgeInsets.fromLTRB(8, 4, 14, 4),
     required this.fileName,
     this.title,
     this.artist,
@@ -52,13 +52,13 @@ class _CustomListItemState extends State<CustomListItem> {
       // padding: widget.padding,
       height: 60,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
         color: Theme.of(context).colorScheme.surface,
       ),
       child: InkWell(
         onTap: widget.onPressed,
         onLongPress: widget.onLongPress,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
         child: Padding(
           padding: widget.padding,
           child: Row(
@@ -89,7 +89,9 @@ class _CustomListItemState extends State<CustomListItem> {
                     ),
                   ),
                 ),
-              const SizedBox(width: 8.0),
+              const SizedBox(width: 12),
+
+              // Track Info
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -101,9 +103,11 @@ class _CustomListItemState extends State<CustomListItem> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (widget.artist != null && widget.artist!.isNotEmpty)
-                      Row(
-                        children: [
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        // Artist String
+                        if (widget.artist != null && widget.artist!.isNotEmpty)
                           Flexible(
                             child: Text(
                               // '${widget.artist!.substring(0, 71)}...',
@@ -113,39 +117,52 @@ class _CustomListItemState extends State<CustomListItem> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          // Separator Circle Container
-                          if (widget.artist != null &&
-                              widget.artist!.isNotEmpty &&
-                              widget.album != null &&
-                              widget.album!.isNotEmpty)
-                            Container(
-                              width: 4.0,
-                              height: 4.0,
-                              margin: const EdgeInsets.all(5.0),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+
+                        // Artist Separator Circle Container
+                        if (widget.artist != null && widget.artist!.isNotEmpty)
+                          Container(
+                            width: 4.0,
+                            height: 4.0,
+                            margin: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
-                          if (widget.album != null)
-                            Flexible(
-                              child: Text(
-                                // '${widget.artist!.substring(0, 71)}...',
-                                widget.album!,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                          ),
+
+                        // Album String
+                        if (widget.album != null && widget.album!.isNotEmpty)
+                          Flexible(
+                            child: Text(
+                              // '${widget.album!.substring(0, 71)}...',
+                              widget.album!,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                        ],
-                      ),
+                          ),
+
+                        // Album Separator Circle Container
+                        if (widget.album != null && widget.album!.isNotEmpty)
+                          Container(
+                            width: 4.0,
+                            height: 4.0,
+                            margin: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+
+                        // Duration Text
+                        Text(
+                          formatDurationIntToString(widget.duration),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 8.0),
-              Text(
-                formatDurationIntToString(widget.duration),
-                style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
           ),
