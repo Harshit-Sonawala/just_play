@@ -267,7 +267,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     onPressed: () {
                                       debugPrint('Add to Playlist pressed.');
                                     },
-                                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                                     borderRadius: 50,
                                     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
                                     icon: Icons.playlist_add_rounded,
@@ -280,7 +280,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     onPressed: () {
                                       debugPrint('Edit Tags pressed.');
                                     },
-                                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                                     borderRadius: 50,
                                     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
                                     icon: Icons.edit_rounded,
@@ -312,7 +312,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
 
                             // Expanded Player Seek Durations
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,

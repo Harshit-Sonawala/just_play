@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:just_play/widgets/custom_divider.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
 import '../widgets/now_playing_menu.dart';
 import '../screens/settings_screen.dart';
@@ -231,6 +232,31 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                             ),
                                           ],
                                         ),
+                                        const SizedBox(height: 6),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text(
+                                                'Quick Tracks',
+                                              ),
+                                              CustomElevatedButton(
+                                                onPressed: () {
+                                                  debugPrint('Shuffle Play pressed.');
+                                                },
+                                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                                                borderRadius: 50,
+                                                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                                icon: Icons.shuffle_rounded,
+                                                iconSize: 22,
+                                                iconColor: Theme.of(context).colorScheme.secondary,
+                                                title: 'Shuffle Play',
+                                                titleStyle: Theme.of(context).textTheme.bodySmall,
+                                              ),
+                                            ],
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
