@@ -89,7 +89,7 @@ class _JustPlayState extends State<JustPlay> {
         color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       bodyLarge: TextStyle(
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
       ),
@@ -211,10 +211,10 @@ class _JustPlayState extends State<JustPlay> {
         // Menu Theme:
         menuTheme: MenuThemeData(
           style: MenuStyle(
-            backgroundColor: WidgetStateProperty.all(Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor),
+            backgroundColor: WidgetStateProperty.all(Provider.of<ThemeProvider>(context).globalDarkSurfaceColor),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
           ),
@@ -244,7 +244,7 @@ class _JustPlayState extends State<JustPlay> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Loading Media...', style: Theme.of(context).textTheme.titleMedium),
+                      Text('Building Library...', style: Theme.of(context).textTheme.bodyLarge),
                       const SizedBox(height: 20),
                       const CircularProgressIndicator(),
                     ],

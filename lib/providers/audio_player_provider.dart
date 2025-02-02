@@ -62,7 +62,7 @@ class AudioPlayerProvider with ChangeNotifier {
           debugPrint(
               "androidVersionSdkInt >= 33. Audio permission granted. nowPlayingTrack: ${nowPlayingTrack!.fileName}");
         } else {
-          debugPrint("androidVersionSdkInt >= 33. Audio permission granted. No track loaded.");
+          debugPrint("androidVersionSdkInt >= 33. Audio permission granted. No playback track loaded.");
         }
       } else {
         debugPrint('androidVersionSdkInt >= 33. Audio permission denied.');
@@ -85,7 +85,7 @@ class AudioPlayerProvider with ChangeNotifier {
           debugPrint(
               "androidVersionSdkInt < 33. Storage permission granted. nowPlayingTrack: ${nowPlayingTrack!.fileName}");
         } else {
-          debugPrint('androidVersionSdkInt < 33. Storage permission granted. No track loaded.');
+          debugPrint('androidVersionSdkInt < 33. Storage permission granted. No playback track loaded.');
         }
       } else {
         debugPrint('androidVersionSdkInt < 33. Storage permission denied.');

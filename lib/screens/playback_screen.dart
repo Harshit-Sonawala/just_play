@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:just_play/widgets/custom_divider.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/custom_divider.dart';
 import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
 import '../widgets/now_playing_menu.dart';
+import '../screens/search_screen.dart';
 import '../screens/settings_screen.dart';
-// import '../screens/search_screen.dart';
+
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
@@ -67,7 +68,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Loading Media...', style: Theme.of(context).textTheme.titleMedium),
+                        Text('Loading Media...', style: Theme.of(context).textTheme.bodyLarge),
                         const SizedBox(height: 20),
                         const CircularProgressIndicator(),
                       ],
@@ -90,7 +91,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                 return Container(
                                   color: Theme.of(context).colorScheme.surfaceDim,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                    padding: const EdgeInsets.only(top: 10),
                                     child: Column(
                                       children: [
                                         Row(
@@ -100,29 +101,34 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                             Expanded(
                                               child: TextField(
                                                 controller: searchTextFieldController,
+                                                onTapOutside: (event) => {
+                                                  debugPrint('Unfocusing Header TextField.'),
+                                                  FocusManager.instance.primaryFocus?.unfocus(),
+                                                },
                                                 cursorColor: Theme.of(context).colorScheme.secondary,
                                                 style: Theme.of(context).textTheme.displayMedium,
                                                 decoration: InputDecoration(
                                                   hintText: 'JustPlay!',
                                                   hintStyle: Theme.of(context).textTheme.displayLarge,
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
                                                   suffixIcon: IconButton(
-                                                    style: IconButton.styleFrom(
-                                                      padding: const EdgeInsets.all(0),
-                                                      minimumSize: const Size(0, 0),
-                                                    ),
                                                     icon: Icon(
                                                       Icons.search,
                                                       size: 24,
                                                       color: Theme.of(context).colorScheme.secondary,
                                                     ),
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      Navigator.of(context).push(MaterialPageRoute(
+                                                        builder: (context) => const SearchScreen(),
+                                                      ));
+                                                    },
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 5),
+                                            const SizedBox(width: 6),
+
+                                            // Sort Menu Anchor and Settings
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: [
@@ -221,11 +227,9 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                                 IconButton(
                                                   icon: const Icon(Icons.settings),
                                                   onPressed: () {
-                                                    Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                        builder: (context) => const SettingsScreen(),
-                                                      ),
-                                                    );
+                                                    Navigator.of(context).push(MaterialPageRoute(
+                                                      builder: (context) => const SettingsScreen(),
+                                                    ));
                                                   },
                                                 ),
                                               ],
@@ -237,6 +241,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                           padding: const EdgeInsets.symmetric(horizontal: 10),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               const Text(
                                                 'Quick Tracks',
@@ -263,10 +268,11 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                 );
                               }
 
+                              // Main Track List Builder
                               // final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
                               Track eachTrack = snapshot.data![index];
                               return Padding(
-                                padding: const EdgeInsets.only(bottom: 6.0),
+                                padding: const EdgeInsets.only(bottom: 8),
                                 child: CustomListItem(
                                   onPressed: () {
                                     Provider.of<AudioPlayerProvider>(context, listen: false)
@@ -288,7 +294,6 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
                     ],
                   );
                 } else if (snapshot.hasError) {

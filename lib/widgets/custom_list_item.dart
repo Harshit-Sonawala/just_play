@@ -15,7 +15,7 @@ class CustomListItem extends StatefulWidget {
   const CustomListItem({
     required this.onPressed,
     this.onLongPress,
-    this.padding = const EdgeInsets.fromLTRB(8, 4, 14, 4),
+    this.padding = const EdgeInsets.fromLTRB(6, 4, 16, 4),
     required this.fileName,
     this.title,
     this.artist,
