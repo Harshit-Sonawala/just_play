@@ -63,7 +63,7 @@ class _JustPlayState extends State<JustPlay> {
       ),
       displayMedium: TextStyle(
         fontFamily: 'ProductSans',
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),

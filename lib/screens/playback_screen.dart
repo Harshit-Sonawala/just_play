@@ -95,19 +95,17 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            // Text(
-                                            //   'JustPlay!',
-                                            //   style: Theme.of(context).textTheme.displayLarge,
-                                            // ),
+                                            // Header TextField
                                             Expanded(
                                               child: TextField(
                                                 controller: searchTextFieldController,
-                                                style: Theme.of(context).textTheme.bodySmall,
+                                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                                style: Theme.of(context).textTheme.displayMedium,
                                                 decoration: InputDecoration(
                                                   hintText: 'JustPlay!',
                                                   hintStyle: Theme.of(context).textTheme.displayLarge,
                                                   contentPadding:
-                                                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                                                      const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                                                   suffixIcon: IconButton(
                                                     style: IconButton.styleFrom(
                                                       padding: const EdgeInsets.all(0),
