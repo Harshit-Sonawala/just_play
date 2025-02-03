@@ -204,6 +204,7 @@ class _SearchScreenState extends State<SearchScreen> {
               bottom: 90,
               right: 10,
               child: FloatingActionButton(
+                elevation: 0,
                 backgroundColor: Theme.of(context).colorScheme.surfaceBright,
                 onPressed: () {
                   debugPrint('Play All Search Results pressed.');

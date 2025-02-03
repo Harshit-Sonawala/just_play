@@ -10,7 +10,7 @@ class CustomCard extends StatefulWidget {
 
   const CustomCard({
     this.padding = const EdgeInsets.all(10),
-    this.borderRadius = 10,
+    this.borderRadius = 10.0,
     this.margin,
     this.child,
     this.backgroundImage = '',
@@ -45,7 +45,7 @@ class _CustomCardState extends State<CustomCard> {
             )
           : BoxDecoration(
               color: widget.color ?? Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(widget.borderRadius),
             ),
       child: widget.child,
     );

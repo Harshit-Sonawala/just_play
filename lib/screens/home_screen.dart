@@ -316,9 +316,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Floating Action Button Shuffle Play All Tracks
         Positioned(
-          bottom: 90,
-          right: 6,
+          bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
+          right: 10,
           child: FloatingActionButton(
+            elevation: 0,
             backgroundColor: Theme.of(context).colorScheme.surfaceBright,
             onPressed: () {
               debugPrint('Shuffle Play pressed.');
