@@ -24,7 +24,8 @@ class PlaybackScreen extends StatefulWidget {
 class _PlaybackScreenState extends State<PlaybackScreen> {
   Future<List<Track>>? trackListFuture;
   int? sortByInt;
-  final searchTextFieldController = TextEditingController();
+  final TextEditingController searchTextFieldController = TextEditingController();
+  final FocusNode searchTextFieldFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -86,24 +87,37 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                             // itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
+                              // render AppBar Header Row 1
                               if (index == 0) {
-                                // render Appbar
-                                return Container(
-                                  color: Theme.of(context).colorScheme.surfaceDim,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Column(
+                                return Column(
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            // Header TextField
-                                            Expanded(
+                                        // Header TextField
+                                        Expanded(
+                                          child: Hero(
+                                            tag: 'search_hero',
+                                            child: Material(
+                                              color: Colors.transparent,
                                               child: TextField(
                                                 controller: searchTextFieldController,
+                                                focusNode: searchTextFieldFocusNode,
+                                                textInputAction: TextInputAction
+                                                    .search, // replaces keyboard's Enter with Search Icon
+                                                onSubmitted: (value) {
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                    builder: (context) => SearchScreen(
+                                                      searchTextFieldController: searchTextFieldController,
+                                                      searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                                    ),
+                                                  ));
+                                                },
                                                 onTapOutside: (event) => {
                                                   debugPrint('Unfocusing Header TextField.'),
-                                                  FocusManager.instance.primaryFocus?.unfocus(),
+                                                  // FocusManager.instance.primaryFocus?.unfocus(),
+                                                  searchTextFieldFocusNode.unfocus(),
                                                 },
                                                 cursorColor: Theme.of(context).colorScheme.secondary,
                                                 style: Theme.of(context).textTheme.displayMedium,
@@ -119,152 +133,171 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                                     ),
                                                     onPressed: () {
                                                       Navigator.of(context).push(MaterialPageRoute(
-                                                        builder: (context) => const SearchScreen(),
+                                                        builder: (context) => SearchScreen(
+                                                          // Passing the TextEditingController and FocusNode for Hero
+                                                          searchTextFieldController: searchTextFieldController,
+                                                          searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                                        ),
                                                       ));
                                                     },
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 6),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
 
-                                            // Sort Menu Anchor and Settings
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                MenuAnchor(
-                                                  builder: (BuildContext context, MenuController menuAnchorController,
-                                                      Widget? child) {
-                                                    return IconButton(
-                                                      onPressed: () {
-                                                        if (menuAnchorController.isOpen) {
-                                                          menuAnchorController.close();
-                                                        } else {
-                                                          menuAnchorController.open();
-                                                        }
-                                                      },
-                                                      icon: const Icon(Icons.sort_rounded),
-                                                    );
-                                                  },
-                                                  menuChildren: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(
-                                                        left: 20,
-                                                        top: 10,
-                                                        right: 20,
-                                                      ),
-                                                      child: Text(
-                                                        'Sort By:',
-                                                        style: Theme.of(context).textTheme.titleSmall,
-                                                      ),
-                                                    ),
-                                                    const Padding(
-                                                      padding: EdgeInsets.symmetric(horizontal: 20),
-                                                      child: CustomDivider(),
-                                                    ),
-                                                    MenuItemButton(
-                                                      leadingIcon: Icon(
-                                                        Icons.keyboard_arrow_up_rounded,
-                                                        color: Theme.of(context).colorScheme.onSurface,
-                                                      ),
-                                                      child: Text('Alphabetical Asc',
-                                                          style: Theme.of(context).textTheme.bodySmall),
-                                                      onPressed: () => setState(() {
-                                                        sortByInt = 0;
-                                                        Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                            .prefs
-                                                            ?.setInt('sortByInt', 0);
-                                                        readTracksFromDatabase();
-                                                      }),
-                                                    ),
-                                                    MenuItemButton(
-                                                      leadingIcon: Icon(
-                                                        Icons.keyboard_arrow_down_rounded,
-                                                        color: Theme.of(context).colorScheme.onSurface,
-                                                      ),
-                                                      child: Text('Alphabetical Desc',
-                                                          style: Theme.of(context).textTheme.bodySmall),
-                                                      onPressed: () => setState(() {
-                                                        sortByInt = 1;
-                                                        Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                            .prefs
-                                                            ?.setInt('sortByInt', 1);
-                                                        readTracksFromDatabase();
-                                                      }),
-                                                    ),
-                                                    MenuItemButton(
-                                                      leadingIcon: Icon(
-                                                        Icons.keyboard_arrow_up_rounded,
-                                                        color: Theme.of(context).colorScheme.onSurface,
-                                                      ),
-                                                      child: Text('Date Modified Asc',
-                                                          style: Theme.of(context).textTheme.bodySmall),
-                                                      onPressed: () => setState(() {
-                                                        sortByInt = 2;
-                                                        Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                            .prefs
-                                                            ?.setInt('sortByInt', 2);
-                                                        readTracksFromDatabase();
-                                                      }),
-                                                    ),
-                                                    MenuItemButton(
-                                                      leadingIcon: Icon(
-                                                        Icons.keyboard_arrow_down_rounded,
-                                                        color: Theme.of(context).colorScheme.onSurface,
-                                                      ),
-                                                      child: Text('Date Modified Desc',
-                                                          style: Theme.of(context).textTheme.bodySmall),
-                                                      onPressed: () => setState(() {
-                                                        sortByInt = 3;
-                                                        Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                            .prefs
-                                                            ?.setInt('sortByInt', 3);
-                                                        readTracksFromDatabase();
-                                                      }),
-                                                    ),
-                                                  ],
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.settings),
+                                        // Sort Menu Anchor and Settings
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            MenuAnchor(
+                                              builder: (BuildContext context, MenuController menuAnchorController,
+                                                  Widget? child) {
+                                                return IconButton(
                                                   onPressed: () {
-                                                    Navigator.of(context).push(MaterialPageRoute(
-                                                      builder: (context) => const SettingsScreen(),
-                                                    ));
+                                                    if (menuAnchorController.isOpen) {
+                                                      menuAnchorController.close();
+                                                    } else {
+                                                      menuAnchorController.open();
+                                                    }
                                                   },
+                                                  icon: const Icon(Icons.sort_rounded),
+                                                );
+                                              },
+                                              menuChildren: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(
+                                                    left: 20,
+                                                    top: 10,
+                                                    right: 20,
+                                                  ),
+                                                  child: Text(
+                                                    'Sort By:',
+                                                    style: Theme.of(context).textTheme.titleSmall,
+                                                  ),
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                                  child: CustomDivider(),
+                                                ),
+                                                MenuItemButton(
+                                                  leadingIcon: Icon(
+                                                    Icons.keyboard_arrow_up_rounded,
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                  ),
+                                                  child: Text('Alphabetical Asc',
+                                                      style: Theme.of(context).textTheme.bodySmall),
+                                                  onPressed: () => setState(() {
+                                                    sortByInt = 0;
+                                                    Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                        .prefs
+                                                        ?.setInt('sortByInt', 0);
+                                                    readTracksFromDatabase();
+                                                  }),
+                                                ),
+                                                MenuItemButton(
+                                                  leadingIcon: Icon(
+                                                    Icons.keyboard_arrow_down_rounded,
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                  ),
+                                                  child: Text('Alphabetical Desc',
+                                                      style: Theme.of(context).textTheme.bodySmall),
+                                                  onPressed: () => setState(() {
+                                                    sortByInt = 1;
+                                                    Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                        .prefs
+                                                        ?.setInt('sortByInt', 1);
+                                                    readTracksFromDatabase();
+                                                  }),
+                                                ),
+                                                MenuItemButton(
+                                                  leadingIcon: Icon(
+                                                    Icons.keyboard_arrow_up_rounded,
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                  ),
+                                                  child: Text('Date Modified Asc',
+                                                      style: Theme.of(context).textTheme.bodySmall),
+                                                  onPressed: () => setState(() {
+                                                    sortByInt = 2;
+                                                    Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                        .prefs
+                                                        ?.setInt('sortByInt', 2);
+                                                    readTracksFromDatabase();
+                                                  }),
+                                                ),
+                                                MenuItemButton(
+                                                  leadingIcon: Icon(
+                                                    Icons.keyboard_arrow_down_rounded,
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                  ),
+                                                  child: Text('Date Modified Desc',
+                                                      style: Theme.of(context).textTheme.bodySmall),
+                                                  onPressed: () => setState(() {
+                                                    sortByInt = 3;
+                                                    Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                        .prefs
+                                                        ?.setInt('sortByInt', 3);
+                                                    readTracksFromDatabase();
+                                                  }),
                                                 ),
                                               ],
                                             ),
+                                            IconButton(
+                                              icon: const Icon(Icons.settings),
+                                              onPressed: () {
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                  builder: (context) => const SettingsScreen(),
+                                                ));
+                                              },
+                                            ),
                                           ],
                                         ),
-                                        const SizedBox(height: 6),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              const Text(
-                                                'Quick Tracks',
-                                              ),
-                                              CustomElevatedButton(
-                                                onPressed: () {
-                                                  debugPrint('Shuffle Play pressed.');
-                                                },
-                                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                                                borderRadius: 50,
-                                                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                                                icon: Icons.shuffle_rounded,
-                                                iconSize: 22,
-                                                iconColor: Theme.of(context).colorScheme.secondary,
-                                                title: 'Shuffle Play',
-                                                titleStyle: Theme.of(context).textTheme.bodySmall,
-                                              ),
-                                            ],
-                                          ),
-                                        )
                                       ],
                                     ),
-                                  ),
+                                    // const SizedBox(height: 6),
+
+                                    // AppBar Header Row 2
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Quick Tracks',
+                                          ),
+                                          CustomElevatedButton(
+                                            onPressed: () {
+                                              debugPrint('Shuffle Play pressed.');
+                                            },
+                                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                                            borderRadius: 50,
+                                            backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                            icon: Icons.shuffle_rounded,
+                                            iconSize: 22,
+                                            iconColor: Theme.of(context).colorScheme.secondary,
+                                            title: 'Shuffle Play',
+                                            titleStyle: Theme.of(context).textTheme.bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text('Playlists'),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                  ],
                                 );
                               }
 
