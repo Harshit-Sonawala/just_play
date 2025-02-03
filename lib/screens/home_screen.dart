@@ -312,9 +312,11 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
         ),
+
+        // Floating Action Button Shuffle Play All Tracks
         Positioned(
           bottom: 90,
-          right: 10,
+          right: 6,
           child: FloatingActionButton(
             backgroundColor: Theme.of(context).colorScheme.surfaceBright,
             onPressed: () {
@@ -322,22 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: Icon(
               Icons.shuffle_rounded,
-              size: 24,
+              size: 28,
               color: Theme.of(context).colorScheme.secondary,
             ),
           ),
-          // child: SizedBox(
-          //   height: 60,
-          //   width: 60,
-          //   child: CustomElevatedButton(
-          //     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          //     borderRadius: 50,
-          //     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-          //     icon: Icons.shuffle_rounded,
-          //     iconSize: 22,
-          //     iconColor: Theme.of(context).colorScheme.secondary,
-          //   ),
-          // ),
         ),
       ],
     );
