@@ -110,7 +110,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               ),
                             ),
                           ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
 
                         // Mini Player Track Title / File Name
                         Expanded(

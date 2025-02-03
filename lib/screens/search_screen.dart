@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/track.dart';
+import '../providers/audio_player_provider.dart';
+import '../providers/database_provider.dart';
+
+import '../widgets/custom_list_item.dart';
 
 class SearchScreen extends StatefulWidget {
   // Catching the TextEditingController and FocusNode
@@ -16,6 +23,21 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  Future<List<Track>>? searchResultTrackListFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.searchTextFieldController.text.isNotEmpty) {
+      searchTracksFromDatabase();
+    }
+  }
+
+  void searchTracksFromDatabase() {
+    searchResultTrackListFuture =
+        Provider.of<DatabaseProvider>(context, listen: false).searchTracks(widget.searchTextFieldController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,35 +58,126 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Search Results',
+                    'Search Tracks',
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              Expanded(
-                child: Hero(
-                  tag: 'search_hero',
-                  child: Material(
-                    color: Colors.transparent,
-                    child: TextField(
-                      controller: widget.searchTextFieldController,
-                      focusNode: widget.searchTextFieldFocusNode,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      decoration: InputDecoration(
-                        hintText: 'Enter search query...',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.search,
-                            size: 24,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                          onPressed: () {},
+
+              // Search TextField
+              Hero(
+                tag: 'search_hero',
+                child: Material(
+                  color: Colors.transparent,
+                  child: TextField(
+                    controller: widget.searchTextFieldController,
+                    focusNode: widget.searchTextFieldFocusNode,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    decoration: InputDecoration(
+                      hintText: 'Enter search query...',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.search,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
+                        onPressed: () => setState(() {
+                          if (widget.searchTextFieldController.text.isNotEmpty) {
+                            searchTracksFromDatabase();
+                          } else {
+                            debugPrint('Search Query Empty');
+                          }
+                        }),
                       ),
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(height: 10),
+
+              // Search Results ListViewBuilder
+              FutureBuilder<List<Track>>(
+                future: searchResultTrackListFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Loading Search Results
+                    return Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Loading Results...', style: Theme.of(context).textTheme.bodyLarge),
+                            const SizedBox(height: 20),
+                            const CircularProgressIndicator(),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    // debugPrint('SearchScreen snapshot.data: ${snapshot.data}');
+                    return Expanded(
+                      child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Found ${snapshot.data!.length} Results:',
+                                          style: Theme.of(context).textTheme.titleMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                ],
+                              );
+                            }
+
+                            Track eachTrack = snapshot.data![index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: CustomListItem(
+                                onPressed: () {
+                                  Provider.of<AudioPlayerProvider>(context, listen: false)
+                                      .setAudioPlayerFile(eachTrack);
+                                },
+                                onLongPress: () {
+                                  // Play next / some playlist functionality
+                                },
+                                fileName: eachTrack.fileName,
+                                title: eachTrack.title,
+                                artist: eachTrack.artist,
+                                album: eachTrack.album,
+                                albumArt: eachTrack.albumArt,
+                                duration: eachTrack.fileDuration,
+                                // body: eachTrack.path,
+                              ),
+                            );
+                          }),
+                    );
+                  } else if (snapshot.hasError) {
+                    // unexpected case and error encounterred
+                    debugPrint('PlaybackScreen Error: ${snapshot.error}');
+                    return Center(
+                      child: Text('PlaybackScreen Error: ${snapshot.error}'),
+                    );
+                  } else {
+                    // unexpected case but no error encountered
+                    debugPrint('PlaybackScreen Unexpected: $snapshot');
+                    return Center(
+                      child: Text('PlaybackScreen Unexpected: $snapshot'),
+                    );
+                  }
+                },
               ),
             ],
           ),

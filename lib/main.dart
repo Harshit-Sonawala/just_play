@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/onboarding_screen.dart';
-import '../screens/playback_screen.dart';
 import '../providers/theme_provider.dart';
 import '../providers/database_provider.dart';
 import '../providers/audio_player_provider.dart';
+
+import '../screens/onboarding_screen.dart';
+import '../screens/playback_screen.dart';
 
 void main() {
   runApp(
@@ -79,12 +80,12 @@ class _JustPlayState extends State<JustPlay> {
         color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       titleMedium: TextStyle(
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),
       titleSmall: TextStyle(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.bold,
         color: Provider.of<ThemeProvider>(context).globalSecondaryColor,
       ),

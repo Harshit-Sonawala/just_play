@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/track.dart';
+import '../objectbox.g.dart';
+import '../providers/audio_player_provider.dart';
+import '../providers/database_provider.dart';
+
 import '../widgets/custom_divider.dart';
 import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
 import '../widgets/now_playing_menu.dart';
 import '../screens/search_screen.dart';
 import '../screens/settings_screen.dart';
-
-import '../models/track.dart';
-import '../providers/audio_player_provider.dart';
-import '../providers/database_provider.dart';
-
-import '../objectbox.g.dart';
 
 class PlaybackScreen extends StatefulWidget {
   const PlaybackScreen({super.key});
@@ -34,7 +33,14 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
   }
 
   void readTracksFromDatabase() {
+    // Read the Previously Set Sort Option from Prefs
     sortByInt = Provider.of<AudioPlayerProvider>(context, listen: false).prefs!.getInt('sortByInt') ?? 3;
+
+    // Sort the read track by
+    // 0/Default - Alpha Asc
+    // 1 - Alpha Desc
+    // 2 - Date Asc
+    // 3 - Date Desc
     if (sortByInt == 1) {
       // Alphabetical Desc
       // no 'await' keyword as its a future we are passing to the FutureBuilder
@@ -64,12 +70,13 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
               future: trackListFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Loading Tracks
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Loading Media...', style: Theme.of(context).textTheme.bodyLarge),
+                        Text('Loading Tracks...', style: Theme.of(context).textTheme.bodyLarge),
                         const SizedBox(height: 20),
                         const CircularProgressIndicator(),
                       ],
@@ -95,7 +102,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        // Header TextField
+                                        // Header Search TextField
                                         Expanded(
                                           child: Hero(
                                             tag: 'search_hero',
@@ -131,14 +138,17 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                                       size: 24,
                                                       color: Theme.of(context).colorScheme.secondary,
                                                     ),
-                                                    onPressed: () {
-                                                      Navigator.of(context).push(MaterialPageRoute(
-                                                        builder: (context) => SearchScreen(
-                                                          // Passing the TextEditingController and FocusNode for Hero
-                                                          searchTextFieldController: searchTextFieldController,
-                                                          searchTextFieldFocusNode: searchTextFieldFocusNode,
-                                                        ),
-                                                      ));
+                                                    onPressed: () => {
+                                                      if (searchTextFieldController.text.isNotEmpty)
+                                                        Navigator.of(context).push(MaterialPageRoute(
+                                                          builder: (context) => SearchScreen(
+                                                            // Passing the TextEditingController and FocusNode for Hero
+                                                            searchTextFieldController: searchTextFieldController,
+                                                            searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                                          ),
+                                                        ))
+                                                      else
+                                                        debugPrint('Search Query Empty'),
                                                     },
                                                   ),
                                                 ),
@@ -297,6 +307,18 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 6),
+
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text('All Tracks'),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
                                   ],
                                 );
                               }
@@ -330,7 +352,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                     ],
                   );
                 } else if (snapshot.hasError) {
-                  // unexpected case and encounterred error\
+                  // unexpected case and error encounterred
                   debugPrint('PlaybackScreen Error: ${snapshot.error}');
                   return Center(
                     child: Text('PlaybackScreen Error: ${snapshot.error}'),

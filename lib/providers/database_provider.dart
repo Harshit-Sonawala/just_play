@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:objectbox/objectbox.dart';
-import '../objectbox.g.dart';
 
 import '../models/track.dart';
+import '../objectbox.g.dart';
 
 class DatabaseProvider with ChangeNotifier {
   late final Store trackStore; // Store is the Database equivalent
@@ -37,7 +37,7 @@ class DatabaseProvider with ChangeNotifier {
     return result;
   }
 
-  // Search for specific tracks
+  // Search for tracks based on searchKey passed
   Future<List<Track>> searchTracks(String searchKey) async {
     Query<Track> searchQuery = trackBox
         .query(

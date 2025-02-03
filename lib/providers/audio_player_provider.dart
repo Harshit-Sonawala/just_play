@@ -24,10 +24,30 @@ class AudioPlayerProvider with ChangeNotifier {
   SharedPreferences? prefs;
 
   AudioPlayerProvider() {
-    initializeAudioPlayerProvider();
     initializeSharedPrefs();
+    initializeAudioPlayerProvider();
   }
 
+  Future<void> initializeSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  // Get music library directory from SharedPrefs
+  Future<String?> getLibraryDirectory() async {
+    return prefs?.getString('musicDirectory');
+  }
+
+  // Set/update music library directory in SharedPrefs
+  Future<void> updateLibraryDirectory(String passedNewDirectory) async {
+    if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
+      libraryDirectory = passedNewDirectory;
+      await prefs?.setString('musicDirectory', passedNewDirectory);
+    } else {
+      debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
+    }
+  }
+
+  // Initialize with LibraryDirectory and constantly update the nowPlayingPosition
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     libraryDirectory = await getLibraryDirectory();
@@ -35,10 +55,6 @@ class AudioPlayerProvider with ChangeNotifier {
       nowPlayingPosition = obtainedPosition.inSeconds;
       notifyListeners();
     });
-  }
-
-  Future<void> initializeSharedPrefs() async {
-    prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> requestPermission() async {
@@ -95,6 +111,7 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
+  // During onboarding, build the music database for the first time
   Future<List<Track>> generateTrackList() async {
     final directory = Directory(libraryDirectory!);
     trackList = []; // empty the existingTrackList every time
@@ -163,21 +180,6 @@ class AudioPlayerProvider with ChangeNotifier {
       notifyListeners();
     } else {
       debugPrint("File ${trackToPlay.filePath} doesn't exist.");
-    }
-  }
-
-  // Get library directory from SharedPrefs
-  Future<String?> getLibraryDirectory() async {
-    return prefs?.getString('musicDirectory');
-  }
-
-  // Set/update library directory in SharedPrefs
-  Future<void> updateLibraryDirectory(String passedNewDirectory) async {
-    if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
-      libraryDirectory = passedNewDirectory;
-      await prefs?.setString('musicDirectory', passedNewDirectory);
-    } else {
-      debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
     }
   }
 }
