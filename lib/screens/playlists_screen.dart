@@ -10,6 +10,8 @@ class PlaylistsScreen extends StatefulWidget {
 class _PlaylistsScreenState extends State<PlaylistsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Playlists')));
+    return const Center(
+      child: Text('Playlists'),
+    );
   }
 }

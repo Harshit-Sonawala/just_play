@@ -6,8 +6,9 @@ import '../objectbox.g.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
 
-import '../screens/home_screen.dart';
 import '../widgets/now_playing_menu.dart';
+import '../screens/home_screen.dart';
+import '../screens/playlists_screen.dart';
 
 class WrapperScreen extends StatefulWidget {
   const WrapperScreen({super.key});
@@ -77,9 +78,7 @@ class _WrapperScreenState extends State<WrapperScreen> {
                     })
                   },
                 ),
-                const Center(
-                  child: Text('Playlists'),
-                ),
+                const PlaylistsScreen(),
               ],
             ),
             const NowPlayingMenu(),
