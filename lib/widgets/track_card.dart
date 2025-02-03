@@ -42,7 +42,7 @@ class _TrackCardState extends State<TrackCard> {
                     const CustomCard(
                       padding: EdgeInsets.all(18),
                       borderRadius: 2,
-                      child: Icon(Icons.album),
+                      child: Icon(Icons.album_rounded),
                     ),
                     const SizedBox(width: 10),
                     Column(

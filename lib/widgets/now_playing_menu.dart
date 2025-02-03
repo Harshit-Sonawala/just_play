@@ -63,7 +63,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Decoration Player Handle Rectangle Container
+                  // Decoration Player Drag Handle Rectangle Container
                   Align(
                     alignment: Alignment.topCenter,
                     child: Container(
@@ -239,7 +239,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                   child: Text(
                                     // '${widget.artist!.substring(0, 71)}...',
                                     '${(Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist != null && Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist!.isNotEmpty) ? Provider.of<AudioPlayerProvider>(context).nowPlayingTrack!.artist : 'Unknown Artist'}',
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style: Theme.of(context).textTheme.titleMedium,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -258,7 +258,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 ),
 
                               // Expanded Player Extra Controls
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,

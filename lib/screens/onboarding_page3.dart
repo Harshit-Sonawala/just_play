@@ -5,7 +5,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../widgets/custom_divider.dart';
 import '../widgets/custom_elevated_button.dart';
-import '../screens/playback_screen.dart';
+import 'wrapper_screen.dart';
 import '../models/track.dart';
 import '../providers/database_provider.dart';
 import '../providers/audio_player_provider.dart';
@@ -145,7 +145,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                         onPressed: () => {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (context) => const PlaybackScreen(),
+                              builder: (context) => const WrapperScreen(),
                             ),
                           ),
                         },

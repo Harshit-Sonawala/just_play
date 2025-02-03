@@ -16,8 +16,8 @@ class _NowPlayingBarState extends State<NowPlayingBar> {
   double _swipeVelocity = 200.0;
   int _finalDuration = 200;
   // double _scaleValue = 1.0;
-  double _offsetValueX = 0.0;
-  double _offsetValueY = 0.0;
+  // double _offsetValueX = 0.0;
+  // double _offsetValueY = 0.0;
   bool _nowPlayingAudioPlay = false;
   @override
   Widget build(BuildContext context) {
@@ -58,8 +58,8 @@ class _NowPlayingBarState extends State<NowPlayingBar> {
                 _nowPlayingHeight = maxHeight;
                 _nowPlayingClosed = false;
                 // _scaleValue = 5.0,
-                _offsetValueX += 35.0;
-                _offsetValueY += 10.0;
+                // _offsetValueX += 35.0;
+                // _offsetValueY += 10.0;
               })
             },
           if (_nowPlayingHeight < minOpenThreshold)
@@ -68,8 +68,8 @@ class _NowPlayingBarState extends State<NowPlayingBar> {
                 _nowPlayingHeight = minHeight;
                 _nowPlayingClosed = true;
                 // _scaleValue = 1.0,
-                _offsetValueX -= 35.0;
-                _offsetValueY -= 10.0;
+                // _offsetValueX -= 35.0;
+                // _offsetValueY -= 10.0;
               })
             },
         },

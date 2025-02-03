@@ -6,7 +6,7 @@ import '../providers/database_provider.dart';
 import '../providers/audio_player_provider.dart';
 
 import '../screens/onboarding_screen.dart';
-import '../screens/playback_screen.dart';
+import 'screens/wrapper_screen.dart';
 
 void main() {
   runApp(
@@ -233,7 +233,7 @@ class _JustPlayState extends State<JustPlay> {
         ),
       ),
 
-      // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const PlaybackScreen(),
+      // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const WrapperScreen(),
       home: FutureBuilder<void>(
         future: initializeDatabaseGetSharedPrefs(),
         builder: (context, snapshot) {
@@ -261,7 +261,7 @@ class _JustPlayState extends State<JustPlay> {
             if (showOnboardingScreen == null) {
               return const OnboardingScreen();
             } else {
-              return const PlaybackScreen();
+              return const WrapperScreen();
             }
           } else if (snapshot.hasError) {
             // unexpected case and encounterred error
