@@ -95,6 +95,7 @@ class _PlaybackScreenState extends State<PlaybackScreen> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               // render AppBar Header Row 1
+                              // TODO: Skipping first element due to header
                               if (index == 0) {
                                 return Column(
                                   children: [

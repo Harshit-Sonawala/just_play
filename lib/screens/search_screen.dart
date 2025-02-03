@@ -118,51 +118,52 @@ class _SearchScreenState extends State<SearchScreen> {
                   } else if (snapshot.hasData) {
                     // debugPrint('SearchScreen snapshot.data: ${snapshot.data}');
                     return Expanded(
-                      child: ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Found ${snapshot.data!.length} Results:',
-                                          style: Theme.of(context).textTheme.titleMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                ],
-                              );
-                            }
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Found ${snapshot.data!.length} Results:',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
 
-                            Track eachTrack = snapshot.data![index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: CustomListItem(
-                                onPressed: () {
-                                  Provider.of<AudioPlayerProvider>(context, listen: false)
-                                      .setAudioPlayerFile(eachTrack);
-                                },
-                                onLongPress: () {
-                                  // Play next / some playlist functionality
-                                },
-                                fileName: eachTrack.fileName,
-                                title: eachTrack.title,
-                                artist: eachTrack.artist,
-                                album: eachTrack.album,
-                                albumArt: eachTrack.albumArt,
-                                duration: eachTrack.fileDuration,
-                                // body: eachTrack.path,
-                              ),
-                            );
-                          }),
+                          // Search Results ListView Builder
+                          Expanded(
+                            child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  Track eachTrack = snapshot.data![index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: CustomListItem(
+                                      onPressed: () {
+                                        Provider.of<AudioPlayerProvider>(context, listen: false)
+                                            .setAudioPlayerFile(eachTrack);
+                                      },
+                                      onLongPress: () {
+                                        // Play next / some playlist functionality
+                                      },
+                                      fileName: eachTrack.fileName,
+                                      title: eachTrack.title,
+                                      artist: eachTrack.artist,
+                                      album: eachTrack.album,
+                                      albumArt: eachTrack.albumArt,
+                                      duration: eachTrack.fileDuration,
+                                      // body: eachTrack.path,
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ],
+                      ),
                     );
                   } else if (snapshot.hasError) {
                     // unexpected case and error encounterred
