@@ -113,16 +113,14 @@ class _SearchScreenState extends State<SearchScreen> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         // Loading Search Results
                         return Expanded(
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Loading Results...', style: Theme.of(context).textTheme.bodyLarge),
-                                const SizedBox(height: 20),
-                                const CircularProgressIndicator(),
-                              ],
-                            ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('Loading Results...', style: Theme.of(context).textTheme.bodyLarge),
+                              const SizedBox(height: 20),
+                              const CircularProgressIndicator(),
+                            ],
                           ),
                         );
                       } else if (snapshot.hasData) {

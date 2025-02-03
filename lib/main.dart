@@ -60,18 +60,21 @@ class _JustPlayState extends State<JustPlay> {
         fontFamily: 'ProductSans',
         fontSize: 22,
         fontWeight: FontWeight.bold,
+        letterSpacing: 0.8,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displayMedium: TextStyle(
         fontFamily: 'ProductSans',
         fontSize: 18,
         fontWeight: FontWeight.bold,
+        letterSpacing: 0.8,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       displaySmall: TextStyle(
         fontFamily: 'ProductSans',
         fontSize: 16,
         fontWeight: FontWeight.bold,
+        letterSpacing: 0.8,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),
       titleLarge: TextStyle(
