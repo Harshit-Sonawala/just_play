@@ -81,6 +81,25 @@ class _WrapperScreenState extends State<WrapperScreen> {
                 const PlaylistsScreen(),
               ],
             ),
+
+            // Floating Action Button Shuffle Play All Tracks
+            Positioned(
+              bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
+              right: 10,
+              child: FloatingActionButton(
+                elevation: 0,
+                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                onPressed: () {
+                  debugPrint('Shuffle Play pressed.');
+                },
+                child: Icon(
+                  Icons.shuffle_rounded,
+                  size: 28,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ),
+
             const NowPlayingMenu(),
           ],
         ),
