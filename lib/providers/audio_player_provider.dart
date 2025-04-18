@@ -14,7 +14,7 @@ class AudioPlayerProvider with ChangeNotifier {
   String persistentMusicDirectory = "";
   String? libraryDirectory;
   final audioPlayer = AudioPlayer();
-  bool isPlaying = false;
+  bool _isPlaying = false;
   Track? nowPlayingTrack;
   int nowPlayingTotalDuration = 0;
   int nowPlayingPosition = 0;
@@ -22,6 +22,9 @@ class AudioPlayerProvider with ChangeNotifier {
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
   SharedPreferences? prefs;
+
+  // Getters
+  bool get isPlaying => _isPlaying;
 
   AudioPlayerProvider() {
     initializeSharedPrefs();
@@ -51,6 +54,7 @@ class AudioPlayerProvider with ChangeNotifier {
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     libraryDirectory = await getLibraryDirectory();
+
     audioPlayer.positionStream.listen((obtainedPosition) {
       nowPlayingPosition = obtainedPosition.inSeconds;
       notifyListeners();
@@ -180,6 +184,20 @@ class AudioPlayerProvider with ChangeNotifier {
       notifyListeners();
     } else {
       debugPrint("File ${trackToPlay.filePath} doesn't exist.");
+    }
+  }
+
+  Future<void> playTrack() async {
+    if (!isPlaying) {
+      audioPlayer.play();
+      _isPlaying = true;
+    }
+  }
+
+  Future<void> pauseTrack() async {
+    if (isPlaying) {
+      audioPlayer.pause();
+      _isPlaying = false;
     }
   }
 }
