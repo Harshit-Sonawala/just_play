@@ -13,19 +13,20 @@ import './database_provider.dart';
 class AudioPlayerProvider with ChangeNotifier {
   String persistentMusicDirectory = "";
   String? libraryDirectory;
-  final audioPlayer = AudioPlayer();
-  bool _isPlaying = false;
-  Track? nowPlayingTrack;
-  int nowPlayingTotalDuration = 0;
-  int nowPlayingPosition = 0;
-  List<FileSystemEntity> filesList = [];
+  final AudioPlayer audioPlayer = AudioPlayer();
+  Track? _nowPlayingTrack;
+  // List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
   SharedPreferences? prefs;
 
-  // Getters
-  bool get isPlaying => _isPlaying;
+  // Getters and Streams
+  Track? get nowPlayingTrack => _nowPlayingTrack;
+  Stream<Duration> get positionStream => audioPlayer.positionStream;
+  Stream<Duration?> get durationStream => audioPlayer.durationStream;
+  Stream<PlayerState> get playerStateStream => audioPlayer.playerStateStream;
 
+  // Initialize
   AudioPlayerProvider() {
     initializeSharedPrefs();
     initializeAudioPlayerProvider();
@@ -41,24 +42,25 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   // Set/update music library directory in SharedPrefs
-  Future<void> updateLibraryDirectory(String passedNewDirectory) async {
-    if (passedNewDirectory != '' && Directory(passedNewDirectory).existsSync()) {
-      libraryDirectory = passedNewDirectory;
-      await prefs?.setString('musicDirectory', passedNewDirectory);
+  Future<void> updateLibraryDirectory(String updatedLibraryDirectory) async {
+    if (updatedLibraryDirectory.isNotEmpty && Directory(updatedLibraryDirectory).existsSync()) {
+      libraryDirectory = updatedLibraryDirectory;
+      await prefs?.setString('musicDirectory', updatedLibraryDirectory);
     } else {
-      debugPrint('passedNewDirectory: $passedNewDirectory, either empty or does\'nt exist');
+      debugPrint('updatedLibraryDirectory: $updatedLibraryDirectory, either empty or does\'nt exist');
     }
   }
 
-  // Initialize with LibraryDirectory and constantly update the nowPlayingPosition
+  // Initialize with LibraryDirectory
   Future<void> initializeAudioPlayerProvider() async {
     await requestPermission();
     libraryDirectory = await getLibraryDirectory();
 
-    audioPlayer.positionStream.listen((obtainedPosition) {
-      nowPlayingPosition = obtainedPosition.inSeconds;
-      notifyListeners();
-    });
+    // Deprecated: positionStream Listener causing constant rebuilds
+    // audioPlayer.positionStream.listen((obtainedPosition) {
+    //   // nowPlayingPosition = obtainedPosition.inSeconds; // returns int
+    //   notifyListeners();
+    // });
   }
 
   Future<void> requestPermission() async {
@@ -76,11 +78,11 @@ class AudioPlayerProvider with ChangeNotifier {
         // debugPrint('androidVersionSdkInt >= 33. After requested permission status: $audioPermissionStatus');
       }
       if (audioPermissionStatus.isGranted) {
-        if (nowPlayingTrack != null &&
-            nowPlayingTrack!.filePath != '' &&
-            File(nowPlayingTrack!.filePath).existsSync()) {
+        if (_nowPlayingTrack != null &&
+            _nowPlayingTrack!.filePath != '' &&
+            File(_nowPlayingTrack!.filePath).existsSync()) {
           debugPrint(
-              "androidVersionSdkInt >= 33. Audio permission granted. nowPlayingTrack: ${nowPlayingTrack!.fileName}");
+              "androidVersionSdkInt >= 33. Audio permission granted. _nowPlayingTrack: ${_nowPlayingTrack!.fileName}");
         } else {
           debugPrint("androidVersionSdkInt >= 33. Audio permission granted. No playback track loaded.");
         }
@@ -99,11 +101,11 @@ class AudioPlayerProvider with ChangeNotifier {
       }
       if (storagePermissionStatus.isGranted) {
         debugPrint('androidVersionSdkInt < 33. Storage permission granted.');
-        if (nowPlayingTrack != null &&
-            nowPlayingTrack!.filePath != '' &&
-            File(nowPlayingTrack!.filePath).existsSync()) {
+        if (_nowPlayingTrack != null &&
+            _nowPlayingTrack!.filePath != '' &&
+            File(_nowPlayingTrack!.filePath).existsSync()) {
           debugPrint(
-              "androidVersionSdkInt < 33. Storage permission granted. nowPlayingTrack: ${nowPlayingTrack!.fileName}");
+              "androidVersionSdkInt < 33. Storage permission granted. _nowPlayingTrack: ${_nowPlayingTrack!.fileName}");
         } else {
           debugPrint('androidVersionSdkInt < 33. Storage permission granted. No playback track loaded.');
         }
@@ -115,7 +117,7 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
-  // During onboarding, build the music database for the first time
+  // During onboarding, build music database for the first time
   Future<List<Track>> generateTrackList() async {
     final directory = Directory(libraryDirectory!);
     trackList = []; // empty the existingTrackList every time
@@ -152,8 +154,7 @@ class AudioPlayerProvider with ChangeNotifier {
             fileCounter++;
           } catch (e) {
             debugPrint(
-              'AudioPlayerProvider generateTrackList(), Error caught for file $fileCounter, ${basenameWithoutExtension(eachFile.path)}. Error type: ${e.runtimeType}. Error details: $e',
-            );
+                'AudioPlayerProvider generateTrackList(), Error caught for file $fileCounter, ${basenameWithoutExtension(eachFile.path)}. Error type: ${e.runtimeType}. Error details: $e');
           }
         }
       }
@@ -163,41 +164,46 @@ class AudioPlayerProvider with ChangeNotifier {
     return trackList;
   }
 
-  Future<void> listFiles() async {
-    final directory = Directory(libraryDirectory!);
-    if (directory.existsSync()) {
-      filesList = directory.listSync(recursive: true).where((eachFile) {
-        // list only files ending with .mp3
-        return eachFile is File && eachFile.path.endsWith('.mp3');
-      }).toList();
-    } else {
-      debugPrint('libraryDirectory: $libraryDirectory doesn\'t exist.');
-    }
-    notifyListeners();
-  }
+  // Deprecated Unused listFiles() Function
+  // Future<void> listFiles() async {
+  //   final directory = Directory(libraryDirectory!);
+  //   if (directory.existsSync()) {
+  //     filesList = directory.listSync(recursive: true).where((eachFile) {
+  //       // list only files ending with .mp3
+  //       return eachFile is File && eachFile.path.endsWith('.mp3');
+  //     }).toList();
+  //   } else {
+  //     debugPrint('libraryDirectory: $libraryDirectory doesn\'t exist.');
+  //   }
+  //   notifyListeners();
+  // }
 
   Future<void> setAudioPlayerFile(Track trackToPlay) async {
     if (File(trackToPlay.filePath).existsSync()) {
-      nowPlayingTrack = trackToPlay;
-      await audioPlayer.setFilePath(trackToPlay.filePath);
-      nowPlayingTotalDuration = (await audioPlayer.load())!.inSeconds;
+      _nowPlayingTrack = trackToPlay;
+      try {
+        await audioPlayer.setFilePath(trackToPlay.filePath);
+      } catch (e) {
+        _nowPlayingTrack = null;
+        debugPrint(
+            'AudioPlayerProvider setAudioPlayerFile(), Error setting file ${trackToPlay.fileName} as audio source. Error type: ${e.runtimeType}. Error details: $e');
+      }
+      // Now durationStream will handle duration.
+      // Deprecated: removed positionStream Listener method of obtaining updated duration
+      // nowPlayingTotalDuration = (await audioPlayer.load())!.inSeconds;
       notifyListeners();
     } else {
+      _nowPlayingTrack = null;
+      notifyListeners();
       debugPrint("File ${trackToPlay.filePath} doesn't exist.");
     }
   }
 
   Future<void> playTrack() async {
-    if (!isPlaying) {
-      audioPlayer.play();
-      _isPlaying = true;
-    }
+    audioPlayer.play();
   }
 
   Future<void> pauseTrack() async {
-    if (isPlaying) {
-      audioPlayer.pause();
-      _isPlaying = false;
-    }
+    audioPlayer.pause();
   }
 }
