@@ -65,7 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             const SizedBox(width: 12),
                             Text(
-                              'Search Tracks',
+                              'Search Results',
                               style: Theme.of(context).textTheme.displayLarge,
                             ),
                           ],

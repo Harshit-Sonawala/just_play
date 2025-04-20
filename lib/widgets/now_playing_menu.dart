@@ -87,9 +87,8 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                         ),
                         const SizedBox(height: 5),
 
-                        // Minimized Player
-                        if (!isExpanded)
-                          Row(
+                        AnimatedCrossFade(
+                          firstChild: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -174,11 +173,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                   return IconButton(
                                     padding: const EdgeInsets.all(10),
                                     onPressed: () {
-                                      setState(() {
-                                        isPlaying
-                                            ? audioPlayerProviderListenFalse.pauseTrack()
-                                            : audioPlayerProviderListenFalse.playTrack();
-                                      });
+                                      isPlaying
+                                          ? audioPlayerProviderListenFalse.pauseTrack()
+                                          : audioPlayerProviderListenFalse.playTrack();
                                     },
                                     icon: Icon(
                                       isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
@@ -190,13 +187,8 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               ),
                             ],
                           ),
-
-                        if (isExpanded) const SizedBox(height: 20),
-
-                        // Expanded Player full-screen content
-                        if (isExpanded)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          secondChild: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                             child: Column(
                               children: [
                                 // Expanded Player Album Art / Placeholder Icon
@@ -408,11 +400,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                           child: IconButton(
                                             padding: const EdgeInsets.all(14),
                                             onPressed: () {
-                                              setState(() {
-                                                isPlaying
-                                                    ? audioPlayerProviderListenFalse.pauseTrack()
-                                                    : audioPlayerProviderListenFalse.playTrack();
-                                              });
+                                              isPlaying
+                                                  ? audioPlayerProviderListenFalse.pauseTrack()
+                                                  : audioPlayerProviderListenFalse.playTrack();
                                             },
                                             icon: Icon(
                                               isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
@@ -442,6 +432,17 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               ],
                             ),
                           ),
+                          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 150),
+                        ),
+
+                        // Minimized Player
+                        // if (!isExpanded)
+
+                        // if (isExpanded) const SizedBox(height: 20),
+
+                        // Expanded Player full-screen content
+                        // if (isExpanded)
                       ],
                     ),
                   ),
