@@ -315,32 +315,31 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 Column(
                                   children: [
                                     // Seek Slider
-                                    StreamBuilder<Duration?>(
-                                        stream: audioPlayerProviderListenFalse.durationStream,
-                                        builder: (context, durationSnapshot) {
-                                          final duration = durationSnapshot.data ?? Duration.zero;
-                                          return StreamBuilder<Duration>(
-                                              stream: null,
-                                              builder: (context, positionSnapshot) {
-                                                final position = positionSnapshot.data ?? Duration.zero;
-
-                                                return Slider(
-                                                  // value: nowPlayingPosition.toDouble(),
-                                                  value: position.inMilliseconds
-                                                      .toDouble()
-                                                      .clamp(0.0, duration.inMilliseconds.toDouble()),
-                                                  min: 0,
-                                                  // max: nowPlayingTotalDuration.toDouble(),
-                                                  max: duration.inMilliseconds.toDouble() > 0
-                                                      ? duration.inMilliseconds.toDouble()
-                                                      : 1.0,
-                                                  onChanged: (newSeekValue) {
-                                                    audioPlayerProviderListenFalse.audioPlayer
-                                                        .seek(Duration(seconds: newSeekValue.toInt()));
-                                                  },
-                                                );
-                                              });
-                                        }),
+                                    StreamBuilder<Duration>(
+                                      stream: audioPlayerProviderListenFalse.positionStream,
+                                      builder: (context, positionSnapshot) {
+                                        final position = positionSnapshot.data ?? Duration.zero;
+                                        final positionMs = position.inMilliseconds.toDouble();
+                                        return StreamBuilder<Duration?>(
+                                          stream: audioPlayerProviderListenFalse.durationStream,
+                                          builder: (context, durationSnapshot) {
+                                            final duration = durationSnapshot.data ?? Duration.zero;
+                                            final durationMs = duration.inMilliseconds.toDouble();
+                                            return Slider(
+                                              // value: nowPlayingPosition.toDouble(),
+                                              value: positionMs.clamp(0.0, durationMs > 0 ? durationMs : 1.0),
+                                              min: 0,
+                                              // max: nowPlayingTotalDuration.toDouble(),
+                                              max: durationMs > 0 ? durationMs : 1.0,
+                                              onChanged: (newSeekValue) {
+                                                audioPlayerProviderListenFalse
+                                                    .seekTrack(Duration(milliseconds: newSeekValue.toInt()));
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
 
                                     // Expanded Player Seek Durations
                                     Padding(

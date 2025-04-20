@@ -206,4 +206,8 @@ class AudioPlayerProvider with ChangeNotifier {
   Future<void> pauseTrack() async {
     audioPlayer.pause();
   }
+
+  Future<void> seekTrack(Duration newSeekValue) async {
+    audioPlayer.seek(newSeekValue);
+  }
 }
