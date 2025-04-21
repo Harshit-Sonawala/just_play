@@ -166,23 +166,44 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                               const SizedBox(width: 8),
 
                               // Mini Player Controls
-                              StreamBuilder<PlayerState>(
-                                stream: audioPlayerProviderListenFalse.playerStateStream,
-                                builder: (context, snapshot) {
-                                  final isPlaying = snapshot.data?.playing ?? false;
-                                  return IconButton(
-                                    padding: const EdgeInsets.all(10),
-                                    onPressed: () {
-                                      isPlaying
-                                          ? audioPlayerProviderListenFalse.pauseTrack()
-                                          : audioPlayerProviderListenFalse.playTrack();
-                                    },
-                                    icon: Icon(
-                                      isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                      color: Theme.of(context).colorScheme.primary,
-                                      size: 32,
-                                    ),
-                                  );
+                              StreamBuilder<ProcessingState>(
+                                stream: audioPlayerProviderListenFalse.processingStateStream,
+                                builder: (context, processingSnapshot) {
+                                  final stopState = processingSnapshot.data;
+                                  if (stopState == ProcessingState.completed) {
+                                    return IconButton(
+                                      padding: const EdgeInsets.all(10),
+                                      onPressed: () {
+                                        audioPlayerProviderListenFalse.seekTrack(Duration.zero);
+                                        audioPlayerProviderListenFalse.playTrack();
+                                      },
+                                      icon: Icon(
+                                        Icons.replay_rounded,
+                                        color: Theme.of(context).colorScheme.primary,
+                                        size: 32,
+                                      ),
+                                    );
+                                  } else {
+                                    return StreamBuilder<PlayerState>(
+                                      stream: audioPlayerProviderListenFalse.playerStateStream,
+                                      builder: (context, playerSnapshot) {
+                                        final isPlaying = playerSnapshot.data?.playing ?? false;
+                                        return IconButton(
+                                          padding: const EdgeInsets.all(10),
+                                          onPressed: () {
+                                            isPlaying
+                                                ? audioPlayerProviderListenFalse.pauseTrack()
+                                                : audioPlayerProviderListenFalse.playTrack();
+                                          },
+                                          icon: Icon(
+                                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                            color: Theme.of(context).colorScheme.primary,
+                                            size: 32,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
                                 },
                               ),
                             ],
@@ -340,29 +361,10 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                                     formatDuration(position),
                                                     style: Theme.of(context).textTheme.bodySmall,
                                                   ),
-                                                  // StreamBuilder<Duration>(
-                                                  //   stream: audioPlayerProviderListenFalse.positionStream,
-                                                  //   builder: (context, snapshot) {
-                                                  //     return Text(
-                                                  //       formatDuration(snapshot.data ?? Duration.zero),
-                                                  //       style: Theme.of(context).textTheme.bodySmall,
-                                                  //     );
-                                                  //   },
-                                                  // ),
                                                   Text(
                                                     formatDuration(duration),
                                                     style: Theme.of(context).textTheme.bodySmall,
                                                   ),
-                                                  // Expanded Player Now Playing Total Duration
-                                                  // StreamBuilder<Duration?>(
-                                                  //   stream: audioPlayerProviderListenFalse.durationStream,
-                                                  //   builder: (context, snapshot) {
-                                                  //     return Text(
-                                                  //       formatDuration(snapshot.data ?? Duration.zero),
-                                                  //       style: Theme.of(context).textTheme.bodySmall,
-                                                  //     );
-                                                  //   },
-                                                  // ),
                                                 ],
                                               ),
                                             ),
@@ -393,30 +395,58 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                         size: 36,
                                       ),
                                     ),
-                                    StreamBuilder<PlayerState>(
-                                      stream: audioPlayerProviderListenFalse.playerStateStream,
-                                      builder: (context, snapshot) {
-                                        final isPlaying = snapshot.data?.playing ?? false;
-                                        return Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 10),
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.primary,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: IconButton(
-                                            padding: const EdgeInsets.all(14),
-                                            onPressed: () {
-                                              isPlaying
-                                                  ? audioPlayerProviderListenFalse.pauseTrack()
-                                                  : audioPlayerProviderListenFalse.playTrack();
-                                            },
-                                            icon: Icon(
-                                              isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                              size: 40,
-                                              color: Theme.of(context).colorScheme.surfaceBright,
+                                    StreamBuilder<ProcessingState>(
+                                      stream: audioPlayerProviderListenFalse.processingStateStream,
+                                      builder: (context, processingSnapshot) {
+                                        final stopState = processingSnapshot.data;
+                                        if (stopState == ProcessingState.completed) {
+                                          return Container(
+                                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              shape: BoxShape.circle,
                                             ),
-                                          ),
-                                        );
+                                            child: IconButton(
+                                              padding: const EdgeInsets.all(14),
+                                              onPressed: () {
+                                                audioPlayerProviderListenFalse.seekTrack(Duration.zero);
+                                                audioPlayerProviderListenFalse.playTrack();
+                                              },
+                                              icon: Icon(
+                                                Icons.replay_rounded,
+                                                size: 40,
+                                                color: Theme.of(context).colorScheme.surfaceBright,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          return StreamBuilder<PlayerState>(
+                                            stream: audioPlayerProviderListenFalse.playerStateStream,
+                                            builder: (context, playerSnapshot) {
+                                              final isPlaying = playerSnapshot.data?.playing ?? false;
+                                              return Container(
+                                                margin: const EdgeInsets.symmetric(horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context).colorScheme.primary,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: IconButton(
+                                                  padding: const EdgeInsets.all(14),
+                                                  onPressed: () {
+                                                    isPlaying
+                                                        ? audioPlayerProviderListenFalse.pauseTrack()
+                                                        : audioPlayerProviderListenFalse.playTrack();
+                                                  },
+                                                  icon: Icon(
+                                                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                                    size: 40,
+                                                    color: Theme.of(context).colorScheme.surfaceBright,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        }
                                       },
                                     ),
                                     IconButton(
@@ -441,14 +471,6 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                           crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                           duration: const Duration(milliseconds: 150),
                         ),
-
-                        // Minimized Player
-                        // if (!isExpanded)
-
-                        // if (isExpanded) const SizedBox(height: 20),
-
-                        // Expanded Player full-screen content
-                        // if (isExpanded)
                       ],
                     ),
                   ),
@@ -459,11 +481,5 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
         );
       },
     );
-
-    // if (Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null) {
-    //   return Container(); // empty container
-    // } else {
-
-    // }
   }
 }
