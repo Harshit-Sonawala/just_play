@@ -22,9 +22,10 @@ class AudioPlayerProvider with ChangeNotifier {
 
   // Getters and Streams
   Track? get nowPlayingTrack => _nowPlayingTrack;
-  Stream<Duration> get positionStream => audioPlayer.positionStream;
-  Stream<Duration?> get durationStream => audioPlayer.durationStream;
-  Stream<PlayerState> get playerStateStream => audioPlayer.playerStateStream;
+  Stream<Duration> get positionStream => audioPlayer.positionStream; // Get current playback position
+  Stream<Duration?> get durationStream => audioPlayer.durationStream; // Get the song duration
+  Stream<PlayerState> get playerStateStream => audioPlayer.playerStateStream; // Get player play/pause state
+  Stream<ProcessingState> get processingStateStream => audioPlayer.processingStateStream; // Get player stopped state
 
   // Initialize
   AudioPlayerProvider() {

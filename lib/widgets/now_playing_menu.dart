@@ -304,20 +304,19 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 const SizedBox(height: 10),
 
                                 // Expanded Player Seek Slider & Duration Progress
-                                Column(
-                                  children: [
-                                    // Seek Slider
-                                    StreamBuilder<Duration>(
+                                StreamBuilder<Duration?>(
+                                  stream: audioPlayerProviderListenFalse.durationStream,
+                                  builder: (context, durationSnapshot) {
+                                    final duration = durationSnapshot.data ?? Duration.zero;
+                                    final durationMs = duration.inMilliseconds.toDouble();
+                                    return StreamBuilder<Duration>(
                                       stream: audioPlayerProviderListenFalse.positionStream,
                                       builder: (context, positionSnapshot) {
                                         final position = positionSnapshot.data ?? Duration.zero;
                                         final positionMs = position.inMilliseconds.toDouble();
-                                        return StreamBuilder<Duration?>(
-                                          stream: audioPlayerProviderListenFalse.durationStream,
-                                          builder: (context, durationSnapshot) {
-                                            final duration = durationSnapshot.data ?? Duration.zero;
-                                            final durationMs = duration.inMilliseconds.toDouble();
-                                            return Slider(
+                                        return Column(
+                                          children: [
+                                            Slider(
                                               // value: nowPlayingPosition.toDouble(),
                                               value: positionMs.clamp(0.0, durationMs > 0 ? durationMs : 1.0),
                                               min: 0,
@@ -327,44 +326,51 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                                 audioPlayerProviderListenFalse
                                                     .seekTrack(Duration(milliseconds: newSeekValue.toInt()));
                                               },
-                                            );
-                                          },
+                                            ),
+
+                                            // Expanded Player Seek Durations
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  // Expanded Player Now Playing Current Position
+                                                  Text(
+                                                    formatDuration(position),
+                                                    style: Theme.of(context).textTheme.bodySmall,
+                                                  ),
+                                                  // StreamBuilder<Duration>(
+                                                  //   stream: audioPlayerProviderListenFalse.positionStream,
+                                                  //   builder: (context, snapshot) {
+                                                  //     return Text(
+                                                  //       formatDuration(snapshot.data ?? Duration.zero),
+                                                  //       style: Theme.of(context).textTheme.bodySmall,
+                                                  //     );
+                                                  //   },
+                                                  // ),
+                                                  Text(
+                                                    formatDuration(duration),
+                                                    style: Theme.of(context).textTheme.bodySmall,
+                                                  ),
+                                                  // Expanded Player Now Playing Total Duration
+                                                  // StreamBuilder<Duration?>(
+                                                  //   stream: audioPlayerProviderListenFalse.durationStream,
+                                                  //   builder: (context, snapshot) {
+                                                  //     return Text(
+                                                  //       formatDuration(snapshot.data ?? Duration.zero),
+                                                  //       style: Theme.of(context).textTheme.bodySmall,
+                                                  //     );
+                                                  //   },
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         );
                                       },
-                                    ),
-
-                                    // Expanded Player Seek Durations
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          // Expanded Player Now Playing Current Position
-                                          StreamBuilder<Duration>(
-                                            stream: audioPlayerProviderListenFalse.positionStream,
-                                            builder: (context, snapshot) {
-                                              return Text(
-                                                formatDuration(snapshot.data ?? Duration.zero),
-                                                style: Theme.of(context).textTheme.bodySmall,
-                                              );
-                                            },
-                                          ),
-
-                                          // Expanded Player Now Playing Total Duration
-                                          StreamBuilder<Duration?>(
-                                            stream: audioPlayerProviderListenFalse.durationStream,
-                                            builder: (context, snapshot) {
-                                              return Text(
-                                                formatDuration(snapshot.data ?? Duration.zero),
-                                                style: Theme.of(context).textTheme.bodySmall,
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    );
+                                  },
                                 ),
                                 const SizedBox(height: 10),
 
