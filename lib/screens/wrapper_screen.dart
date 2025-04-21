@@ -6,9 +6,9 @@ import '../objectbox.g.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
 
-import '../widgets/now_playing_menu.dart';
 import '../screens/home_screen.dart';
 import '../screens/playlists_screen.dart';
+import '../widgets/now_playing_menu.dart';
 
 class WrapperScreen extends StatefulWidget {
   const WrapperScreen({super.key});

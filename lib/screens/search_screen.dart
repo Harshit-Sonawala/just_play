@@ -6,16 +6,17 @@ import '../providers/audio_player_provider.dart';
 import '../providers/database_provider.dart';
 
 import '../widgets/custom_list_item.dart';
+import '../widgets/now_playing_menu.dart';
 
 class SearchScreen extends StatefulWidget {
-  // Catching the TextEditingController and FocusNode
-  final TextEditingController searchTextFieldController;
-  final FocusNode searchTextFieldFocusNode;
+  // // Catching the TextEditingController and FocusNode
+  // final TextEditingController searchTextFieldController;
+  // final FocusNode searchTextFieldFocusNode;
 
   const SearchScreen({
     super.key,
-    required this.searchTextFieldController,
-    required this.searchTextFieldFocusNode,
+    // required this.searchTextFieldController,
+    // required this.searchTextFieldFocusNode,
   });
 
   @override
@@ -24,23 +25,32 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   Future<List<Track>>? searchResultTrackListFuture;
+  final TextEditingController searchTextFieldController = TextEditingController();
+  final FocusNode searchTextFieldFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    if (widget.searchTextFieldController.text.isNotEmpty) {
+    if (searchTextFieldController.text.isNotEmpty) {
       searchTracksFromDatabase();
     }
   }
 
   void searchTracksFromDatabase() {
-    searchResultTrackListFuture =
-        Provider.of<DatabaseProvider>(context, listen: false).searchTracks(widget.searchTextFieldController.text);
+    setState(() {
+      searchResultTrackListFuture =
+          Provider.of<DatabaseProvider>(context, listen: false).searchTracks(searchTextFieldController.text);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // Fix the Status bar ListView Ghosts
+        toolbarHeight: 0.0,
+        backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+      ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -74,28 +84,36 @@ class _SearchScreenState extends State<SearchScreen> {
 
                         // Search TextField
                         Hero(
-                          tag: 'search_hero',
+                          tag: 'searchHero',
                           child: Material(
                             color: Colors.transparent,
                             child: TextField(
-                              controller: widget.searchTextFieldController,
-                              focusNode: widget.searchTextFieldFocusNode,
+                              controller: searchTextFieldController,
+                              focusNode: searchTextFieldFocusNode,
+                              textInputAction: TextInputAction.search,
+                              onSubmitted: (value) => {
+                                debugPrint('Trying to Search with ${searchTextFieldController.text}'),
+                                if (searchTextFieldController.text.isNotEmpty)
+                                  searchTracksFromDatabase()
+                                else
+                                  debugPrint('Search Term Empty'),
+                              },
                               style: Theme.of(context).textTheme.bodyMedium,
                               decoration: InputDecoration(
-                                hintText: 'Enter search query...',
+                                hintText: 'Enter search term...',
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     Icons.search_rounded,
                                     size: 24,
                                     color: Theme.of(context).colorScheme.secondary,
                                   ),
-                                  onPressed: () => setState(() {
-                                    if (widget.searchTextFieldController.text.isNotEmpty) {
-                                      searchTracksFromDatabase();
-                                    } else {
-                                      debugPrint('Search Query Empty');
-                                    }
-                                  }),
+                                  onPressed: () => {
+                                    debugPrint('Trying to Search with ${searchTextFieldController.text}'),
+                                    if (searchTextFieldController.text.isNotEmpty)
+                                      searchTracksFromDatabase()
+                                    else
+                                      debugPrint('Search Term Empty'),
+                                  },
                                 ),
                               ),
                             ),
@@ -123,74 +141,126 @@ class _SearchScreenState extends State<SearchScreen> {
                             ],
                           ),
                         );
+                      } else if (!(snapshot.hasData)) {
+                        return Expanded(
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.find_in_page_rounded,
+                                    size: 64.0,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Search for File, Title, Artist or Album',
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  const SizedBox(height: 100),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
                       } else if (snapshot.hasData) {
                         // debugPrint('SearchScreen snapshot.data: ${snapshot.data}');
-                        return Expanded(
-                          child: Column(
-                            children: [
-                              Container(
-                                color: Theme.of(context).colorScheme.surfaceDim,
+                        if (snapshot.data!.isEmpty) {
+                          return Expanded(
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Found ${snapshot.data!.length} Results:',
-                                            style: Theme.of(context).textTheme.titleMedium,
-                                          ),
-                                        ],
-                                      ),
+                                    Icon(
+                                      Icons.search_off_rounded,
+                                      size: 64.0,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                     const SizedBox(height: 10),
+                                    Text(
+                                      'Found no results. Please try again',
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(height: 100),
                                   ],
                                 ),
                               ),
-
-                              // Search Results ListView Builder
-                              Expanded(
-                                child: ListView.builder(
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (context, index) {
-                                      Track eachTrack = snapshot.data![index];
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 8),
-                                        child: CustomListItem(
-                                          onPressed: () {
-                                            Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                .setAudioPlayerFile(eachTrack);
-                                          },
-                                          onLongPress: () {
-                                            // Play next / some playlist functionality
-                                          },
-                                          fileName: eachTrack.fileName,
-                                          title: eachTrack.title,
-                                          artist: eachTrack.artist,
-                                          album: eachTrack.album,
-                                          albumArt: eachTrack.albumArt,
-                                          duration: eachTrack.fileDuration,
-                                          // body: eachTrack.path,
+                            ),
+                          );
+                        } else {
+                          return Expanded(
+                            child: Column(
+                              children: [
+                                Container(
+                                  color: Theme.of(context).colorScheme.surfaceDim,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Found ${snapshot.data!.length} Results:',
+                                              style: Theme.of(context).textTheme.titleMedium,
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ),
-                        );
+                                      ),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
+                                ),
+
+                                // Search Results ListView Builder
+                                Expanded(
+                                  child: ListView.builder(
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context, index) {
+                                        Track eachTrack = snapshot.data![index];
+                                        return Padding(
+                                          padding: const EdgeInsets.only(bottom: 8),
+                                          child: CustomListItem(
+                                            onPressed: () {
+                                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                  .setAudioPlayerFile(eachTrack);
+                                            },
+                                            onLongPress: () {
+                                              // Play next / some playlist functionality
+                                            },
+                                            fileName: eachTrack.fileName,
+                                            title: eachTrack.title,
+                                            artist: eachTrack.artist,
+                                            album: eachTrack.album,
+                                            albumArt: eachTrack.albumArt,
+                                            duration: eachTrack.fileDuration,
+                                            // body: eachTrack.path,
+                                          ),
+                                        );
+                                      }),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       } else if (snapshot.hasError) {
                         // unexpected case and error encounterred
-                        debugPrint('WrapperScreen Error: ${snapshot.error}');
+                        debugPrint('SearchScreen Error: ${snapshot.error}');
                         return Center(
-                          child: Text('WrapperScreen Error: ${snapshot.error}'),
+                          child: Text('SearchScreen Error: ${snapshot.error}'),
                         );
                       } else {
                         // unexpected case but no error encountered
-                        debugPrint('WrapperScreen Unexpected: $snapshot');
+                        debugPrint('SearchScreen Unexpected: $snapshot');
                         return Center(
-                          child: Text('WrapperScreen Unexpected: $snapshot'),
+                          child: Text('SearchScreen Unexpected: $snapshot'),
                         );
                       }
                     },
@@ -200,6 +270,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             // Floating Action Button Play All Search Results
+            // TODO: Render in snapshot cases only
             Positioned(
               bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
               right: 10,
@@ -216,6 +287,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
+
+            const NowPlayingMenu(),
           ],
         ),
       ),

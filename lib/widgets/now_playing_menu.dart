@@ -206,7 +206,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                         height: 50,
                                         width: 50,
                                         child: Image.asset(
-                                          'assets/images/album_art_placeholder3.png',
+                                          'assets/images/album_art_placeholder2.png',
                                           fit: BoxFit.contain,
                                         ),
                                       ),

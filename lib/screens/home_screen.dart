@@ -25,9 +25,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController searchTextFieldController = TextEditingController();
-  final FocusNode searchTextFieldFocusNode = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -45,50 +42,70 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Header Search TextField
                     Expanded(
                       child: Hero(
-                        tag: 'search_hero',
+                        tag: 'searchHero',
                         child: Material(
                           color: Colors.transparent,
-                          child: TextField(
-                            controller: searchTextFieldController,
-                            focusNode: searchTextFieldFocusNode,
-                            textInputAction: TextInputAction.search, // replaces keyboard's Enter with Search Icon
-                            onSubmitted: (value) {
+                          child: GestureDetector(
+                            onTap: () => {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SearchScreen(
-                                  searchTextFieldController: searchTextFieldController,
-                                  searchTextFieldFocusNode: searchTextFieldFocusNode,
-                                ),
-                              ));
+                                builder: (context) => const SearchScreen(
+                                    // searchTextFieldController: searchTextFieldController,
+                                    // searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                    ),
+                              )),
                             },
-                            onTapOutside: (event) => {
-                              debugPrint('Unfocusing Header TextField.'),
-                              // FocusManager.instance.primaryFocus?.unfocus(),
-                              searchTextFieldFocusNode.unfocus(),
-                            },
-                            cursorColor: Theme.of(context).colorScheme.secondary,
-                            style: Theme.of(context).textTheme.displayMedium,
-                            decoration: InputDecoration(
-                              hintText: 'JustPlay!',
-                              hintStyle: Theme.of(context).textTheme.displayLarge,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.search_rounded,
-                                  size: 24,
-                                  color: Theme.of(context).colorScheme.secondary,
+                            child: TextField(
+                              enabled: false,
+                              // controller: searchTextFieldController,
+                              // focusNode: searchTextFieldFocusNode,
+                              textInputAction: TextInputAction.search, // replaces keyboard's Enter with Search Icon
+                              // onSubmitted: (value) {
+                              //   debugPrint(
+                              //       'onSubmitted Trying to nav to search screen with ${searchTextFieldController.text}');
+                              //   Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) => SearchScreen(
+                              //       searchTextFieldController: searchTextFieldController,
+                              //       searchTextFieldFocusNode: searchTextFieldFocusNode,
+                              //     ),
+                              //   ));
+                              // },
+                              // onTapOutside: (event) => {
+                              //   debugPrint('Unfocusing Header TextField.'),
+                              //   // FocusManager.instance.primaryFocus?.unfocus(),
+                              //   searchTextFieldFocusNode.unfocus(),
+                              // },
+                              cursorColor: Theme.of(context).colorScheme.secondary,
+                              style: Theme.of(context).textTheme.displayMedium,
+                              decoration: InputDecoration(
+                                hintText: 'JustPlay!',
+                                hintStyle: Theme.of(context).textTheme.displayLarge,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.search_rounded,
+                                    size: 24,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                  onPressed: () => {},
+                                  // onPressed: () => {
+                                  //   if (searchTextFieldController.text.isNotEmpty)
+                                  //     {
+                                  //       debugPrint(
+                                  //           'onPressed Trying to nav to search screen with ${searchTextFieldController.text}'),
+                                  //       Navigator.of(context).push(MaterialPageRoute(
+                                  //         builder: (context) => SearchScreen(
+                                  //           // Passing the TextEditingController and FocusNode for Hero
+                                  //           searchTextFieldController: searchTextFieldController,
+                                  //           searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                  //         ),
+                                  //       ))
+                                  //     }
+                                  //   else
+                                  //     {
+                                  //       debugPrint('Search Query Empty'),
+                                  //     }
+                                  // },
                                 ),
-                                onPressed: () => {
-                                  if (searchTextFieldController.text.isNotEmpty)
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => SearchScreen(
-                                        // Passing the TextEditingController and FocusNode for Hero
-                                        searchTextFieldController: searchTextFieldController,
-                                        searchTextFieldFocusNode: searchTextFieldFocusNode,
-                                      ),
-                                    ))
-                                  else
-                                    debugPrint('Search Query Empty'),
-                                },
                               ),
                             ),
                           ),
