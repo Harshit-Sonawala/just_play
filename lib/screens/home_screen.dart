@@ -312,19 +312,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else if (snapshot.hasError) {
                 // unexpected case and error encounterred
-                debugPrint('WrapperScreen Error: ${snapshot.error}');
+                debugPrint('HomeScreen Error: ${snapshot.error}');
                 return Center(
-                  child: Text('WrapperScreen Error: ${snapshot.error}'),
+                  child: Text('HomeScreen Error: ${snapshot.error}'),
                 );
               } else {
                 // unexpected case but no error encountered
-                debugPrint('WrapperScreen Unexpected: $snapshot');
+                debugPrint('HomeScreen Unexpected: $snapshot');
                 return Center(
-                  child: Text('WrapperScreen Unexpected: $snapshot'),
+                  child: Text('HomeScreen Unexpected: $snapshot'),
                 );
               }
             },
           ),
+          // Floating Action Button Shuffle Play All Tracks
+          // Positioned(
+          //   bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
+          //   right: 10,
+          //   child: FloatingActionButton(
+          //     elevation: 0,
+          //     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+          //     onPressed: () {
+          //       debugPrint('Shuffle Play pressed.');
+          //     },
+          //     child: Icon(
+          //       Icons.shuffle_rounded,
+          //       size: 28,
+          //       color: Theme.of(context).colorScheme.secondary,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
