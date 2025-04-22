@@ -157,7 +157,7 @@ class _JustPlayState extends State<JustPlay> {
 
         // Icon Theme:
         iconTheme: IconThemeData(
-          size: 24,
+          size: 26,
           color: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
         ),
 

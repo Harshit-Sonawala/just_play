@@ -10,8 +10,33 @@ class PlaylistsScreen extends StatefulWidget {
 class _PlaylistsScreenState extends State<PlaylistsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Playlists'),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.playlist_play_rounded,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Playlists',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+              ],
+            ),
+          ),
+          Text(
+            'Play, create or manage playlists:',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
     );
   }
 }

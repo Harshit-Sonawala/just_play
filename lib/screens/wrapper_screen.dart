@@ -8,6 +8,7 @@ import '../providers/database_provider.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/playlists_screen.dart';
+import '../screens/shuffler_screen.dart';
 import '../widgets/now_playing_menu.dart';
 
 class WrapperScreen extends StatefulWidget {
@@ -83,6 +84,7 @@ class _WrapperScreenState extends State<WrapperScreen> {
                     })
                   },
                 ),
+                const ShufflerScreen(),
                 const PlaylistsScreen(),
               ],
             ),
