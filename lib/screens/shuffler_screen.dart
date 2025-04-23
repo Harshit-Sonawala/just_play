@@ -60,25 +60,31 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.casino_rounded,
-                  size: 28,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Shuffler',
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
-              ],
+          Container(
+            color: Theme.of(context).colorScheme.surfaceDim,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.casino_rounded,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Shuffler',
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
+                ],
+              ),
             ),
           ),
-          Text(
-            'Shuffle play from a wider more random selection of tracks:',
-            style: Theme.of(context).textTheme.bodySmall,
+          Container(
+            color: Theme.of(context).colorScheme.surfaceDim,
+            child: Text(
+              'Shuffle play from a wider more random selection of tracks:',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
           const SizedBox(height: 20),
           FutureBuilder<List<Track>>(
@@ -125,19 +131,23 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // const Icon(Icons.music_note_rounded, size: 16),
                               Text(
                                 '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
                                 style: Theme.of(context).textTheme.displaySmall,
+                                // maxLines: 4,
                                 // overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
                               if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
-                                Text(
-                                  // '${eachTrack.artist!.substring(0, 71)}...',
-                                  '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  // maxLines: 1,
-                                  // overflow: TextOverflow.ellipsis,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    // '${eachTrack.artist!.substring(0, 71)}...',
+                                    '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                    // maxLines: 4,
+                                    // overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                             ],
                           ),

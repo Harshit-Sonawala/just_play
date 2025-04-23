@@ -126,7 +126,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     Text(
                                       '${(nowPlayingTrack.title != null && nowPlayingTrack.title!.isNotEmpty) ? nowPlayingTrack.title : nowPlayingTrack.fileName}',
                                       // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
-                                      style: Theme.of(context).textTheme.bodyMedium,
+                                      style: Theme.of(context).textTheme.displaySmall,
                                       // maxLines: 1,
                                       // overflow: TextOverflow.ellipsis,
                                     ),
