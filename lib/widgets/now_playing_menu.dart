@@ -65,7 +65,6 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                 final bool isExpanded = constraints.maxHeight > expandThreshold;
 
                 return CustomCard(
-                  color: Theme.of(context).colorScheme.surface,
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: SingleChildScrollView(
                     controller: nowPlayingScrollController,

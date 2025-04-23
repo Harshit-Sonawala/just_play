@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 
-import '../widgets/custom_card.dart';
+import '../widgets/custom_grid_card.dart';
+
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ShufflerScreen extends StatefulWidget {
   final Future<List<Track>>? trackListFuture;
@@ -20,7 +22,7 @@ class ShufflerScreen extends StatefulWidget {
 }
 
 class _ShufflerScreenState extends State<ShufflerScreen> {
-  List<Track> getShuffledTrackList(List<Track> sourceTrackList, {int randomCount = 12}) {
+  List<Track> getShuffledTrackList(List<Track> sourceTrackList, {int randomCount = 20}) {
     List<Track> shuffledTrackList = [];
     if (sourceTrackList.isEmpty) {
       return shuffledTrackList;
@@ -38,10 +40,8 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
 
       if (!uniqueRandomIds.contains(randomId)) {
         Track foundTrack = sourceTrackList.firstWhere((eachTrack) => eachTrack.id == randomId);
-        if (foundTrack != null) {
-          shuffledTrackList.add(foundTrack);
-          uniqueRandomIds.add(randomId);
-        }
+        shuffledTrackList.add(foundTrack);
+        uniqueRandomIds.add(randomId);
       }
     }
 
@@ -65,9 +65,10 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
             child: Row(
               children: [
                 const Icon(
-                  Icons.shuffle_rounded,
+                  Icons.casino_rounded,
+                  size: 28,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 6),
                 Text(
                   'Shuffler',
                   style: Theme.of(context).textTheme.displayLarge,
@@ -90,7 +91,7 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Loading Tracks...', style: Theme.of(context).textTheme.bodyLarge),
+                      Text('Shuffling Tracks...', style: Theme.of(context).textTheme.bodyLarge),
                       const SizedBox(height: 20),
                       const CircularProgressIndicator(),
                     ],
@@ -100,47 +101,84 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                 final shuffledTrackList = getShuffledTrackList(snapshot.data!);
                 debugPrint('ShufflerScreen shuffledTrackList Length: ${shuffledTrackList.length}');
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
-                return Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                    ),
-                    itemCount: shuffledTrackList.length,
-                    itemBuilder: (context, index) {
-                      Track eachTrack = shuffledTrackList[index];
-                      return CustomCard(
-                        child: InkWell(
-                          onTap: () {
+                return SingleChildScrollView(
+                  child: SizedBox(
+                    height: 600,
+                    child: MasonryGridView.builder(
+                      // axisDirection: AxisDirection.down,
+                      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      // crossAxisCount: 4,
+                      mainAxisSpacing: 6,
+                      crossAxisSpacing: 6,
+                      itemCount: shuffledTrackList.length,
+                      itemBuilder: (context, index) {
+                        Track eachTrack = shuffledTrackList[index];
+                        return CustomGridCard(
+                          onPressed: () {
                             Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
                           },
-                          child: Expanded(
-                            child: Column(
-                              children: [
+                          onLongPress: () {
+                            debugPrint('onLongPress() of ${eachTrack.filePath}');
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
+                                style: Theme.of(context).textTheme.displaySmall,
+                                // overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
                                 Text(
-                                  '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  // '${eachTrack.artist!.substring(0, 71)}...',
+                                  '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   // maxLines: 1,
                                   // overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 4),
-                                if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
-                                  Flexible(
-                                    child: Text(
-                                      // '${eachTrack.artist!.substring(0, 71)}...',
-                                      '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
-                                      style: Theme.of(context).textTheme.bodySmall,
-                                      // maxLines: 1,
-                                      // overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                      // children: shuffledTrackList.map(
+                      //   (eachTrack) {
+                      //     return CustomGridCard(
+                      //       onPressed: () {
+                      //         Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
+                      //       },
+                      //       onLongPress: () {
+                      //         debugPrint('onLongPress() of ${eachTrack.filePath}');
+                      //       },
+                      //       child: InkWell(
+                      //         child: Column(
+                      //           crossAxisAlignment: CrossAxisAlignment.start,
+                      //           children: [
+                      //             Flexible(
+                      //               child: Text(
+                      //                 '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
+                      //                 style: Theme.of(context).textTheme.bodyMedium,
+                      //                 // overflow: TextOverflow.ellipsis,
+                      //               ),
+                      //             ),
+                      //             const SizedBox(height: 4),
+                      //             if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
+                      //               Text(
+                      //                 // '${eachTrack.artist!.substring(0, 71)}...',
+                      //                 '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
+                      //                 style: Theme.of(context).textTheme.bodySmall,
+                      //                 // maxLines: 1,
+                      //                 // overflow: TextOverflow.ellipsis,
+                      //               ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // ).toList(),
+                    ),
                   ),
                 );
               } else if (snapshot.hasError) {

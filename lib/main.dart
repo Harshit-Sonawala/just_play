@@ -74,7 +74,7 @@ class _JustPlayState extends State<JustPlay> {
       displaySmall: TextStyle(
         fontFamily: 'ProductSans',
         fontSize: 16,
-        fontWeight: FontWeight.bold,
+        // fontWeight: FontWeight.bold,
         letterSpacing: 0.8,
         color: Provider.of<ThemeProvider>(context).globalPrimaryColor,
       ),

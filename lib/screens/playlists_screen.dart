@@ -22,8 +22,9 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
               children: [
                 const Icon(
                   Icons.playlist_play_rounded,
+                  size: 28,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 6),
                 Text(
                   'Playlists',
                   style: Theme.of(context).textTheme.displayLarge,

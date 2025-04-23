@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomCard extends StatefulWidget {
   final EdgeInsets? margin;
-  final EdgeInsets? padding;
+  final EdgeInsets padding;
   final double borderRadius;
   final Widget? child;
   final String backgroundImage;
@@ -25,9 +25,9 @@ class CustomCard extends StatefulWidget {
 class _CustomCardState extends State<CustomCard> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      margin: widget.margin,
+    return Container(
+      // duration: const Duration(milliseconds: 200),
+      // margin: widget.margin,
       padding: widget.padding,
       decoration: widget.backgroundImage != ''
           ? BoxDecoration(

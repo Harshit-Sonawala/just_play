@@ -81,7 +81,6 @@ class _NowPlayingBarState extends State<NowPlayingBar> {
           child: CustomCard(
             // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             padding: const EdgeInsets.only(top: 2, left: 10, bottom: 6, right: 10),
-            margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
             color: const Color.fromARGB(248, 40, 40, 40),
             child: Column(
               mainAxisAlignment: _nowPlayingClosed ? MainAxisAlignment.center : MainAxisAlignment.start,
