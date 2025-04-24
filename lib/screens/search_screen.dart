@@ -46,11 +46,6 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Fix the Status bar ListView Ghosts
-        toolbarHeight: 0.0,
-        backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -59,70 +54,63 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Column(
                 children: [
                   // Header
-                  Container(
-                    color: Theme.of(context).colorScheme.surfaceDim,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back_rounded),
-                              onPressed: () => {
-                                Navigator.of(context).pop(),
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Search Results',
-                              style: Theme.of(context).textTheme.displayLarge,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_rounded),
+                        onPressed: () => {
+                          Navigator.of(context).pop(),
+                        },
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Search Results',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
 
-                        // Search TextField
-                        Hero(
-                          tag: 'searchHero',
-                          child: Material(
-                            color: Colors.transparent,
-                            child: TextField(
-                              controller: searchTextFieldController,
-                              focusNode: searchTextFieldFocusNode,
-                              textInputAction: TextInputAction.search,
-                              onSubmitted: (value) => {
-                                debugPrint('Trying to Search with ${searchTextFieldController.text}'),
-                                if (searchTextFieldController.text.isNotEmpty)
-                                  searchTracksFromDatabase()
-                                else
-                                  debugPrint('Search Term Empty'),
-                              },
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              decoration: InputDecoration(
-                                hintText: 'Enter search term...',
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    Icons.search_rounded,
-                                    size: 24,
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
-                                  onPressed: () => {
-                                    debugPrint('Trying to Search with ${searchTextFieldController.text}'),
-                                    if (searchTextFieldController.text.isNotEmpty)
-                                      searchTracksFromDatabase()
-                                    else
-                                      debugPrint('Search Term Empty'),
-                                  },
-                                ),
-                              ),
+                  // Search TextField
+                  Hero(
+                    tag: 'searchHero',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: TextField(
+                        controller: searchTextFieldController,
+                        focusNode: searchTextFieldFocusNode,
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (value) => {
+                          debugPrint('Trying to Search with ${searchTextFieldController.text}'),
+                          if (searchTextFieldController.text.isNotEmpty)
+                            searchTracksFromDatabase()
+                          else
+                            debugPrint('Search Term Empty'),
+                        },
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        decoration: InputDecoration(
+                          hintText: 'Enter search term...',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.search_rounded,
+                              size: 24,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
+                            onPressed: () => {
+                              debugPrint('Trying to Search with ${searchTextFieldController.text}'),
+                              if (searchTextFieldController.text.isNotEmpty)
+                                searchTracksFromDatabase()
+                              else
+                                debugPrint('Search Term Empty'),
+                            },
                           ),
                         ),
-                        const SizedBox(height: 10),
-                      ],
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 10),
 
                   // Search Results ListViewBuilder
                   FutureBuilder<List<Track>>(
@@ -197,27 +185,20 @@ class _SearchScreenState extends State<SearchScreen> {
                           return Expanded(
                             child: Column(
                               children: [
-                                Container(
-                                  color: Theme.of(context).colorScheme.surfaceDim,
-                                  child: Column(
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Found ${snapshot.data!.length} Results:',
-                                              style: Theme.of(context).textTheme.titleMedium,
-                                            ),
-                                          ],
-                                        ),
+                                      Text(
+                                        'Found ${snapshot.data!.length} Results:',
+                                        style: Theme.of(context).textTheme.titleMedium,
                                       ),
-                                      const SizedBox(height: 10),
                                     ],
                                   ),
                                 ),
+                                const SizedBox(height: 10),
 
                                 // Search Results ListView Builder
                                 Expanded(

@@ -61,33 +61,32 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: Theme.of(context).colorScheme.surfaceDim,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.casino_rounded,
-                    size: 28,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Shuffler',
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
-                ],
-              ),
+          // Appbar Line 1
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.casino_rounded,
+                  size: 28,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'Shuffler',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+              ],
             ),
           ),
-          Container(
-            color: Theme.of(context).colorScheme.surfaceDim,
-            child: Text(
-              'Shuffle play from a wider more random selection of tracks:',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+
+          // Appbar Line 2
+          Text(
+            'Shuffle play from a wider more random selection of tracks:',
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 20),
+
+          // Shuffled Cards FutureBuilder
           FutureBuilder<List<Track>>(
             future: widget.trackListFuture,
             builder: (context, snapshot) {

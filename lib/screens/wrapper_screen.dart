@@ -64,11 +64,6 @@ class _WrapperScreenState extends State<WrapperScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Fix the Status bar ListView Ghosts
-        toolbarHeight: 0.0,
-        backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      ),
       body: SafeArea(
         child: Stack(
           children: [
