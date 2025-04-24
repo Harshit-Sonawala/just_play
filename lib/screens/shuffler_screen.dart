@@ -22,7 +22,8 @@ class ShufflerScreen extends StatefulWidget {
 }
 
 class _ShufflerScreenState extends State<ShufflerScreen> {
-  List<Track> getShuffledTrackList(List<Track> sourceTrackList, {int randomCount = 20}) {
+  // keep randomCount as a multiple of 3 since crossAxisCount = 3
+  List<Track> getShuffledTrackList(List<Track> sourceTrackList, {int randomCount = 18}) {
     List<Track> shuffledTrackList = [];
     if (sourceTrackList.isEmpty) {
       return shuffledTrackList;
@@ -107,88 +108,88 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                 final shuffledTrackList = getShuffledTrackList(snapshot.data!);
                 debugPrint('ShufflerScreen shuffledTrackList Length: ${shuffledTrackList.length}');
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
-                return SingleChildScrollView(
-                  child: SizedBox(
-                    height: 600,
-                    child: MasonryGridView.builder(
-                      // axisDirection: AxisDirection.down,
-                      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
-                      // crossAxisCount: 4,
-                      mainAxisSpacing: 6,
-                      crossAxisSpacing: 6,
-                      itemCount: shuffledTrackList.length,
-                      itemBuilder: (context, index) {
-                        Track eachTrack = shuffledTrackList[index];
-                        return CustomGridCard(
-                          onPressed: () {
-                            Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
-                          },
-                          onLongPress: () {
-                            debugPrint('onLongPress() of ${eachTrack.filePath}');
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // const Icon(Icons.music_note_rounded, size: 16),
-                              Text(
-                                '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
-                                style: Theme.of(context).textTheme.displaySmall,
-                                // maxLines: 4,
-                                // overflow: TextOverflow.ellipsis,
-                              ),
-                              if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text(
-                                    // '${eachTrack.artist!.substring(0, 71)}...',
-                                    '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    // maxLines: 4,
-                                    // overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
-                      // children: shuffledTrackList.map(
-                      //   (eachTrack) {
-                      //     return CustomGridCard(
-                      //       onPressed: () {
-                      //         Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
-                      //       },
-                      //       onLongPress: () {
-                      //         debugPrint('onLongPress() of ${eachTrack.filePath}');
-                      //       },
-                      //       child: InkWell(
-                      //         child: Column(
-                      //           crossAxisAlignment: CrossAxisAlignment.start,
-                      //           children: [
-                      //             Flexible(
-                      //               child: Text(
-                      //                 '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
-                      //                 style: Theme.of(context).textTheme.bodyMedium,
-                      //                 // overflow: TextOverflow.ellipsis,
-                      //               ),
-                      //             ),
-                      //             const SizedBox(height: 4),
-                      //             if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
-                      //               Text(
-                      //                 // '${eachTrack.artist!.substring(0, 71)}...',
-                      //                 '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
-                      //                 style: Theme.of(context).textTheme.bodySmall,
-                      //                 // maxLines: 1,
-                      //                 // overflow: TextOverflow.ellipsis,
-                      //               ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     );
-                      //   },
-                      // ).toList(),
+                return Expanded(
+                  // height: 600,
+                  child: MasonryGridView.builder(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    // axisDirection: AxisDirection.down,
+                    gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
                     ),
+                    // crossAxisCount: 4,
+                    mainAxisSpacing: 6,
+                    crossAxisSpacing: 6,
+                    itemCount: shuffledTrackList.length,
+                    itemBuilder: (context, index) {
+                      Track eachTrack = shuffledTrackList[index];
+                      return CustomGridCard(
+                        onPressed: () {
+                          Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
+                        },
+                        onLongPress: () {
+                          debugPrint('onLongPress() of ${eachTrack.filePath}');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // const Icon(Icons.music_note_rounded, size: 16),
+                            Text(
+                              '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
+                              style: Theme.of(context).textTheme.displaySmall,
+                              // maxLines: 4,
+                              // overflow: TextOverflow.ellipsis,
+                            ),
+                            if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  // '${eachTrack.artist!.substring(0, 71)}...',
+                                  '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  // maxLines: 4,
+                                  // overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                    // children: shuffledTrackList.map(
+                    //   (eachTrack) {
+                    //     return CustomGridCard(
+                    //       onPressed: () {
+                    //         Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
+                    //       },
+                    //       onLongPress: () {
+                    //         debugPrint('onLongPress() of ${eachTrack.filePath}');
+                    //       },
+                    //       child: InkWell(
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Flexible(
+                    //               child: Text(
+                    //                 '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
+                    //                 style: Theme.of(context).textTheme.bodyMedium,
+                    //                 // overflow: TextOverflow.ellipsis,
+                    //               ),
+                    //             ),
+                    //             const SizedBox(height: 4),
+                    //             if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
+                    //               Text(
+                    //                 // '${eachTrack.artist!.substring(0, 71)}...',
+                    //                 '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
+                    //                 style: Theme.of(context).textTheme.bodySmall,
+                    //                 // maxLines: 1,
+                    //                 // overflow: TextOverflow.ellipsis,
+                    //               ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    // ).toList(),
                   ),
                 );
               } else if (snapshot.hasError) {

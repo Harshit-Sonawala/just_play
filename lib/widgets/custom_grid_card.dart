@@ -29,37 +29,39 @@ class _CustomGridCardState extends State<CustomGridCard> {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 100),
-      child: Ink(
-        // width: 360,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(widget.borderRadius),
-          color: Theme.of(context).colorScheme.surface,
-        ),
-        // decoration: widget.backgroundImage != ''
-        //     ? BoxDecoration(
-        //         borderRadius: BorderRadius.circular(widget.borderRadius),
-        //         image: DecorationImage(
-        //           image: AssetImage(
-        //             widget.backgroundImage,
-        //           ),
-        //           fit: BoxFit.cover,
-        //           colorFilter: ColorFilter.mode(
-        //             Colors.black.withOpacity(0.2),
-        //             BlendMode.darken,
-        //           ),
-        //         ),
-        //       )
-        //     : BoxDecoration(
-        //         color: widget.color ?? Theme.of(context).colorScheme.surface,
-        //         borderRadius: BorderRadius.circular(widget.borderRadius),
-        //       ),
-        child: InkWell(
-          onTap: widget.onPressed,
-          onLongPress: widget.onLongPress,
-          borderRadius: BorderRadius.circular(widget.borderRadius),
-          child: Padding(
-            padding: widget.padding,
-            child: widget.child,
+      child: Material(
+        child: Ink(
+          // width: 360,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            color: Theme.of(context).colorScheme.surface,
+          ),
+          // decoration: widget.backgroundImage != ''
+          //     ? BoxDecoration(
+          //         borderRadius: BorderRadius.circular(widget.borderRadius),
+          //         image: DecorationImage(
+          //           image: AssetImage(
+          //             widget.backgroundImage,
+          //           ),
+          //           fit: BoxFit.cover,
+          //           colorFilter: ColorFilter.mode(
+          //             Colors.black.withOpacity(0.2),
+          //             BlendMode.darken,
+          //           ),
+          //         ),
+          //       )
+          //     : BoxDecoration(
+          //         color: widget.color ?? Theme.of(context).colorScheme.surface,
+          //         borderRadius: BorderRadius.circular(widget.borderRadius),
+          //       ),
+          child: InkWell(
+            onTap: widget.onPressed,
+            onLongPress: widget.onLongPress,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            child: Padding(
+              padding: widget.padding,
+              child: widget.child,
+            ),
           ),
         ),
       ),
