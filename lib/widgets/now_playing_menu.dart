@@ -7,6 +7,7 @@ import '../providers/audio_player_provider.dart';
 
 import '../widgets/custom_card.dart';
 import '../widgets/custom_elevated_button.dart';
+import '../widgets/custom_list_item.dart';
 
 class NowPlayingMenu extends StatefulWidget {
   const NowPlayingMenu({super.key});
@@ -41,12 +42,12 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+
     // Selector causes rebuilds only if nowPlayingTrack changes
     return Selector<AudioPlayerProvider, Track?>(
       selector: (context, audioPlayerProvider) => audioPlayerProvider.nowPlayingTrack,
       builder: (context, nowPlayingTrack, widget) {
-        final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-
         if (nowPlayingTrack == null) {
           return Container();
         }
@@ -388,7 +389,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       ),
                                     ),
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        audioPlayerProviderListenFalse.playPrevFromNowPlayingList();
+                                      },
                                       icon: const Icon(
                                         Icons.skip_previous_rounded,
                                         size: 36,
@@ -449,7 +452,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       },
                                     ),
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        audioPlayerProviderListenFalse.playNextFromNowPlayingList();
+                                      },
                                       icon: const Icon(
                                         Icons.skip_next_rounded,
                                         size: 36,
@@ -463,6 +468,45 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       ),
                                     ),
                                   ],
+                                ),
+                                const SizedBox(height: 20),
+
+                                // Up Next ListView Builder
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Up Next',
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Column(
+                                  children: Provider.of<AudioPlayerProvider>(context).nowPlayingList.map((eachTrack) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 6),
+                                      child: CustomListItem(
+                                        onPressed: () {
+                                          // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                                        },
+                                        onLongPress: () {
+                                          // Play next / some playlist functionality
+                                        },
+                                        fileName: eachTrack.fileName,
+                                        title: eachTrack.title,
+                                        artist: eachTrack.artist,
+                                        album: eachTrack.album,
+                                        albumArt: eachTrack.albumArt,
+                                        duration: eachTrack.fileDuration,
+                                        // body: eachTrack.path,
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               ],
                             ),

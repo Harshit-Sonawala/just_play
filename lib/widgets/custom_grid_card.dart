@@ -30,6 +30,7 @@ class _CustomGridCardState extends State<CustomGridCard> {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 100),
       child: Material(
+        color: Colors.transparent,
         child: Ink(
           // width: 360,
           decoration: BoxDecoration(

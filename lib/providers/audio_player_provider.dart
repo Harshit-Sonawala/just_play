@@ -15,14 +15,16 @@ class AudioPlayerProvider with ChangeNotifier {
   String? libraryDirectory;
   final AudioPlayer audioPlayer = AudioPlayer();
   Track? _nowPlayingTrack;
+  int nowPlayingTrackIndex = 0;
   // List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
   SharedPreferences? prefs;
-  List<Track> nowPlayingList = [];
+  final List<Track> _nowPlayingList = [];
 
   // Getters and Streams
   Track? get nowPlayingTrack => _nowPlayingTrack;
+  List<Track> get nowPlayingList => _nowPlayingList;
   Stream<Duration> get positionStream => audioPlayer.positionStream; // Get current playback position
   Stream<Duration?> get durationStream => audioPlayer.durationStream; // Get the song duration
   Stream<PlayerState> get playerStateStream => audioPlayer.playerStateStream; // Get player play/pause state
@@ -202,41 +204,78 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   Future<void> playTrack() async {
-    audioPlayer.play();
+    await audioPlayer.play();
   }
 
   Future<void> pauseTrack() async {
-    audioPlayer.pause();
+    await audioPlayer.pause();
   }
 
   Future<void> seekTrack(Duration newSeekValue) async {
-    audioPlayer.seek(newSeekValue);
+    await audioPlayer.seek(newSeekValue);
   }
 
   // Add to end of nowPlayingList
-  void addToNowPlayingList(Track trackToAdd) {
-    if (nowPlayingList.contains(trackToAdd)) {
+  void addToNowPlayingList(Track trackToAdd) async {
+    if (_nowPlayingList.contains(trackToAdd)) {
       debugPrint('addToNowPlayingList Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
-      nowPlayingList.add(trackToAdd);
+      if (_nowPlayingList.isEmpty) {
+        await setAudioPlayerFile(trackToAdd);
+        await playTrack();
+      }
+      _nowPlayingList.add(trackToAdd);
+      notifyListeners();
     }
   }
 
-  // Add to the beginning of nowPlayingList
-  void addToNowPlayingListBeginning(Track trackToAdd) {
-    if (nowPlayingList.contains(trackToAdd)) {
+  // Add to the upNext of _nowPlayingList
+  void addToNowPlayingListUpNext(Track trackToAdd) async {
+    if (_nowPlayingList.contains(trackToAdd)) {
       debugPrint('addToNowPlayingListBeginning Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
-      nowPlayingList.insert(0, trackToAdd);
+      if (_nowPlayingList.isEmpty) {
+        await setAudioPlayerFile(trackToAdd);
+        await playTrack();
+      }
+      _nowPlayingList.insert(nowPlayingTrackIndex + 1, trackToAdd);
+      notifyListeners();
     }
   }
 
-  // remove from nowPlayingList
+  // remove from _nowPlayingList
   void removeFromNowPlayingList(Track trackToRemove) {
-    if (nowPlayingList.contains(trackToRemove)) {
-      nowPlayingList.remove(trackToRemove);
+    if (_nowPlayingList.contains(trackToRemove)) {
+      _nowPlayingList.remove(trackToRemove);
+      notifyListeners();
     } else {
       debugPrint('removeFromNowPlayingList Cannot delete non existing track: ${trackToRemove.fileName}');
+    }
+  }
+
+  // play next from _nowPlayingList
+  void playNextFromNowPlayingList() async {
+    if (_nowPlayingList.isNotEmpty &&
+        nowPlayingTrackIndex + 1 < _nowPlayingList.length &&
+        _nowPlayingList[nowPlayingTrackIndex + 1] != null) {
+      nowPlayingTrackIndex += 1;
+      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
+      await playTrack();
+    } else {
+      debugPrint('playNextFromNowPlayingList Cannot play next track, nowPlayingTrackIndex: $nowPlayingTrackIndex');
+    }
+  }
+
+  // play prev from _nowPlayingList
+  void playPrevFromNowPlayingList() async {
+    if (_nowPlayingList.isNotEmpty &&
+        nowPlayingTrackIndex - 1 >= 0 &&
+        _nowPlayingList[nowPlayingTrackIndex - 1] != null) {
+      nowPlayingTrackIndex -= 1;
+      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
+      await playTrack();
+    } else {
+      debugPrint('playNextFromNowPlayingList Cannot play next track, nowPlayingTrackIndex: $nowPlayingTrackIndex');
     }
   }
 }

@@ -55,6 +55,8 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -123,10 +125,11 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                       Track eachTrack = shuffledTrackList[index];
                       return CustomGridCard(
                         onPressed: () {
-                          Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
+                          // Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
+                          audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
                         },
                         onLongPress: () {
-                          debugPrint('onLongPress() of ${eachTrack.filePath}');
+                          audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -154,41 +157,6 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                         ),
                       );
                     },
-                    // children: shuffledTrackList.map(
-                    //   (eachTrack) {
-                    //     return CustomGridCard(
-                    //       onPressed: () {
-                    //         Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
-                    //       },
-                    //       onLongPress: () {
-                    //         debugPrint('onLongPress() of ${eachTrack.filePath}');
-                    //       },
-                    //       child: InkWell(
-                    //         child: Column(
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             Flexible(
-                    //               child: Text(
-                    //                 '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
-                    //                 style: Theme.of(context).textTheme.bodyMedium,
-                    //                 // overflow: TextOverflow.ellipsis,
-                    //               ),
-                    //             ),
-                    //             const SizedBox(height: 4),
-                    //             if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
-                    //               Text(
-                    //                 // '${eachTrack.artist!.substring(0, 71)}...',
-                    //                 '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
-                    //                 style: Theme.of(context).textTheme.bodySmall,
-                    //                 // maxLines: 1,
-                    //                 // overflow: TextOverflow.ellipsis,
-                    //               ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    // ).toList(),
                   ),
                 );
               } else if (snapshot.hasError) {

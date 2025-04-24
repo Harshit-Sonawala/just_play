@@ -15,9 +15,9 @@ class HomeScreen extends StatefulWidget {
   final Function(int) onSortModeChanged; // Callback function
 
   const HomeScreen({
-    super.key,
     required this.trackListFuture,
     required this.onSortModeChanged,
+    super.key,
   });
 
   @override
@@ -27,6 +27,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
@@ -263,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 10),
 
-                      // All Tracks ListView Builder
+                      // All Tracks Main ListView Builder
                       Expanded(
                         child: ListView.builder(
                           // itemExtent: 80,
@@ -276,11 +278,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(bottom: 6),
                               child: CustomListItem(
                                 onPressed: () {
-                                  Provider.of<AudioPlayerProvider>(context, listen: false)
-                                      .setAudioPlayerFile(eachTrack);
+                                  audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
                                 },
                                 onLongPress: () {
-                                  // Play next / some playlist functionality
+                                  audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
                                 },
                                 fileName: eachTrack.fileName,
                                 title: eachTrack.title,

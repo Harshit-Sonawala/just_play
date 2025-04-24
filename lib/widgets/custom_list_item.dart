@@ -49,6 +49,7 @@ class _CustomListItemState extends State<CustomListItem> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       child: Ink(
         // padding: widget.padding,
         height: 60,
