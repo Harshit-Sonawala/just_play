@@ -19,6 +19,7 @@ class AudioPlayerProvider with ChangeNotifier {
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
   SharedPreferences? prefs;
+  List<Track> nowPlayingList = [];
 
   // Getters and Streams
   Track? get nowPlayingTrack => _nowPlayingTrack;
@@ -210,5 +211,32 @@ class AudioPlayerProvider with ChangeNotifier {
 
   Future<void> seekTrack(Duration newSeekValue) async {
     audioPlayer.seek(newSeekValue);
+  }
+
+  // Add to end of nowPlayingList
+  void addToNowPlayingList(Track trackToAdd) {
+    if (nowPlayingList.contains(trackToAdd)) {
+      debugPrint('addToNowPlayingList Cannot add duplicate track: ${trackToAdd.fileName}');
+    } else {
+      nowPlayingList.add(trackToAdd);
+    }
+  }
+
+  // Add to the beginning of nowPlayingList
+  void addToNowPlayingListBeginning(Track trackToAdd) {
+    if (nowPlayingList.contains(trackToAdd)) {
+      debugPrint('addToNowPlayingListBeginning Cannot add duplicate track: ${trackToAdd.fileName}');
+    } else {
+      nowPlayingList.insert(0, trackToAdd);
+    }
+  }
+
+  // remove from nowPlayingList
+  void removeFromNowPlayingList(Track trackToRemove) {
+    if (nowPlayingList.contains(trackToRemove)) {
+      nowPlayingList.remove(trackToRemove);
+    } else {
+      debugPrint('removeFromNowPlayingList Cannot delete non existing track: ${trackToRemove.fileName}');
+    }
   }
 }
