@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/custom_card.dart';
+import '../custom_card.dart';
 
 class TrackCard extends StatefulWidget {
   final VoidCallback? onPressed;

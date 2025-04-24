@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // import '../screens/wip_screen.dart';
 // import '../screens/user_account_screen.dart';
 // import '../screens/test_screen.dart';
-import '../widgets/custom_card.dart';
+import '../custom_card.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});

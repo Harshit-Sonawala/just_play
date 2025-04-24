@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'old_home_screen.dart';
-import './explore_screen.dart';
-import './playlists_screen.dart';
-import './account_screen.dart';
+import 'explore_screen.dart';
+import '../playlists_screen.dart';
+import 'account_screen.dart';
 
-import '../widgets/custom_card.dart';
-import '../widgets/custom_drawer.dart';
-import '../widgets/old_now_playing_bar.dart';
+import '../../widgets/custom_card.dart';
+import '../../widgets/deprecated/custom_drawer.dart';
+import '../../widgets/deprecated/old_now_playing_bar.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});

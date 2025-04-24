@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_card.dart';
+import '../custom_card.dart';
 
 class CustomCircularLoader extends StatefulWidget {
   final String title;

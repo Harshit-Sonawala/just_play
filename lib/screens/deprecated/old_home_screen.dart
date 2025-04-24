@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/custom_card.dart';
-import '../widgets/old_custom_elevated_button.dart';
-import '../widgets/track_card.dart';
+import '../../widgets/custom_card.dart';
+import '../../widgets/deprecated/old_custom_elevated_button.dart';
+import '../../widgets/deprecated/track_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

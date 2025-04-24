@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './custom_card.dart';
+import '../custom_card.dart';
 
 class NowPlayingBar extends StatefulWidget {
   const NowPlayingBar({super.key});
