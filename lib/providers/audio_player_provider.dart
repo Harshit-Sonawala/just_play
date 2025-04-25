@@ -34,6 +34,7 @@ class AudioPlayerProvider with ChangeNotifier {
   AudioPlayerProvider() {
     initializeSharedPrefs();
     initializeAudioPlayerProvider();
+    listenForTrackCompletion();
   }
 
   Future<void> initializeSharedPrefs() async {
@@ -65,6 +66,18 @@ class AudioPlayerProvider with ChangeNotifier {
     //   // nowPlayingPosition = obtainedPosition.inSeconds; // returns int
     //   notifyListeners();
     // });
+  }
+
+  void listenForTrackCompletion() {
+    audioPlayer.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) {
+        if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
+          playNextFromNowPlayingList();
+        } else {
+          playIndexFromNowPlayingList(0); // start from the beginning of playlist
+        }
+      }
+    });
   }
 
   Future<void> requestPermission() async {
@@ -232,7 +245,7 @@ class AudioPlayerProvider with ChangeNotifier {
   // Add to the upNext of _nowPlayingList
   void addToNowPlayingListUpNext(Track trackToAdd) async {
     if (_nowPlayingList.contains(trackToAdd)) {
-      debugPrint('addToNowPlayingListBeginning Cannot add duplicate track: ${trackToAdd.fileName}');
+      debugPrint('addToNowPlayingListUpNext Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
       if (_nowPlayingList.isEmpty) {
         await setAudioPlayerFile(trackToAdd);
@@ -262,7 +275,7 @@ class AudioPlayerProvider with ChangeNotifier {
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
     } else {
-      debugPrint('playNextFromNowPlayingList Cannot play next track, nowPlayingTrackIndex: $nowPlayingTrackIndex');
+      debugPrint('playNextFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: $nowPlayingTrackIndex');
     }
   }
 
@@ -275,7 +288,18 @@ class AudioPlayerProvider with ChangeNotifier {
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
     } else {
-      debugPrint('playNextFromNowPlayingList Cannot play next track, nowPlayingTrackIndex: $nowPlayingTrackIndex');
+      debugPrint('playPrevFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: $nowPlayingTrackIndex');
+    }
+  }
+
+  // play specific index from _nowPlayingList
+  void playIndexFromNowPlayingList(int indexToPlay) async {
+    if (nowPlayingList.isNotEmpty && indexToPlay < _nowPlayingList.length && _nowPlayingList[indexToPlay] != null) {
+      nowPlayingTrackIndex = indexToPlay;
+      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
+      await playTrack();
+    } else {
+      debugPrint('playIndexFromNowPlayingList Cannot play track at nowPlayingIndex: $nowPlayingTrackIndex');
     }
   }
 }
