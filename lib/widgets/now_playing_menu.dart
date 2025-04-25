@@ -487,15 +487,22 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 ),
                                 const SizedBox(height: 10),
                                 Column(
-                                  children: Provider.of<AudioPlayerProvider>(context).nowPlayingList.map((eachTrack) {
+                                  children: Provider.of<AudioPlayerProvider>(context)
+                                      .nowPlayingList
+                                      .asMap()
+                                      .entries
+                                      .map((eachEntry) {
+                                    int eachTrackIndex = eachEntry.key;
+                                    Track eachTrack = eachEntry.value;
+
                                     return Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
                                       child: CustomListItem(
                                         onPressed: () {
-                                          // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                                          audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
                                         },
                                         onLongPress: () {
-                                          // Play next / some playlist functionality
+                                          audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
                                         },
                                         fileName: eachTrack.fileName,
                                         title: eachTrack.title,
