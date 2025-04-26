@@ -68,21 +68,25 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
           const SizedBox(height: 20),
           Text(
             'Just browse for your device folder to load all your music files.',
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 20),
           Text(
             'Music Library:',
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: TextField(
+                  enabled: false,
                   readOnly: true,
                   controller: musicDirectoryTextFieldController,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                  ),
                 ),
               ),
             ],
@@ -137,7 +141,7 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
             Center(
               child: Text(
                 'Select a folder to continue',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
         ],

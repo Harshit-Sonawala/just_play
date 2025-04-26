@@ -64,7 +64,7 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
           if (widget.title != null)
             Text(
               widget.title!,
-              style: widget.titleStyle ?? Theme.of(context).textTheme.titleMedium,
+              style: widget.titleStyle ?? Theme.of(context).textTheme.bodyLarge,
             ),
           if (widget.trailingIcon != null)
             Padding(

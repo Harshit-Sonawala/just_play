@@ -50,12 +50,12 @@ class _OnboardingPage1State extends State<OnboardingPage1> {
           const SizedBox(height: 20),
           Text(
             'A beautiful app for quickly playing all your local audio files.',
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 20),
           Text(
             'Please provide the file and audio playback permissions whenever prompted.',
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const Spacer(),
           Center(
@@ -82,7 +82,7 @@ class _OnboardingPage1State extends State<OnboardingPage1> {
             },
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
             title: 'Start',
-            titleStyle: Theme.of(context).textTheme.titleMedium,
+            titleStyle: Theme.of(context).textTheme.bodyLarge,
             trailingIcon: Icons.arrow_forward_rounded,
           ),
         ],

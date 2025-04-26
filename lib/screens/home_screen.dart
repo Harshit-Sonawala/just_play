@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         enabled: false,
                         // controller: searchTextFieldController,
                         // focusNode: searchTextFieldFocusNode,
-                        textInputAction: TextInputAction.search, // replaces keyboard's Enter with Search Icon
+                        // textInputAction: TextInputAction.search, // replaces keyboard's Enter with Search Icon
                         // onSubmitted: (value) {
                         //   debugPrint(
                         //       'onSubmitted Trying to nav to search screen with ${searchTextFieldController.text}');

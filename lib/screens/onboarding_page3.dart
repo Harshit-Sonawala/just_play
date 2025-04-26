@@ -151,7 +151,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                         },
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
                         title: 'Start Playing',
-                        titleStyle: Theme.of(context).textTheme.titleMedium,
+                        titleStyle: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
                   ),

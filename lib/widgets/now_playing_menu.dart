@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:marquee/marquee.dart';
 
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
@@ -64,6 +65,10 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
               builder: (BuildContext context, BoxConstraints constraints) {
                 const double expandThreshold = 150.0;
                 final bool isExpanded = constraints.maxHeight > expandThreshold;
+                final String? nowPlayingTrackTitle =
+                    (nowPlayingTrack.title != null && nowPlayingTrack.title!.isNotEmpty)
+                        ? nowPlayingTrack.title
+                        : nowPlayingTrack.fileName;
 
                 return CustomCard(
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -124,13 +129,27 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      '${(nowPlayingTrack.title != null && nowPlayingTrack.title!.isNotEmpty) ? nowPlayingTrack.title : nowPlayingTrack.fileName}',
-                                      // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
-                                      style: Theme.of(context).textTheme.displaySmall,
-                                      // maxLines: 1,
-                                      // overflow: TextOverflow.ellipsis,
-                                    ),
+                                    nowPlayingTrackTitle!.length > 50
+                                        ? SizedBox(
+                                            height: 20,
+                                            child: Marquee(
+                                              text: nowPlayingTrackTitle,
+                                              // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
+                                              style: Theme.of(context).textTheme.displaySmall,
+                                              scrollAxis: Axis.horizontal,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              blankSpace: 200,
+                                              velocity: 60,
+                                              pauseAfterRound: const Duration(seconds: 5),
+                                            ),
+                                          )
+                                        : Text(
+                                            nowPlayingTrackTitle,
+                                            // '${(nowPlayingTrack.title != null && nowPlayingTrack.title!.isNotEmpty) ? nowPlayingTrack.title : nowPlayingTrack.fileName}',
+                                            style: Theme.of(context).textTheme.displaySmall,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
 
                                     // Mini Player Now Playing Current Position
                                     Row(
