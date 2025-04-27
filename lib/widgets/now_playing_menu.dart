@@ -55,11 +55,11 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
 
         return DraggableScrollableSheet(
           // controller: draggableScrollableSheetController,
-          initialChildSize: 0.1,
-          minChildSize: 0.1,
+          initialChildSize: 0.11,
+          minChildSize: 0.11,
           maxChildSize: 1.0,
           snap: true,
-          snapSizes: const [0.1, 1.0],
+          snapSizes: const [0.11, 1.0],
           builder: (context, nowPlayingScrollController) {
             return LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
@@ -93,137 +93,171 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                         const SizedBox(height: 5),
 
                         AnimatedCrossFade(
-                          firstChild: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          firstChild: Column(
                             children: [
-                              // Mini Player Album Art / Placeholder Icon
-                              if (nowPlayingTrack.albumArt == null)
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Theme.of(context).colorScheme.surfaceBright,
-                                  ),
-                                  padding: const EdgeInsets.all(14),
-                                  child: Icon(
-                                    Icons.album_rounded,
-                                    size: 28,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                )
-                              else
-                                Container(
-                                  padding: const EdgeInsets.all(26),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    image: DecorationImage(
-                                      image: MemoryImage(nowPlayingTrack.albumArt!),
-                                      fit: BoxFit.cover,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Mini Player Album Art / Placeholder Icon
+                                  if (nowPlayingTrack.albumArt == null)
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Theme.of(context).colorScheme.surfaceBright,
+                                      ),
+                                      padding: const EdgeInsets.all(14),
+                                      child: Icon(
+                                        Icons.album_rounded,
+                                        size: 28,
+                                        color: Theme.of(context).colorScheme.primary,
+                                      ),
+                                    )
+                                  else
+                                    Container(
+                                      padding: const EdgeInsets.all(26),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        image: DecorationImage(
+                                          image: MemoryImage(nowPlayingTrack.albumArt!),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              const SizedBox(width: 12),
+                                  const SizedBox(width: 12),
 
-                              // Mini Player Track Title / File Name
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    nowPlayingTrackTitle!.length > 50
-                                        ? SizedBox(
-                                            height: 20,
-                                            child: Marquee(
-                                              text: nowPlayingTrackTitle,
-                                              // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
-                                              style: Theme.of(context).textTheme.displaySmall,
-                                              scrollAxis: Axis.horizontal,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              blankSpace: 200,
-                                              velocity: 60,
-                                              pauseAfterRound: const Duration(seconds: 5),
-                                            ),
-                                          )
-                                        : Text(
-                                            nowPlayingTrackTitle,
-                                            // '${(nowPlayingTrack.title != null && nowPlayingTrack.title!.isNotEmpty) ? nowPlayingTrack.title : nowPlayingTrack.fileName}',
-                                            style: Theme.of(context).textTheme.displaySmall,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-
-                                    // Mini Player Now Playing Current Position
-                                    Row(
+                                  // Mini Player Track Title / File Name
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        StreamBuilder<Duration>(
-                                          stream: audioPlayerProviderListenFalse.positionStream,
-                                          builder: (context, snapshot) {
-                                            return Text(
-                                              formatDuration(snapshot.data ?? Duration.zero),
+                                        nowPlayingTrackTitle!.length > 50
+                                            ? SizedBox(
+                                                height: 20,
+                                                child: Marquee(
+                                                  text: nowPlayingTrackTitle,
+                                                  // '${(widget.title != null && widget.title!.isNotEmpty) ? widget.title : widget.fileName}',
+                                                  style: Theme.of(context).textTheme.displaySmall,
+                                                  scrollAxis: Axis.horizontal,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  blankSpace: 200,
+                                                  velocity: 60,
+                                                  pauseAfterRound: const Duration(seconds: 5),
+                                                ),
+                                              )
+                                            : Text(
+                                                nowPlayingTrackTitle,
+                                                // '${(nowPlayingTrack.title != null && nowPlayingTrack.title!.isNotEmpty) ? nowPlayingTrack.title : nowPlayingTrack.fileName}',
+                                                style: Theme.of(context).textTheme.displaySmall,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+
+                                        // Mini Player Now Playing Duration / Position
+                                        Row(
+                                          children: [
+                                            StreamBuilder<Duration>(
+                                              stream: audioPlayerProviderListenFalse.positionStream,
+                                              builder: (context, snapshot) {
+                                                return Text(
+                                                  formatDuration(snapshot.data ?? Duration.zero),
+                                                  style: Theme.of(context).textTheme.bodySmall,
+                                                );
+                                              },
+                                            ),
+                                            Text(
+                                              ' / ',
                                               style: Theme.of(context).textTheme.bodySmall,
-                                            );
-                                          },
-                                        ),
-                                        Text(
-                                          ' / ',
-                                          style: Theme.of(context).textTheme.bodySmall,
-                                        ),
-                                        // Mini Player Now Playing Total Duration
-                                        StreamBuilder<Duration?>(
-                                          stream: audioPlayerProviderListenFalse.durationStream,
-                                          builder: (context, snapshot) {
-                                            return Text(
-                                              formatDuration(snapshot.data ?? Duration.zero),
-                                              style: Theme.of(context).textTheme.bodySmall,
-                                            );
-                                          },
+                                            ),
+                                            // Mini Player Now Playing Total Duration
+                                            StreamBuilder<Duration?>(
+                                              stream: audioPlayerProviderListenFalse.durationStream,
+                                              builder: (context, snapshot) {
+                                                return Text(
+                                                  formatDuration(snapshot.data ?? Duration.zero),
+                                                  style: Theme.of(context).textTheme.bodySmall,
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 8),
+                                  ),
+                                  const SizedBox(width: 8),
 
-                              // Mini Player Controls
-                              StreamBuilder<ProcessingState>(
-                                stream: audioPlayerProviderListenFalse.processingStateStream,
-                                builder: (context, processingSnapshot) {
-                                  final stopState = processingSnapshot.data;
-                                  if (stopState == ProcessingState.completed) {
-                                    return IconButton(
-                                      padding: const EdgeInsets.all(10),
-                                      onPressed: () {
-                                        audioPlayerProviderListenFalse.seekTrack(Duration.zero);
-                                        audioPlayerProviderListenFalse.playTrack();
-                                      },
-                                      icon: Icon(
-                                        Icons.replay_rounded,
-                                        color: Theme.of(context).colorScheme.primary,
-                                        size: 32,
-                                      ),
-                                    );
-                                  } else {
-                                    return StreamBuilder<PlayerState>(
-                                      stream: audioPlayerProviderListenFalse.playerStateStream,
-                                      builder: (context, playerSnapshot) {
-                                        final isPlaying = playerSnapshot.data?.playing ?? false;
+                                  // Mini Player Controls
+                                  StreamBuilder<ProcessingState>(
+                                    stream: audioPlayerProviderListenFalse.processingStateStream,
+                                    builder: (context, processingSnapshot) {
+                                      final stopState = processingSnapshot.data;
+                                      if (stopState == ProcessingState.completed) {
                                         return IconButton(
                                           padding: const EdgeInsets.all(10),
                                           onPressed: () {
-                                            isPlaying
-                                                ? audioPlayerProviderListenFalse.pauseTrack()
-                                                : audioPlayerProviderListenFalse.playTrack();
+                                            audioPlayerProviderListenFalse.seekTrack(Duration.zero);
+                                            audioPlayerProviderListenFalse.playTrack();
                                           },
                                           icon: Icon(
-                                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                            Icons.replay_rounded,
                                             color: Theme.of(context).colorScheme.primary,
                                             size: 32,
                                           ),
                                         );
+                                      } else {
+                                        return StreamBuilder<PlayerState>(
+                                          stream: audioPlayerProviderListenFalse.playerStateStream,
+                                          builder: (context, playerSnapshot) {
+                                            final isPlaying = playerSnapshot.data?.playing ?? false;
+                                            return IconButton(
+                                              padding: const EdgeInsets.all(10),
+                                              onPressed: () {
+                                                isPlaying
+                                                    ? audioPlayerProviderListenFalse.pauseTrack()
+                                                    : audioPlayerProviderListenFalse.playTrack();
+                                              },
+                                              icon: Icon(
+                                                isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                                color: Theme.of(context).colorScheme.primary,
+                                                size: 32,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+
+                              // Mini Player Position / Duration LinearProgressIndicator
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2),
+                                child: StreamBuilder<Duration?>(
+                                  stream: audioPlayerProviderListenFalse.durationStream,
+                                  builder: (context, durationSnapshot) {
+                                    final duration = durationSnapshot.data ?? Duration.zero;
+                                    final durationMs = duration.inMilliseconds.toDouble();
+
+                                    return StreamBuilder<Duration>(
+                                      stream: audioPlayerProviderListenFalse.positionStream,
+                                      builder: (context, positionSnapshot) {
+                                        final position = positionSnapshot.data ?? Duration.zero;
+                                        final positionMs = position.inMilliseconds.toDouble();
+
+                                        return LinearProgressIndicator(
+                                          value: (positionMs / durationMs).clamp(0.0, 1.0),
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                            Theme.of(context).colorScheme.primary,
+                                          ),
+                                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                          minHeight: 3,
+                                        );
                                       },
                                     );
-                                  }
-                                },
+                                  },
+                                ),
                               ),
                             ],
                           ),
