@@ -278,7 +278,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(bottom: 6),
                               child: CustomListItem(
                                 onPressed: () {
-                                  audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                                  // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                                  audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
                                 },
                                 onLongPress: () {
                                   audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
