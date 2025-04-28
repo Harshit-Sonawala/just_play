@@ -15,7 +15,7 @@ class AudioPlayerProvider with ChangeNotifier {
   String? libraryDirectory;
   final AudioPlayer audioPlayer = AudioPlayer();
   Track? _nowPlayingTrack;
-  int nowPlayingTrackIndex = 0;
+  int nowPlayingTrackIndex = -1;
   // List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
   var databaseProvider = DatabaseProvider();
@@ -234,10 +234,11 @@ class AudioPlayerProvider with ChangeNotifier {
       debugPrint('addToNowPlayingList Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
       if (_nowPlayingList.isEmpty) {
-        await setAudioPlayerFile(trackToAdd);
-        await playTrack();
+        _nowPlayingList.add(trackToAdd);
+        playNextFromNowPlayingList();
+      } else {
+        _nowPlayingList.add(trackToAdd);
       }
-      _nowPlayingList.add(trackToAdd);
       notifyListeners();
     }
   }
@@ -248,8 +249,8 @@ class AudioPlayerProvider with ChangeNotifier {
       debugPrint('addToNowPlayingListUpNext Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
       if (_nowPlayingList.isEmpty) {
-        await setAudioPlayerFile(trackToAdd);
-        await playTrack();
+        _nowPlayingList.add(trackToAdd);
+        playNextFromNowPlayingList();
       }
       _nowPlayingList.insert(nowPlayingTrackIndex + 1, trackToAdd);
       notifyListeners();
@@ -275,7 +276,8 @@ class AudioPlayerProvider with ChangeNotifier {
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
     } else {
-      debugPrint('playNextFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: $nowPlayingTrackIndex');
+      debugPrint(
+          'playNextFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex + 1}');
     }
   }
 
@@ -288,7 +290,8 @@ class AudioPlayerProvider with ChangeNotifier {
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
     } else {
-      debugPrint('playPrevFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: $nowPlayingTrackIndex');
+      debugPrint(
+          'playPrevFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex - 1}');
     }
   }
 
@@ -299,7 +302,7 @@ class AudioPlayerProvider with ChangeNotifier {
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
     } else {
-      debugPrint('playIndexFromNowPlayingList Cannot play track at nowPlayingIndex: $nowPlayingTrackIndex');
+      debugPrint('playIndexFromNowPlayingList Cannot play track at indexToPlay: $indexToPlay');
     }
   }
 }
