@@ -57,7 +57,7 @@ class _CustomListItemState extends State<CustomListItem> {
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: widget.selected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+          color: widget.selected ? Theme.of(context).colorScheme.surfaceBright : Theme.of(context).colorScheme.surface,
         ),
         child: InkWell(
           onTap: widget.onPressed,

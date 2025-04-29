@@ -196,8 +196,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                         return IconButton(
                                           padding: const EdgeInsets.all(10),
                                           onPressed: () {
-                                            audioPlayerProviderListenFalse.seekTrack(Duration.zero);
-                                            audioPlayerProviderListenFalse.playTrack();
+                                            audioPlayerProviderListenFalse.replayCurrentTrack();
                                           },
                                           icon: Icon(
                                             Icons.replay_rounded,
@@ -465,8 +464,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                             child: IconButton(
                                               padding: const EdgeInsets.all(14),
                                               onPressed: () {
-                                                audioPlayerProviderListenFalse.seekTrack(Duration.zero);
-                                                audioPlayerProviderListenFalse.playTrack();
+                                                audioPlayerProviderListenFalse.replayCurrentTrack();
                                               },
                                               icon: Icon(
                                                 Icons.replay_rounded,
@@ -553,10 +551,18 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       padding: const EdgeInsets.only(bottom: 6),
                                       child: CustomListItem(
                                         onPressed: () {
-                                          audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
+                                          if (eachTrackIndex ==
+                                              Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
+                                          } else {
+                                            audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
+                                          }
                                         },
                                         onLongPress: () {
-                                          audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
+                                          if (eachTrackIndex ==
+                                              Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
+                                          } else {
+                                            audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
+                                          }
                                         },
                                         selected: eachTrackIndex ==
                                             Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex,

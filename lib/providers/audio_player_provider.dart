@@ -34,7 +34,7 @@ class AudioPlayerProvider with ChangeNotifier {
   AudioPlayerProvider() {
     initializeSharedPrefs();
     initializeAudioPlayerProvider();
-    listenForTrackCompletion();
+    autoPlayNextOnTrackCompletion();
   }
 
   Future<void> initializeSharedPrefs() async {
@@ -66,18 +66,6 @@ class AudioPlayerProvider with ChangeNotifier {
     //   // nowPlayingPosition = obtainedPosition.inSeconds; // returns int
     //   notifyListeners();
     // });
-  }
-
-  void listenForTrackCompletion() {
-    audioPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
-        if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
-          playNextFromNowPlayingList();
-        } else {
-          playIndexFromNowPlayingList(0); // start from the beginning of playlist
-        }
-      }
-    });
   }
 
   Future<void> requestPermission() async {
@@ -228,6 +216,12 @@ class AudioPlayerProvider with ChangeNotifier {
     await audioPlayer.seek(newSeekValue);
   }
 
+  // simple reusable replay
+  void replayCurrentTrack() {
+    seekTrack(Duration.zero);
+    playTrack();
+  }
+
   // Add to end of nowPlayingList
   void addToNowPlayingList(Track trackToAdd) async {
     if (_nowPlayingList.contains(trackToAdd)) {
@@ -304,5 +298,18 @@ class AudioPlayerProvider with ChangeNotifier {
     } else {
       debugPrint('playIndexFromNowPlayingList Cannot play track at indexToPlay: $indexToPlay');
     }
+  }
+
+  // play next track on track completion
+  void autoPlayNextOnTrackCompletion() {
+    audioPlayer.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) {
+        if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
+          playNextFromNowPlayingList();
+        } else {
+          playIndexFromNowPlayingList(0); // start from the beginning of playlist
+        }
+      }
+    });
   }
 }
