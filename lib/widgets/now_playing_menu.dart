@@ -549,57 +549,26 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     int eachTrackIndex = eachEntry.key;
                                     Track eachTrack = eachEntry.value;
 
-                                    if (eachTrackIndex ==
-                                        Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
-                                      return Column(
-                                        children: [
-                                          CustomListItem(
-                                            onPressed: () {
-                                              audioPlayerProviderListenFalse
-                                                  .playIndexFromNowPlayingList(eachTrackIndex);
-                                            },
-                                            onLongPress: () {
-                                              audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
-                                            },
-                                            fileName: eachTrack.fileName,
-                                            title: eachTrack.title,
-                                            artist: eachTrack.artist,
-                                            album: eachTrack.album,
-                                            albumArt: eachTrack.albumArt,
-                                            duration: eachTrack.fileDuration,
-                                            // body: eachTrack.path,
-                                          ),
-                                          const CustomDivider(
-                                            margin: EdgeInsets.only(
-                                              left: 0,
-                                              top: 5,
-                                              right: 0,
-                                              bottom: 10,
-                                            ),
-                                            thickness: 3,
-                                          ),
-                                        ],
-                                      );
-                                    } else {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 6),
-                                        child: CustomListItem(
-                                          onPressed: () {
-                                            audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
-                                          },
-                                          onLongPress: () {
-                                            audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
-                                          },
-                                          fileName: eachTrack.fileName,
-                                          title: eachTrack.title,
-                                          artist: eachTrack.artist,
-                                          album: eachTrack.album,
-                                          albumArt: eachTrack.albumArt,
-                                          duration: eachTrack.fileDuration,
-                                          // body: eachTrack.path,
-                                        ),
-                                      );
-                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 6),
+                                      child: CustomListItem(
+                                        onPressed: () {
+                                          audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
+                                        },
+                                        onLongPress: () {
+                                          audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
+                                        },
+                                        selected: eachTrackIndex ==
+                                            Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex,
+                                        fileName: eachTrack.fileName,
+                                        title: eachTrack.title,
+                                        artist: eachTrack.artist,
+                                        album: eachTrack.album,
+                                        albumArt: eachTrack.albumArt,
+                                        duration: eachTrack.fileDuration,
+                                        // body: eachTrack.path,
+                                      ),
+                                    );
                                   }).toList(),
                                 ),
                               ],

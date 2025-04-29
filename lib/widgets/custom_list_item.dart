@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class CustomListItem extends StatefulWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
+  final bool selected;
   final EdgeInsets padding;
   final String? fileName;
   final String? title;
@@ -15,6 +16,7 @@ class CustomListItem extends StatefulWidget {
   const CustomListItem({
     required this.onPressed,
     this.onLongPress,
+    this.selected = false,
     this.padding = const EdgeInsets.fromLTRB(6, 4, 16, 4),
     required this.fileName,
     this.title,
@@ -55,7 +57,7 @@ class _CustomListItemState extends State<CustomListItem> {
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).colorScheme.surface,
+          color: widget.selected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
         ),
         child: InkWell(
           onTap: widget.onPressed,
