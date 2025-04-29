@@ -10,7 +10,7 @@ class CustomDivider extends StatefulWidget {
     this.margin = const EdgeInsets.symmetric(vertical: 5),
     this.padding = const EdgeInsets.all(0),
     this.color,
-    this.thickness = 1.4,
+    this.thickness = 2,
     super.key,
   });
 
@@ -29,6 +29,7 @@ class _CustomDividerState extends State<CustomDivider> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
+            // color: widget.color ?? Theme.of(context).colorScheme.onSurface,
             color: widget.color ?? Theme.of(context).colorScheme.surfaceBright,
             width: widget.thickness,
           ),

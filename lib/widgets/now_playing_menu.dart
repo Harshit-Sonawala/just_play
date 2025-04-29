@@ -9,6 +9,7 @@ import '../providers/audio_player_provider.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
+import '../widgets/custom_divider.dart';
 
 class NowPlayingMenu extends StatefulWidget {
   const NowPlayingMenu({super.key});
@@ -524,7 +525,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 ),
                                 const SizedBox(height: 20),
 
-                                // Up Next ListView Builder
+                                // Expanded Player Up Next / Playlist ListView Builder
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: Row(
@@ -548,24 +549,57 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     int eachTrackIndex = eachEntry.key;
                                     Track eachTrack = eachEntry.value;
 
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 6),
-                                      child: CustomListItem(
-                                        onPressed: () {
-                                          audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
-                                        },
-                                        onLongPress: () {
-                                          audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
-                                        },
-                                        fileName: eachTrack.fileName,
-                                        title: eachTrack.title,
-                                        artist: eachTrack.artist,
-                                        album: eachTrack.album,
-                                        albumArt: eachTrack.albumArt,
-                                        duration: eachTrack.fileDuration,
-                                        // body: eachTrack.path,
-                                      ),
-                                    );
+                                    if (eachTrackIndex ==
+                                        Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
+                                      return Column(
+                                        children: [
+                                          CustomListItem(
+                                            onPressed: () {
+                                              audioPlayerProviderListenFalse
+                                                  .playIndexFromNowPlayingList(eachTrackIndex);
+                                            },
+                                            onLongPress: () {
+                                              audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
+                                            },
+                                            fileName: eachTrack.fileName,
+                                            title: eachTrack.title,
+                                            artist: eachTrack.artist,
+                                            album: eachTrack.album,
+                                            albumArt: eachTrack.albumArt,
+                                            duration: eachTrack.fileDuration,
+                                            // body: eachTrack.path,
+                                          ),
+                                          const CustomDivider(
+                                            margin: EdgeInsets.only(
+                                              left: 0,
+                                              top: 5,
+                                              right: 0,
+                                              bottom: 10,
+                                            ),
+                                            thickness: 3,
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 6),
+                                        child: CustomListItem(
+                                          onPressed: () {
+                                            audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
+                                          },
+                                          onLongPress: () {
+                                            audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
+                                          },
+                                          fileName: eachTrack.fileName,
+                                          title: eachTrack.title,
+                                          artist: eachTrack.artist,
+                                          album: eachTrack.album,
+                                          albumArt: eachTrack.albumArt,
+                                          duration: eachTrack.fileDuration,
+                                          // body: eachTrack.path,
+                                        ),
+                                      );
+                                    }
                                   }).toList(),
                                 ),
                               ],
