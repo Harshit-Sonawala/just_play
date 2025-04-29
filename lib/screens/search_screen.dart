@@ -45,6 +45,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -210,11 +212,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                           padding: const EdgeInsets.only(bottom: 8),
                                           child: CustomListItem(
                                             onPressed: () {
-                                              Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                  .setAudioPlayerFile(eachTrack);
+                                              // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                                              audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
                                             },
                                             onLongPress: () {
-                                              // Play next / some playlist functionality
+                                              audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
                                             },
                                             fileName: eachTrack.fileName,
                                             title: eachTrack.title,

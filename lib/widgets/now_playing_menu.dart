@@ -9,7 +9,6 @@ import '../providers/audio_player_provider.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
-import '../widgets/custom_divider.dart';
 
 class NowPlayingMenu extends StatefulWidget {
   const NowPlayingMenu({super.key});
