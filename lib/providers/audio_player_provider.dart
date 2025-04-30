@@ -279,8 +279,9 @@ class AudioPlayerProvider with ChangeNotifier {
   // play next track on track completion with listener
   void autoPlayNextOnTrackCompletion() {
     audioPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
+      if (state == ProcessingState.completed && _nowPlayingList.length > 1) {
         if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
+          // Play next track from playlist
           playNextFromNowPlayingList();
         } else {
           // start from the beginning of playlist
