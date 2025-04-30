@@ -551,24 +551,13 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       child: CustomListItem(
                                         onPressed: () {
                                           if (eachTrackIndex ==
-                                              Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
+                                              Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                  .nowPlayingTrackIndex) {
                                           } else {
                                             audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
                                           }
                                         },
                                         onLongPress: () {
-                                          // if (eachTrackIndex ==
-                                          //     Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
-
-                                          //   if (Provider.of<AudioPlayerProvider>(context).nowPlayingList.length == 1) {
-
-                                          //     audioPlayerProviderListenFalse.stopTrack();
-                                          //     audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
-                                          //     audioPlayerProviderListenFalse.removeAudioPlayerFile();
-                                          //   }
-                                          // } else {
-                                          //   audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
-                                          // }
                                           audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
                                         },
                                         selected: eachTrackIndex ==

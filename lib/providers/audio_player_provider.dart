@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -230,6 +232,64 @@ class AudioPlayerProvider with ChangeNotifier {
     playTrack();
   }
 
+  // play next from _nowPlayingList
+  void playNextFromNowPlayingList() async {
+    if (_nowPlayingList.isNotEmpty &&
+        nowPlayingTrackIndex + 1 < _nowPlayingList.length &&
+        _nowPlayingList[nowPlayingTrackIndex + 1] != null) {
+      // playlist not empty && index within range && next track exists
+      nowPlayingTrackIndex += 1;
+      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
+      await playTrack();
+    } else if (_nowPlayingList.isNotEmpty && nowPlayingTrackIndex == _nowPlayingList.length - 1) {
+      // playlist not empty && playing last song then
+      // start from the beginning of the playlist
+      playIndexFromNowPlayingList(0);
+    } else {
+      debugPrint(
+          'playNextFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex + 1}');
+    }
+  }
+
+  // play prev from _nowPlayingList
+  void playPrevFromNowPlayingList() async {
+    if (_nowPlayingList.isNotEmpty &&
+        nowPlayingTrackIndex - 1 >= 0 &&
+        _nowPlayingList[nowPlayingTrackIndex - 1] != null) {
+      nowPlayingTrackIndex -= 1;
+      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
+      await playTrack();
+    } else {
+      debugPrint(
+          'playPrevFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex - 1}');
+    }
+  }
+
+  // play specific index from _nowPlayingList
+  void playIndexFromNowPlayingList(int indexToPlay) async {
+    if (nowPlayingList.isNotEmpty && indexToPlay < _nowPlayingList.length && _nowPlayingList[indexToPlay] != null) {
+      nowPlayingTrackIndex = indexToPlay;
+      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
+      await playTrack();
+    } else {
+      debugPrint('playIndexFromNowPlayingList Cannot play track at indexToPlay: $indexToPlay');
+    }
+  }
+
+  // play next track on track completion with listener
+  void autoPlayNextOnTrackCompletion() {
+    audioPlayer.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) {
+        if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
+          playNextFromNowPlayingList();
+        } else {
+          // start from the beginning of playlist
+          playIndexFromNowPlayingList(0);
+        }
+      }
+    });
+  }
+
   // Add to end of nowPlayingList
   void addToNowPlayingList(Track trackToAdd) async {
     if (_nowPlayingList.contains(trackToAdd)) {
@@ -268,78 +328,27 @@ class AudioPlayerProvider with ChangeNotifier {
       // playlist not empty && index within range && track at index exists
       if (trackIndexToRemove == nowPlayingTrackIndex) {
         if (_nowPlayingList.length == 1) {
-          // Trying to remove nowPlayingTrack && its the only track in the playlist
+          // Removing nowPlayingTrack && its the only track in the playlist
           stopTrack();
           _nowPlayingList.removeAt(trackIndexToRemove);
           removeAudioPlayerFile();
         } else {
-          // Trying to remove nowPlayingTrack
+          // Removing nowPlayingTrack
           _nowPlayingList.removeAt(trackIndexToRemove);
           nowPlayingTrackIndex -= 1;
           playNextFromNowPlayingList();
         }
+      } else if (trackIndexToRemove < nowPlayingTrackIndex) {
+        // Removing other track before nowPlayingTrack
+        nowPlayingTrackIndex -= 1;
+        _nowPlayingList.removeAt(trackIndexToRemove);
+      } else {
+        // Removing other track after nowPlayingTrack
+        _nowPlayingList.removeAt(trackIndexToRemove);
       }
       notifyListeners();
     } else {
       debugPrint('removeFromNowPlayingList Cannot remove track from nowPlayingList at: $trackIndexToRemove');
     }
-  }
-
-  // play next from _nowPlayingList
-  void playNextFromNowPlayingList() async {
-    if (_nowPlayingList.isNotEmpty &&
-        nowPlayingTrackIndex + 1 < _nowPlayingList.length &&
-        _nowPlayingList[nowPlayingTrackIndex + 1] != null) {
-      // playlist not empty && index within range && next track exists
-      nowPlayingTrackIndex += 1;
-      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
-      await playTrack();
-    } else if (_nowPlayingList.isNotEmpty && nowPlayingTrackIndex == _nowPlayingList.length - 1) {
-      // playlist not empty && playing last song then
-      // start from the beginning of playlist
-      playIndexFromNowPlayingList(0);
-    } else {
-      debugPrint(
-          'playNextFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex + 1}');
-    }
-  }
-
-  // play prev from _nowPlayingList
-  void playPrevFromNowPlayingList() async {
-    if (_nowPlayingList.isNotEmpty &&
-        nowPlayingTrackIndex - 1 >= 0 &&
-        _nowPlayingList[nowPlayingTrackIndex - 1] != null) {
-      nowPlayingTrackIndex -= 1;
-      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
-      await playTrack();
-    } else {
-      debugPrint(
-          'playPrevFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex - 1}');
-    }
-  }
-
-  // play specific index from _nowPlayingList
-  void playIndexFromNowPlayingList(int indexToPlay) async {
-    if (nowPlayingList.isNotEmpty && indexToPlay < _nowPlayingList.length && _nowPlayingList[indexToPlay] != null) {
-      nowPlayingTrackIndex = indexToPlay;
-      await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
-      await playTrack();
-    } else {
-      debugPrint('playIndexFromNowPlayingList Cannot play track at indexToPlay: $indexToPlay');
-    }
-  }
-
-  // play next track on track completion
-  void autoPlayNextOnTrackCompletion() {
-    audioPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
-        if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
-          playNextFromNowPlayingList();
-        } else {
-          // start from the beginning of playlist
-          playIndexFromNowPlayingList(0);
-        }
-      }
-    });
   }
 }

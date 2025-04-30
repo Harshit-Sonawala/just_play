@@ -28,7 +28,9 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Playlists
 	- [x] Multiple playback
 	- [x] Add to playlist
-	- [ ] Shuffle
+	- [ ] Snackbars shown on playlist updates
+	- [ ] Reorder playlist elements with draggable
+	- [ ] Shuffle All
 	- [x] Repeat All
 	- [ ] Repeat Single Toggle
 	- [ ] Save Current Playlist into ObjectBox Database - Playlist Title, Track Count, Total Duration
