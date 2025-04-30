@@ -30,6 +30,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 	- [x] Add to playlist
 	- [ ] Snackbars shown on playlist updates
 	- [ ] Reorder playlist elements with draggable
+	- [x] Swipe / Dismiss to remove from nowPlayingList - Dismissible() widget
 	- [ ] Shuffle All
 	- [x] Repeat All
 	- [ ] Repeat Single Toggle

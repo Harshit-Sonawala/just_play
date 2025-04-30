@@ -538,6 +538,9 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 ),
                                 const SizedBox(height: 10),
                                 Column(
+                                  // onReorder: (oldIndex, newIndex) {
+                                  //   debugPrint('oldIndex: $oldIndex, newIndex: $newIndex');
+                                  // },
                                   children: Provider.of<AudioPlayerProvider>(context)
                                       .nowPlayingList
                                       .asMap()
@@ -548,27 +551,53 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
 
                                     return Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
-                                      child: CustomListItem(
-                                        onPressed: () {
-                                          if (eachTrackIndex ==
-                                              Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                  .nowPlayingTrackIndex) {
-                                          } else {
-                                            audioPlayerProviderListenFalse.playIndexFromNowPlayingList(eachTrackIndex);
-                                          }
-                                        },
-                                        onLongPress: () {
+                                      child: Dismissible(
+                                        key: Key(eachTrack.filePath),
+                                        onDismissed: (dismissDirection) {
                                           audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
                                         },
-                                        selected: eachTrackIndex ==
-                                            Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex,
-                                        fileName: eachTrack.fileName,
-                                        title: eachTrack.title,
-                                        artist: eachTrack.artist,
-                                        album: eachTrack.album,
-                                        albumArt: eachTrack.albumArt,
-                                        duration: eachTrack.fileDuration,
-                                        // body: eachTrack.path,
+                                        background: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.red.shade400,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.playlist_remove_rounded,
+                                                    color: Theme.of(context).colorScheme.onSurface),
+                                                Icon(Icons.playlist_remove_rounded,
+                                                    color: Theme.of(context).colorScheme.onSurface),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        child: CustomListItem(
+                                          onPressed: () {
+                                            if (eachTrackIndex ==
+                                                Provider.of<AudioPlayerProvider>(context, listen: false)
+                                                    .nowPlayingTrackIndex) {
+                                            } else {
+                                              audioPlayerProviderListenFalse
+                                                  .playIndexFromNowPlayingList(eachTrackIndex);
+                                            }
+                                          },
+                                          onLongPress: () {
+                                            // reorder playlist order
+                                          },
+                                          selected: eachTrackIndex ==
+                                              Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex,
+                                          fileName: eachTrack.fileName,
+                                          title: eachTrack.title,
+                                          artist: eachTrack.artist,
+                                          album: eachTrack.album,
+                                          albumArt: eachTrack.albumArt,
+                                          duration: eachTrack.fileDuration,
+                                          // body: eachTrack.path,
+                                        ),
                                       ),
                                     );
                                   }).toList(),
