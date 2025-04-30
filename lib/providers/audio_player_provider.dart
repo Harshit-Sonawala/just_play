@@ -265,10 +265,10 @@ class AudioPlayerProvider with ChangeNotifier {
         trackIndexToRemove >= 0 &&
         trackIndexToRemove <= _nowPlayingList.length &&
         _nowPlayingList[trackIndexToRemove] != null) {
-      // playlist
+      // playlist not empty && index within range && track at index exists
       if (trackIndexToRemove == nowPlayingTrackIndex) {
         if (_nowPlayingList.length == 1) {
-          // Trying to remove nowPlayingTrack + the only track in the list
+          // Trying to remove nowPlayingTrack && its the only track in the playlist
           stopTrack();
           _nowPlayingList.removeAt(trackIndexToRemove);
           removeAudioPlayerFile();
