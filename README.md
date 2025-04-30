@@ -43,6 +43,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Sharing playlists into basic format / YTMusic / Spotify playlists
 - [ ] Sleep Timer
 #### Visual:
+- [ ] Audio Visualizers 
 - [ ] Dynamic Theming
 - [ ] Try Sliver AppBar for HomeScreen?
 - [ ] Animated Splash Screen

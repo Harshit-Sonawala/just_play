@@ -557,11 +557,19 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                           }
                                         },
                                         onLongPress: () {
-                                          if (eachTrackIndex ==
-                                              Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
-                                          } else {
-                                            audioPlayerProviderListenFalse.removeFromNowPlayingList(eachTrack);
-                                          }
+                                          // if (eachTrackIndex ==
+                                          //     Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex) {
+
+                                          //   if (Provider.of<AudioPlayerProvider>(context).nowPlayingList.length == 1) {
+
+                                          //     audioPlayerProviderListenFalse.stopTrack();
+                                          //     audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
+                                          //     audioPlayerProviderListenFalse.removeAudioPlayerFile();
+                                          //   }
+                                          // } else {
+                                          //   audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
+                                          // }
+                                          audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
                                         },
                                         selected: eachTrackIndex ==
                                             Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex,

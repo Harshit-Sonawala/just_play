@@ -204,12 +204,20 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
+  Future<void> removeAudioPlayerFile() async {
+    _nowPlayingTrack = null;
+  }
+
   Future<void> playTrack() async {
     await audioPlayer.play();
   }
 
   Future<void> pauseTrack() async {
     await audioPlayer.pause();
+  }
+
+  Future<void> stopTrack() async {
+    await audioPlayer.stop();
   }
 
   Future<void> seekTrack(Duration newSeekValue) async {
@@ -252,12 +260,28 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   // remove from _nowPlayingList
-  void removeFromNowPlayingList(Track trackToRemove) {
-    if (_nowPlayingList.contains(trackToRemove)) {
-      _nowPlayingList.remove(trackToRemove);
+  void removeFromNowPlayingListAt(int trackIndexToRemove) {
+    if (_nowPlayingList.isNotEmpty &&
+        trackIndexToRemove >= 0 &&
+        trackIndexToRemove <= _nowPlayingList.length &&
+        _nowPlayingList[trackIndexToRemove] != null) {
+      // playlist
+      if (trackIndexToRemove == nowPlayingTrackIndex) {
+        if (_nowPlayingList.length == 1) {
+          // Trying to remove nowPlayingTrack + the only track in the list
+          stopTrack();
+          _nowPlayingList.removeAt(trackIndexToRemove);
+          removeAudioPlayerFile();
+        } else {
+          // Trying to remove nowPlayingTrack
+          _nowPlayingList.removeAt(trackIndexToRemove);
+          nowPlayingTrackIndex -= 1;
+          playNextFromNowPlayingList();
+        }
+      }
       notifyListeners();
     } else {
-      debugPrint('removeFromNowPlayingList Cannot delete non existing track: ${trackToRemove.fileName}');
+      debugPrint('removeFromNowPlayingList Cannot remove track from nowPlayingList at: $trackIndexToRemove');
     }
   }
 
@@ -266,9 +290,14 @@ class AudioPlayerProvider with ChangeNotifier {
     if (_nowPlayingList.isNotEmpty &&
         nowPlayingTrackIndex + 1 < _nowPlayingList.length &&
         _nowPlayingList[nowPlayingTrackIndex + 1] != null) {
+      // playlist not empty && index within range && next track exists
       nowPlayingTrackIndex += 1;
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
+    } else if (_nowPlayingList.isNotEmpty && nowPlayingTrackIndex == _nowPlayingList.length - 1) {
+      // playlist not empty && playing last song then
+      // start from the beginning of playlist
+      playIndexFromNowPlayingList(0);
     } else {
       debugPrint(
           'playNextFromNowPlayingList Cannot play next track at nowPlayingTrackIndex: ${nowPlayingTrackIndex + 1}');
@@ -307,7 +336,8 @@ class AudioPlayerProvider with ChangeNotifier {
         if (nowPlayingTrackIndex + 1 < _nowPlayingList.length) {
           playNextFromNowPlayingList();
         } else {
-          playIndexFromNowPlayingList(0); // start from the beginning of playlist
+          // start from the beginning of playlist
+          playIndexFromNowPlayingList(0);
         }
       }
     });
