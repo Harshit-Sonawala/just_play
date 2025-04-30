@@ -7,11 +7,15 @@ import '../objectbox.g.dart';
 class DatabaseProvider with ChangeNotifier {
   late final Store trackStore; // Store is the Database equivalent
   late final Box<Track> trackBox; // Box is the Table equivalent
+  bool _isTrackDatabaseInitialized = false;
+
+  bool get isTrackDatabaseInitialized => _isTrackDatabaseInitialized;
 
   Future<void> initializeTrackDatabase() async {
     debugPrint('DatabaseProvider Initializing Track Database.');
     trackStore = await openStore(); // Create Database
     trackBox = trackStore.box<Track>(); // Create Table
+    _isTrackDatabaseInitialized = true;
     notifyListeners();
   }
 
