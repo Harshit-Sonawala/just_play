@@ -29,9 +29,9 @@ class _WrapperScreenState extends State<WrapperScreen> {
   }
 
   Future<void> readTracksFromDatabase() async {
-    if (!Provider.of<DatabaseProvider>(context, listen: false).isTrackDatabaseInitialized) {
-      await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
-    }
+    // if (!Provider.of<DatabaseProvider>(context, listen: false).isTrackDatabaseInitialized) {
+    //   await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
+    // }
 
     // Read the Previously Set Sort Option from Prefs
     sortMode = Provider.of<AudioPlayerProvider>(context, listen: false).prefs!.getInt('sortMode') ?? 3;
