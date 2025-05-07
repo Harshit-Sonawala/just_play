@@ -42,8 +42,14 @@ class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
 
   Future<void> initializeDatabaseGetSharedPrefs() async {
-    await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
-    return Provider.of<AudioPlayerProvider>(context, listen: false).initializeSharedPrefs();
+    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+    final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+
+    List<Future<void>> initializationFutures = [
+      audioPlayerProviderListenFalse.initializeSharedPrefs(),
+      databaseProviderListenFalse.initializeTrackDatabase()
+    ];
+    await Future.wait(initializationFutures);
   }
 
   @override
@@ -258,8 +264,7 @@ class _JustPlayState extends State<JustPlay> {
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
             // debugPrint('Main snapshot.data: ${snapshot.data}');
-            showOnboardingScreen =
-                Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.getBool('showOnboardingScreen');
+            showOnboardingScreen = Provider.of<AudioPlayerProvider>(context).prefs?.getBool('showOnboardingScreen');
             // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
             if (showOnboardingScreen == null) {
               return const OnboardingScreen();
