@@ -42,14 +42,16 @@ class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
 
   Future<void> initializeDatabaseGetSharedPrefs() async {
-    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-    final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+    if (mounted) {
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
 
-    List<Future<void>> initializationFutures = [
-      audioPlayerProviderListenFalse.initializeSharedPrefs(),
-      databaseProviderListenFalse.initializeTrackDatabase()
-    ];
-    await Future.wait(initializationFutures);
+      List<Future<void>> initializationFutures = [
+        audioPlayerProviderListenFalse.initializeSharedPrefs(),
+        databaseProviderListenFalse.initializeTrackDatabase()
+      ];
+      await Future.wait(initializationFutures);
+    }
   }
 
   @override
