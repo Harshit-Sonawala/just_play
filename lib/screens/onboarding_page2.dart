@@ -141,7 +141,7 @@ class _OnboardingPage2State extends State<OnboardingPage2> {
             Center(
               child: Text(
                 'Select a folder to continue',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
         ],
