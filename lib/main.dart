@@ -43,20 +43,24 @@ class _JustPlayState extends State<JustPlay> {
 
   Future<void> initializeDatabaseGetSharedPrefs() async {
     if (mounted) {
-      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
       final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
 
-      List<Future<void>> initializationFutures = [
-        audioPlayerProviderListenFalse.initializeSharedPrefs(),
-        databaseProviderListenFalse.initializeTrackDatabase()
-      ];
-      await Future.wait(initializationFutures);
+      await databaseProviderListenFalse.initializeTrackDatabase();
+      await audioPlayerProviderListenFalse.initializeSharedPrefs();
+
+      // List<Future<void>> initializationFutures = [
+      //   databaseProviderListenFalse.initializeTrackDatabase(),
+      //   audioPlayerProviderListenFalse.initializeSharedPrefs()
+      // ];
+      // await Future.wait(initializationFutures);
     }
   }
 
   @override
   void dispose() {
     Provider.of<DatabaseProvider>(context, listen: false).closeTrackDatabase();
+    debugPrint('Main dispose() Closed Track Database.');
     super.dispose();
   }
 
@@ -267,8 +271,8 @@ class _JustPlayState extends State<JustPlay> {
           } else if (snapshot.connectionState == ConnectionState.done) {
             // debugPrint('Main snapshot.data: ${snapshot.data}');
             showOnboardingScreen = Provider.of<AudioPlayerProvider>(context).prefs?.getBool('showOnboardingScreen');
-            // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
-            if (showOnboardingScreen == null) {
+            debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
+            if (showOnboardingScreen == null || showOnboardingScreen == true) {
               return const OnboardingScreen();
             } else {
               return const WrapperScreen();

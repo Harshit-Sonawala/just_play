@@ -40,6 +40,9 @@ class AudioPlayerProvider with ChangeNotifier {
 
   Future<void> initializeSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
+    if (prefs?.getBool('showOnboardingScreen') == null) {
+      await prefs?.setBool('showOnboardingScreen', true); // Default to true for the first time
+    }
   }
 
   // Get music library directory from SharedPrefs

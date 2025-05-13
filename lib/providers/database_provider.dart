@@ -11,12 +11,16 @@ class DatabaseProvider with ChangeNotifier {
 
   bool get isTrackDatabaseInitialized => _isTrackDatabaseInitialized;
 
-  Future<void> initializeTrackDatabase() async {
-    debugPrint('DatabaseProvider Initializing Track Database.');
-    trackStore = await openStore(); // Create Database
-    trackBox = trackStore?.box<Track>(); // Create Table
-    _isTrackDatabaseInitialized = true;
-    notifyListeners();
+  Future<bool> initializeTrackDatabase() async {
+    debugPrint('DatabaseProvider Initializing Track Database...');
+    if (!_isTrackDatabaseInitialized) {
+      trackStore = await openStore(); // Create Database
+      trackBox = trackStore?.box<Track>(); // Create Table
+      _isTrackDatabaseInitialized = true;
+      debugPrint('DatabaseProvider Track Database Initialized.');
+      notifyListeners();
+    }
+    return _isTrackDatabaseInitialized;
   }
 
   void closeTrackDatabase() {

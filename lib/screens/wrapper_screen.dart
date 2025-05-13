@@ -25,72 +25,94 @@ class _WrapperScreenState extends State<WrapperScreen> {
   @override
   void initState() {
     super.initState();
-    readTracksFromDatabase();
+    // if (Provider.of<DatabaseProvider>(context).isTrackDatabaseInitialized) {
+    //   readTracksFromDatabase();
+    // }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Provider.of<DatabaseProvider>(context).isTrackDatabaseInitialized) {
+      readTracksFromDatabase();
+    }
   }
 
   Future<void> readTracksFromDatabase() async {
     // if (!Provider.of<DatabaseProvider>(context, listen: false).isTrackDatabaseInitialized) {
     //   await Provider.of<DatabaseProvider>(context, listen: false).initializeTrackDatabase();
     // }
+    if (mounted) {
+      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
 
-    // Read the Previously Set Sort Option from Prefs
-    sortMode = Provider.of<AudioPlayerProvider>(context, listen: false).prefs!.getInt('sortMode') ?? 3;
-
-    // Sort the read tracks by
-    // 0 - Alpha Asc
-    // 1 - Alpha Desc
-    // 2 - Date Asc
-    // 3 / Default - Date Desc
-    if (sortMode == 0) {
-      // Alphabetical Asc
-      // no 'await' keyword as its a future we are passing to the FutureBuilder
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false).readAllTracks();
-    } else if (sortMode == 1) {
-      // Alphabetical Desc
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
-          .readAllTracksSorted(trackProperty: Track_.fileName, descending: true);
-    } else if (sortMode == 2) {
-      // DateModified Asc
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
-          .readAllTracksSorted(trackProperty: Track_.fileLastModified);
-    } else if (sortMode == 3) {
-      // DateModified Desc
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
-          .readAllTracksSorted(trackProperty: Track_.fileLastModified, descending: true);
-    } else {
-      debugPrint('HomeScreen Invalid sortMode: $sortMode');
-      // Taking Default DateModified Desc in unexpected case
-      trackListFuture = Provider.of<DatabaseProvider>(context, listen: false)
-          .readAllTracksSorted(trackProperty: Track_.fileLastModified, descending: true);
+      // Read the Previously Set Sort Option from Prefs
+      sortMode = audioPlayerProviderListenFalse.prefs!.getInt('sortMode') ?? 3;
+      // 0 - Alpha Asc, 1 - Alpha Desc, 2 - Date Asc, 3 / Default - Date Desc
+      if (sortMode == 0) {
+        // no 'await' keyword as its a future we are passing to the FutureBuilder
+        // Alphabetical Asc
+        trackListFuture = databaseProviderListenFalse.readAllTracks();
+      } else if (sortMode == 1) {
+        // Alphabetical Desc
+        trackListFuture =
+            databaseProviderListenFalse.readAllTracksSorted(trackProperty: Track_.fileName, descending: true);
+      } else if (sortMode == 2) {
+        // DateModified Asc
+        trackListFuture = databaseProviderListenFalse.readAllTracksSorted(trackProperty: Track_.fileLastModified);
+      } else if (sortMode == 3) {
+        // DateModified Desc
+        trackListFuture =
+            databaseProviderListenFalse.readAllTracksSorted(trackProperty: Track_.fileLastModified, descending: true);
+      } else {
+        debugPrint('HomeScreen Invalid sortMode: $sortMode');
+        // Taking Default DateModified Desc in unexpected case
+        trackListFuture =
+            databaseProviderListenFalse.readAllTracksSorted(trackProperty: Track_.fileLastModified, descending: true);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
+    if (!(Provider.of<DatabaseProvider>(context).isTrackDatabaseInitialized)) {
+      return Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            PageView(
-              children: [
-                HomeScreen(
-                  trackListFuture: trackListFuture,
-                  onSortModeChanged: (sortMode) => {
-                    setState(() {
-                      // Update prefs with the chosen sortMode
-                      Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.setInt('sortMode', sortMode);
-                      readTracksFromDatabase();
-                    })
-                  },
-                ),
-                ShufflerScreen(trackListFuture: trackListFuture),
-                const PlaylistsScreen(),
-              ],
-            ),
-            const NowPlayingMenu(),
+            Text('Loading Tracks...', style: Theme.of(context).textTheme.bodyLarge),
+            const SizedBox(height: 20),
+            const CircularProgressIndicator(),
           ],
         ),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              PageView(
+                children: [
+                  HomeScreen(
+                    trackListFuture: trackListFuture,
+                    onSortModeChanged: (sortMode) => {
+                      setState(() {
+                        // Update prefs with the chosen sortMode
+                        Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.setInt('sortMode', sortMode);
+                        readTracksFromDatabase();
+                      })
+                    },
+                  ),
+                  ShufflerScreen(trackListFuture: trackListFuture),
+                  const PlaylistsScreen(),
+                ],
+              ),
+              const NowPlayingMenu(),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
