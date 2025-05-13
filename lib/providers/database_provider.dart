@@ -14,7 +14,7 @@ class DatabaseProvider with ChangeNotifier {
   Future<void> initializeTrackDatabase() async {
     debugPrint('DatabaseProvider Initializing Track Database.');
     trackStore = await openStore(); // Create Database
-    trackBox = trackStore!.box<Track>(); // Create Table
+    trackBox = trackStore?.box<Track>(); // Create Table
     _isTrackDatabaseInitialized = true;
     notifyListeners();
   }

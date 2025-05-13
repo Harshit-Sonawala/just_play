@@ -34,7 +34,6 @@ class AudioPlayerProvider with ChangeNotifier {
 
   // Initialize
   AudioPlayerProvider() {
-    initializeSharedPrefs();
     initializeAudioPlayerProvider();
     autoPlayNextOnTrackCompletion();
   }

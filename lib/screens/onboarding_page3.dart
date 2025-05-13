@@ -32,16 +32,18 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
   }
 
   Future<void> buildLibrary() async {
-    final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
-    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-    // if (!databaseProviderListenFalse.isTrackDatabaseInitialized) {
-    //   await databaseProviderListenFalse.initializeTrackDatabase();
-    // }
+    if (mounted) {
+      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+      // if (!databaseProviderListenFalse.isTrackDatabaseInitialized) {
+      //   await databaseProviderListenFalse.initializeTrackDatabase();
+      // }
 
-    List<Track> trackList = await audioPlayerProviderListenFalse.generateTrackList();
-    await databaseProviderListenFalse.deleteAllTracks();
-    await databaseProviderListenFalse.insertTrackList(trackList);
-    audioPlayerProviderListenFalse.prefs?.setBool('showOnboardingScreen', false);
+      List<Track> trackList = await audioPlayerProviderListenFalse.generateTrackList();
+      await databaseProviderListenFalse.deleteAllTracks();
+      await databaseProviderListenFalse.insertTrackList(trackList);
+      audioPlayerProviderListenFalse.prefs?.setBool('showOnboardingScreen', false);
+    }
   }
 
   @override
