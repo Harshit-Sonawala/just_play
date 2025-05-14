@@ -50,8 +50,8 @@ class _JustPlayState extends State<JustPlay> {
 
   @override
   void dispose() {
+    debugPrint('Main dispose() Tried Closed Track Database.');
     Provider.of<DatabaseProvider>(context, listen: false).closeTrackDatabase();
-    debugPrint('Main dispose() Closed Track Database.');
     super.dispose();
   }
 

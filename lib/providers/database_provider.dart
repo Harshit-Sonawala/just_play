@@ -10,19 +10,48 @@ class DatabaseProvider with ChangeNotifier {
   bool isTrackDatabaseInitialized = false;
 
   Future<bool> initializeTrackDatabase() async {
-    debugPrint('DatabaseProvider Initializing Track Database...');
     if (!isTrackDatabaseInitialized) {
-      trackStore = await openStore(); // Create Database
-      trackBox = trackStore?.box<Track>(); // Create Table
-      isTrackDatabaseInitialized = true;
-      debugPrint('DatabaseProvider Track Database Initialized.');
-      notifyListeners();
+      try {
+        debugPrint('DatabaseProvider Trying to Initialize Track Database...');
+        trackStore = await openStore(); // Create Database
+        trackBox = trackStore?.box<Track>(); // Create Table
+        isTrackDatabaseInitialized = true;
+        debugPrint('DatabaseProvider Track Database Initialized Successfully.');
+        notifyListeners();
+      } catch (err) {
+        debugPrint('\nDatabaseProvider initializeTrackDatabase Error: $err');
+
+        // Catch another store still open using same path error
+        if (err.toString().contains('another store is still open using the same path')) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          debugPrint('Trying to close store and reinitialize...');
+          closeTrackDatabase();
+          isTrackDatabaseInitialized = false;
+          // Try Again
+          try {
+            trackStore = await openStore();
+            trackBox = trackStore?.box<Track>();
+            isTrackDatabaseInitialized = true;
+            debugPrint('DatabaseProvider Track Database Reinitialized Successfully.');
+            notifyListeners();
+          } catch (retryErr) {
+            debugPrint('\nDatabaseProvider initializeTrackDatabase Failed to Reinitialize: $retryErr');
+          }
+        }
+      }
     }
     return isTrackDatabaseInitialized;
   }
 
   void closeTrackDatabase() {
-    trackStore?.close();
+    if (isTrackDatabaseInitialized && trackStore != null) {
+      trackBox = null;
+      trackStore!.close();
+      trackStore = null;
+      isTrackDatabaseInitialized = false;
+      notifyListeners();
+      debugPrint('DatabaseProvider Track Database Closed.');
+    }
   }
 
   // Read all tracks
