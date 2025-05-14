@@ -32,15 +32,10 @@ class AudioPlayerProvider with ChangeNotifier {
   Stream<PlayerState> get playerStateStream => audioPlayer.playerStateStream; // Get player play/pause state
   Stream<ProcessingState> get processingStateStream => audioPlayer.processingStateStream; // Get player stopped state
 
-  // Initialize
-  AudioPlayerProvider() {
-    initializeAudioPlayerProvider();
-    autoPlayNextOnTrackCompletion();
-  }
-
   Future<void> initializeSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     if (prefs?.getBool('showOnboardingScreen') == null) {
+      debugPrint('SharedPreferences: Setting default value for showOnboardingScreen.');
       await prefs?.setBool('showOnboardingScreen', true); // Default to true for the first time
     }
   }

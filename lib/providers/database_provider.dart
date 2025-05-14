@@ -7,20 +7,18 @@ import '../objectbox.g.dart';
 class DatabaseProvider with ChangeNotifier {
   Store? trackStore; // Store is the Database equivalent
   Box<Track>? trackBox; // Box is the Table equivalent
-  bool _isTrackDatabaseInitialized = false;
-
-  bool get isTrackDatabaseInitialized => _isTrackDatabaseInitialized;
+  bool isTrackDatabaseInitialized = false;
 
   Future<bool> initializeTrackDatabase() async {
     debugPrint('DatabaseProvider Initializing Track Database...');
-    if (!_isTrackDatabaseInitialized) {
+    if (!isTrackDatabaseInitialized) {
       trackStore = await openStore(); // Create Database
       trackBox = trackStore?.box<Track>(); // Create Table
-      _isTrackDatabaseInitialized = true;
+      isTrackDatabaseInitialized = true;
       debugPrint('DatabaseProvider Track Database Initialized.');
       notifyListeners();
     }
-    return _isTrackDatabaseInitialized;
+    return isTrackDatabaseInitialized;
   }
 
   void closeTrackDatabase() {
@@ -29,14 +27,32 @@ class DatabaseProvider with ChangeNotifier {
 
   // Read all tracks
   Future<List<Track>> readAllTracks() async {
-    return await trackBox!.getAllAsync();
+    return await trackBox?.getAllAsync() ?? [];
   }
 
-  // Read all tracks sorted by specified property, call with an underscore
-  Future<List<Track>> readAllTracksSorted({
-    required QueryProperty<Track, dynamic> trackProperty,
-    bool descending = false,
-  }) async {
+  // Read all tracks sorted by specified property
+  Future<List<Track>> readAllTracksSorted({int? sortMode = 3}) async {
+    QueryProperty<Track, dynamic> trackProperty;
+    bool descending;
+
+    if (sortMode == 0) {
+      // Filename Asc
+      trackProperty = Track_.fileName;
+      descending = false;
+    } else if (sortMode == 1) {
+      // Filename Desc
+      trackProperty = Track_.fileName;
+      descending = true;
+    } else if (sortMode == 2) {
+      // Modified Asc
+      trackProperty = Track_.fileLastModified;
+      descending = false;
+    } else {
+      // Modified Desc
+      trackProperty = Track_.fileLastModified;
+      descending = true;
+    }
+
     QueryBuilder<Track> queryBuilder = trackBox!.query()
       ..order(trackProperty, flags: descending ? Order.descending : 0);
 

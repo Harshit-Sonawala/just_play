@@ -40,21 +40,12 @@ class JustPlay extends StatefulWidget {
 
 class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
+  Future<void>? initializationFuture;
 
-  Future<void> initializeDatabaseGetSharedPrefs() async {
-    if (mounted) {
-      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
-      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-
-      await databaseProviderListenFalse.initializeTrackDatabase();
-      await audioPlayerProviderListenFalse.initializeSharedPrefs();
-
-      // List<Future<void>> initializationFutures = [
-      //   databaseProviderListenFalse.initializeTrackDatabase(),
-      //   audioPlayerProviderListenFalse.initializeSharedPrefs()
-      // ];
-      // await Future.wait(initializationFutures);
-    }
+  @override
+  void initState() {
+    super.initState();
+    initializationFuture = initializeDatabaseGetSharedPrefs();
   }
 
   @override
@@ -62,6 +53,26 @@ class _JustPlayState extends State<JustPlay> {
     Provider.of<DatabaseProvider>(context, listen: false).closeTrackDatabase();
     debugPrint('Main dispose() Closed Track Database.');
     super.dispose();
+  }
+
+  Future<void> initializeDatabaseGetSharedPrefs() async {
+    if (mounted) {
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+
+      debugPrint('\nInitializing AudioPlayerProvider Functions\n');
+      debugPrint('\nInitializing DatabaseProvider Functions\n');
+
+      List<Future<void>> initializationFutures = [
+        audioPlayerProviderListenFalse.initializeAudioPlayerProvider(),
+        audioPlayerProviderListenFalse.initializeSharedPrefs(),
+        databaseProviderListenFalse.initializeTrackDatabase(),
+      ];
+      audioPlayerProviderListenFalse.autoPlayNextOnTrackCompletion(); // Not async
+      await Future.wait(initializationFutures);
+      debugPrint(
+          '\nMain initializeDatabaseGetSharedPrefs()\nshowOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nisTrackDatabaseInitialized: ${databaseProviderListenFalse.isTrackDatabaseInitialized}\n');
+    }
   }
 
   @override
@@ -250,7 +261,7 @@ class _JustPlayState extends State<JustPlay> {
 
       // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const WrapperScreen(),
       home: FutureBuilder<void>(
-        future: initializeDatabaseGetSharedPrefs(),
+        future: initializationFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
@@ -260,7 +271,7 @@ class _JustPlayState extends State<JustPlay> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Building Library...', style: Theme.of(context).textTheme.bodyLarge),
+                      Text('Initializing...', style: Theme.of(context).textTheme.bodyLarge),
                       const SizedBox(height: 20),
                       const CircularProgressIndicator(),
                     ],

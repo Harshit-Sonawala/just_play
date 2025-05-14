@@ -43,6 +43,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
       await databaseProviderListenFalse.deleteAllTracks();
       await databaseProviderListenFalse.insertTrackList(trackList);
       audioPlayerProviderListenFalse.prefs?.setBool('showOnboardingScreen', false);
+      debugPrint('\nPREFS UPDATED TO FALSE\n');
     }
   }
 

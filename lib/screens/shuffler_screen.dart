@@ -39,6 +39,7 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
     while (shuffledTrackList.length < randomCount) {
       int randomId = random.nextInt(sourceTrackList.length); // add a + 1 / + 2... / + minRange
 
+      // if not in set, skip this repeated random number
       if (!uniqueRandomIds.contains(randomId)) {
         Track foundTrack = sourceTrackList.firstWhere((eachTrack) => eachTrack.id == randomId);
         shuffledTrackList.add(foundTrack);
@@ -106,7 +107,7 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                   ),
                 );
               } else if (snapshot.hasData) {
-                final shuffledTrackList = getShuffledTrackList(snapshot.data!);
+                final shuffledTrackList = getShuffledTrackList(snapshot.data ?? []);
                 debugPrint('ShufflerScreen shuffledTrackList Length: ${shuffledTrackList.length}');
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
                 return Expanded(
