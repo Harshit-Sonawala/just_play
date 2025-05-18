@@ -1,57 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:objectbox/objectbox.dart';
 
 import '../models/track.dart';
 import '../objectbox.g.dart';
 
 class DatabaseProvider with ChangeNotifier {
-  Store? trackStore; // Store is the Database equivalent
-  Box<Track>? trackBox; // Box is the Table equivalent
-  bool isTrackDatabaseInitialized = false;
+  late final Store trackStore; // Store is the Database equivalent
+  late final Box<Track> trackBox; // Box is the Table equivalent
+  late bool isTrackStoreInit;
 
-  Future<bool> initializeTrackDatabase() async {
-    if (!isTrackDatabaseInitialized) {
-      try {
-        debugPrint('DatabaseProvider Trying to Initialize Track Database...');
-        trackStore = await openStore(); // Create Database
-        trackBox = trackStore?.box<Track>(); // Create Table
-        isTrackDatabaseInitialized = true;
-        debugPrint('DatabaseProvider Track Database Initialized Successfully.');
-        notifyListeners();
-      } catch (err) {
-        debugPrint('\nDatabaseProvider initializeTrackDatabase Error: $err');
+  Future<void> initializeTrackDatabase() async {
+    WidgetsFlutterBinding.ensureInitialized(); // ensure ObjectBox can get the application directory
+    final appDocsDir = await getApplicationDocumentsDirectory();
 
-        // Catch another store still open using same path error
-        if (err.toString().contains('another store is still open using the same path')) {
-          await Future.delayed(const Duration(milliseconds: 500));
-          debugPrint('Trying to close store and reinitialize...');
-          closeTrackDatabase();
-          isTrackDatabaseInitialized = false;
-          // Try Again
-          try {
-            trackStore = await openStore();
-            trackBox = trackStore?.box<Track>();
-            isTrackDatabaseInitialized = true;
-            debugPrint('DatabaseProvider Track Database Reinitialized Successfully.');
-            notifyListeners();
-          } catch (retryErr) {
-            debugPrint('\nDatabaseProvider initializeTrackDatabase Failed to Reinitialize: $retryErr');
-          }
+    try {
+      debugPrint('DatabaseProvider Trying to Initialize Track Database...');
+      trackStore = await openStore(directory: join(appDocsDir.path, "track-store")); // Create Database
+      trackBox = trackStore.box<Track>(); // Create Table
+      debugPrint('DatabaseProvider Track Database Initialized Successfully.');
+    } catch (err) {
+      debugPrint('\nDatabaseProvider initializeTrackDatabase Error: $err');
+
+      // Catch another store still open using same path error
+      if (err.toString().contains('another store is still open using the same path')) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        debugPrint('Trying to close store and reinitialize...');
+        closeTrackDatabase();
+        // Try Again
+        try {
+          trackStore = await openStore(directory: join(appDocsDir.path, "track-store"));
+          trackBox = trackStore.box<Track>();
+          debugPrint('DatabaseProvider Track Database Reinitialized Successfully.');
+        } catch (retryErr) {
+          debugPrint('\nDatabaseProvider initializeTrackDatabase Failed to Reinitialize: $retryErr');
         }
       }
     }
-    return isTrackDatabaseInitialized;
   }
 
   void closeTrackDatabase() {
-    if (isTrackDatabaseInitialized && trackStore != null) {
-      trackBox = null;
-      trackStore!.close();
-      trackStore = null;
-      isTrackDatabaseInitialized = false;
-      notifyListeners();
-      debugPrint('DatabaseProvider Track Database Closed.');
-    }
+    trackStore.close();
+    notifyListeners();
+    debugPrint('DatabaseProvider Track Database Closed.');
   }
 
   // Read all tracks

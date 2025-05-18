@@ -28,16 +28,16 @@ class _WrapperScreenState extends State<WrapperScreen> {
   }
 
   Future<List<Track>>? readTracksFromDatabase() async {
-    final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
-    final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-
-    if (!databaseProviderListenFalse.isTrackDatabaseInitialized) {
-      await databaseProviderListenFalse.initializeTrackDatabase();
-    }
-
     if (mounted) {
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
+
+      if (!(audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen') ?? true)) {
+        await databaseProviderListenFalse.initializeTrackDatabase();
+      }
+
       debugPrint(
-          '\n\nWrapperScreen readTracksFromDatabase()\nshowOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}\nisTrackDatabaseInitialized: ${databaseProviderListenFalse.isTrackDatabaseInitialized}\n\n');
+          '\n\nWrapperScreen readTracksFromDatabase() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}\n\n');
       // Read the Previously Set Sort Option from Prefs
       sortMode = audioPlayerProviderListenFalse.prefs?.getInt('sortMode') ?? 3;
       return databaseProviderListenFalse.readAllTracksSorted(sortMode: sortMode);
