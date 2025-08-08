@@ -47,13 +47,6 @@ class _JustPlayState extends State<JustPlay> {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   debugPrint('Main dispose() Tried Closed Track Database.');
-  //   Provider.of<DatabaseProvider>(context, listen: false).closeTrackDatabase();
-  //   super.dispose();
-  // }
-
   Future<void> initializeDatabaseGetSharedPrefs() async {
     if (mounted) {
       final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);

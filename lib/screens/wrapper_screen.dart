@@ -32,9 +32,9 @@ class _WrapperScreenState extends State<WrapperScreen> {
       final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
       final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
 
-      if (!(audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen') ?? true)) {
+      /* if (!(audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen') ?? true)) {
         await databaseProviderListenFalse.initializeTrackDatabase();
-      }
+      } */
 
       debugPrint(
           '\n\nWrapperScreen readTracksFromDatabase() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}\n\n');
