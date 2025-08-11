@@ -6,31 +6,28 @@ import 'package:path_provider/path_provider.dart';
 import '../models/track.dart';
 import '../objectbox.g.dart';
 
-class DatabaseProvider with ChangeNotifier {
+class TrackStoreDatabase {
   late final Store trackStore; // Store is the Database equivalent
   late final Box<Track> trackBox; // Box is the Table equivalent
-  late bool isTrackStoreInit;
+  bool isTrackStoreCreated = false;
 
-  Future<void> initializeTrackDatabase() async {
-    WidgetsFlutterBinding.ensureInitialized(); // ensure ObjectBox can get the application directory
+  Future<void> createStoreAndBox() async {
+    if (isTrackStoreCreated) return;
+
     final appDocsDir = await getApplicationDocumentsDirectory();
-
+    final storeDir = join(appDocsDir.path, "track-store");
     try {
-      debugPrint('DatabaseProvider Trying to Initialize Track Database...');
-      trackStore = await openStore(directory: join(appDocsDir.path, "track-store")); // Create Database
+      trackStore = await openStore(directory: storeDir); // Create Database
       trackBox = trackStore.box<Track>(); // Create Table
+      isTrackStoreCreated = true;
       debugPrint('DatabaseProvider Track Database Initialized Successfully.');
     } catch (err) {
       debugPrint('\nDatabaseProvider initializeTrackDatabase Error: $err');
-
-      // Catch another store still open using same path error
       if (err.toString().contains('another store is still open using the same path')) {
-        await Future.delayed(const Duration(milliseconds: 500));
         debugPrint('Trying to close store and reinitialize...');
-        closeTrackDatabase();
-        // Try Again
+        close();
         try {
-          trackStore = await openStore(directory: join(appDocsDir.path, "track-store"));
+          trackStore = await openStore(directory: storeDir);
           trackBox = trackStore.box<Track>();
           debugPrint('DatabaseProvider Track Database Reinitialized Successfully.');
         } catch (retryErr) {
@@ -40,15 +37,22 @@ class DatabaseProvider with ChangeNotifier {
     }
   }
 
-  void closeTrackDatabase() {
-    trackStore.close();
-    notifyListeners();
-    debugPrint('DatabaseProvider Track Database Closed.');
+  void close() {
+    try {
+      trackStore.close();
+    } catch (err) {
+      debugPrint('TrackStoreDatabase.close Error: $err');
+    } finally {
+      // trackBox = null;
+      // trackStore = null;
+      // notifyListeners();
+      debugPrint('DatabaseProvider Track Database Closed.');
+    }
   }
 
   // Read all tracks
   Future<List<Track>> readAllTracks() async {
-    return await trackBox?.getAllAsync() ?? [];
+    return await trackBox.getAllAsync(); //  ?? [];
   }
 
   // Read all tracks sorted by specified property
@@ -74,8 +78,7 @@ class DatabaseProvider with ChangeNotifier {
       descending = true;
     }
 
-    QueryBuilder<Track> queryBuilder = trackBox!.query()
-      ..order(trackProperty, flags: descending ? Order.descending : 0);
+    QueryBuilder<Track> queryBuilder = trackBox.query()..order(trackProperty, flags: descending ? Order.descending : 0);
 
     Query<Track> sortedQuery = queryBuilder.build();
     List<Track> result = await sortedQuery.findAsync();
@@ -85,7 +88,7 @@ class DatabaseProvider with ChangeNotifier {
 
   // Search for tracks based on searchKey passed
   Future<List<Track>> searchTracks(String searchKey) async {
-    Query<Track> searchQuery = trackBox!
+    Query<Track> searchQuery = trackBox
         .query(
           Track_.filePath.contains(searchKey) |
               Track_.fileName.contains(searchKey) |
@@ -101,38 +104,38 @@ class DatabaseProvider with ChangeNotifier {
 
   // Insert one track
   Future<void> insertTrack(Track track) async {
-    await trackBox!.putAsync(track);
-    notifyListeners();
+    await trackBox.putAsync(track);
+    // notifyListeners();
   }
 
   // Insert multiple tracks
   Future<void> insertTrackList(List<Track> trackList) async {
-    await trackBox!.putManyAsync(trackList);
-    notifyListeners();
+    await trackBox.putManyAsync(trackList);
+    // notifyListeners();
   }
 
   // Delete specific track
   Future<void> deleteTrack(Track track) async {
-    await trackBox!.removeAsync(track.id);
-    notifyListeners();
+    await trackBox.removeAsync(track.id);
+    // notifyListeners();
   }
 
   // Delete multiple specific tracks
   Future<void> deleteTrackList(List<Track> trackList) async {
     List<int> trackIdList = trackList.map((eachTrack) => eachTrack.id).toList();
-    await trackBox!.removeManyAsync(trackIdList);
-    notifyListeners();
+    await trackBox.removeManyAsync(trackIdList);
+    // notifyListeners();
   }
 
   // Delete all tracks
   Future<void> deleteAllTracks() async {
-    await trackBox!.removeAllAsync();
-    notifyListeners();
+    await trackBox.removeAllAsync();
+    // notifyListeners();
   }
 
   // Return count of tracks
   int returnTotalTrackCount() {
-    return trackBox!.count();
+    return trackBox.count();
   }
 
   // Update Database entry upon manually updating song metadata

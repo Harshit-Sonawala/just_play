@@ -7,7 +7,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 *  Shuffler Screen for a level of user control added to a random selection of tracks.  
 *  Planned additional features like notification playback controls, playlists management and exporting, editing metadata, tags and much more in progress.
 
-### Feature Plan / Checklist:
+### Feature Progress / Checklist:
 #### Functionality:
 - [x] Search Menu
 - [x] Sort By store into SharedPreferences
@@ -16,7 +16,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Shuffler Screen
 	- [x] Shuffler Menu for constant random selection of tracks
 	- [ ] Shuffler add all to NowPlayingList
-	- [ ] Edit Shuffler random track count
+	- [ ] Edit Shuffler random track count?
 	- [ ] Manual Re-roll Shuffler
 - [ ] Background Playback
 	- [ ] just_audio_background implementation
@@ -45,6 +45,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Syncing files library
 - [ ] Sharing playlists into basic format / YTMusic / Spotify playlists
 - [ ] Sleep Timer
+
 #### Visual:
 - [ ] Audio Visualizers 
 - [ ] Dynamic Theming
@@ -61,7 +62,11 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Waveform extraction?
 - [ ] Custom/different slider?
 
-#### Known Bugs:
+### Other
+- [ ] Refactor buildLibrary() function into AudioPlayerProvider/TrackStoreDatabase class
+
+#### Known Bugs (Checked = Fixed):
+- [x] HomeScreen Receiving unexpected empty future case due to duplicate ObjectBox calls on rebuilds to create new track-store causing OBX_ERROR code 10001 - refactored removing DatabaseProvider, instead using a app-wide variable trackStoreDatabase in main.dart for global database instance, trackStore and db functions
 - [ ] Over-scrolling stretching effect slightly distorts CustomListView Elements
 - [ ] NowPlayingMenu swipe up is laggy - current solution of AnimatedCrossFade not satisfactory
 - [ ] HomeScreen ListViewBuilder Scrolling is laggy

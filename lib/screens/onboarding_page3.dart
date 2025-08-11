@@ -7,7 +7,7 @@ import '../widgets/custom_divider.dart';
 import '../widgets/custom_elevated_button.dart';
 import 'wrapper_screen.dart';
 import '../models/track.dart';
-import '../providers/database_provider.dart';
+import '../main.dart';
 import '../providers/audio_player_provider.dart';
 
 class OnboardingPage3 extends StatefulWidget {
@@ -31,19 +31,14 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
     buildLibraryFuture = buildLibrary();
   }
 
+  // TODO: Refactor buildLibrary() into AudioPlayerProvider / TrackStoreDatabase
   Future<void> buildLibrary() async {
     if (mounted) {
-      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
       final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-      // if (!databaseProviderListenFalse.isTrackDatabaseInitialized) {
-      //   await databaseProviderListenFalse.initializeTrackDatabase();
-      // }
-
       List<Track> trackList = await audioPlayerProviderListenFalse.generateTrackList();
-      await databaseProviderListenFalse.deleteAllTracks();
-      await databaseProviderListenFalse.insertTrackList(trackList);
+      await trackStoreDatabase.deleteAllTracks();
+      await trackStoreDatabase.insertTrackList(trackList);
       audioPlayerProviderListenFalse.prefs?.setBool('showOnboardingScreen', false);
-      debugPrint('\nPREFS UPDATED TO FALSE\n');
     }
   }
 

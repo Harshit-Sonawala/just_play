@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import '../providers/database_provider.dart';
-import '../providers/audio_player_provider.dart';
-import '../widgets/custom_divider.dart';
-import '../models/track.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:restart_app/restart_app.dart';
+
+import '../models/track.dart';
+import '../main.dart';
+import '../providers/audio_player_provider.dart';
+import '../widgets/custom_divider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -39,10 +39,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  // TODO: Refactor buildLibrary() into AudioPlayerProvider / TrackStoreDatabase
   Future<void> buildLibrary() async {
-    List<Track> trackList = await Provider.of<AudioPlayerProvider>(context, listen: false).generateTrackList();
-    await Provider.of<DatabaseProvider>(context, listen: false).deleteAllTracks();
-    await Provider.of<DatabaseProvider>(context, listen: false).insertTrackList(trackList);
+    if (mounted) {
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+      List<Track> trackList = await audioPlayerProviderListenFalse.generateTrackList();
+      await trackStoreDatabase.deleteAllTracks();
+      await trackStoreDatabase.insertTrackList(trackList);
+      audioPlayerProviderListenFalse.prefs?.setBool('showOnboardingScreen', false);
+    }
   }
 
   @override

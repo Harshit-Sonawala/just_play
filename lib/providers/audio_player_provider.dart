@@ -10,7 +10,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:audiotags/audiotags.dart';
 
 import '../models/track.dart';
-import './database_provider.dart';
 
 class AudioPlayerProvider with ChangeNotifier {
   String persistentMusicDirectory = "";
@@ -20,7 +19,6 @@ class AudioPlayerProvider with ChangeNotifier {
   int nowPlayingTrackIndex = -1;
   // List<FileSystemEntity> filesList = [];
   List<Track> trackList = [];
-  var databaseProvider = DatabaseProvider();
   SharedPreferences? prefs;
   final List<Track> _nowPlayingList = [];
 

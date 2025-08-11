@@ -15,7 +15,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   PageController pageViewController = PageController();
   int currentPageViewIndex = 0;
   bool? showOnboardingScreen;
-  int ctr = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +29,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             }),
           },
           children: [
-            // Page 1
             OnboardingPage1(pageViewController: pageViewController),
-            // Page 2
             OnboardingPage2(pageViewController: pageViewController),
-            // Page 3
             OnboardingPage3(pageViewController: pageViewController),
           ],
         ),

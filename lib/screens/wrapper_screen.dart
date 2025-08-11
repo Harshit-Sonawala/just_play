@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
-import '../providers/database_provider.dart';
+import '../main.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/playlists_screen.dart';
@@ -19,30 +19,30 @@ class WrapperScreen extends StatefulWidget {
 
 class _WrapperScreenState extends State<WrapperScreen> {
   Future<List<Track>>? trackListFuture;
-  int? sortMode;
+  int sortMode = 3;
 
-  @override
-  void initState() {
-    super.initState();
-    trackListFuture = readTracksFromDatabase();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   trackListFuture = readTracksFromDatabase();
+  // }
 
   Future<List<Track>>? readTracksFromDatabase() async {
     if (mounted) {
       final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
-
-      /* if (!(audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen') ?? true)) {
-        await databaseProviderListenFalse.initializeTrackDatabase();
-      } */
-
       debugPrint(
-          '\n\nWrapperScreen readTracksFromDatabase() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}\n\n');
-      // Read the Previously Set Sort Option from Prefs
+          'WrapperScreen readTracksFromDatabase() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}\n\n');
       sortMode = audioPlayerProviderListenFalse.prefs?.getInt('sortMode') ?? 3;
-      return databaseProviderListenFalse.readAllTracksSorted(sortMode: sortMode);
+      final trackList = trackStoreDatabase.readAllTracksSorted(sortMode: sortMode);
+      return trackList;
     }
     return [];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    trackListFuture = trackStoreDatabase.isTrackStoreCreated ? readTracksFromDatabase() : Future.value([]);
   }
 
   @override

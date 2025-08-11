@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/theme_provider.dart';
-import '../providers/database_provider.dart';
+import 'providers/track_store_database.dart';
 import '../providers/audio_player_provider.dart';
 
 import '../screens/onboarding_screen.dart';
 import 'screens/wrapper_screen.dart';
 
-void main() {
+late TrackStoreDatabase trackStoreDatabase;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ensure ObjectBox can get the application directory
+  trackStoreDatabase = TrackStoreDatabase();
+  await trackStoreDatabase.createStoreAndBox();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeProvider>(
           create: (context) => ThemeProvider(),
-        ),
-        ChangeNotifierProvider<DatabaseProvider>(
-          create: (context) => DatabaseProvider(),
         ),
         ChangeNotifierProvider<AudioPlayerProvider>(
           create: (context) => AudioPlayerProvider(),
@@ -40,28 +43,22 @@ class JustPlay extends StatefulWidget {
 
 class _JustPlayState extends State<JustPlay> {
   bool? showOnboardingScreen;
-  // Future<void>? initializationFuture;
+  Future<void>? initAudioPlayerFuture;
+
+  Future<void> initAudioPlayerProvider() async {
+    if (mounted) {
+      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
+      debugPrint('Main Initializing AudioPlayerProvider');
+      await audioPlayerProviderListenFalse.initializeAudioPlayerProvider();
+      await audioPlayerProviderListenFalse.initializeSharedPrefs();
+      audioPlayerProviderListenFalse.autoPlayNextOnTrackCompletion(); // Not async
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<void> initializeDatabaseGetSharedPrefs() async {
-    if (mounted) {
-      final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-      final databaseProviderListenFalse = Provider.of<DatabaseProvider>(context, listen: false);
-
-      debugPrint('\nInitializing AudioPlayerProvider & DatabaseProvider Functions\n');
-
-      await audioPlayerProviderListenFalse.initializeAudioPlayerProvider();
-      await audioPlayerProviderListenFalse.initializeSharedPrefs();
-      await databaseProviderListenFalse.initializeTrackDatabase();
-
-      audioPlayerProviderListenFalse.autoPlayNextOnTrackCompletion(); // Not async
-      debugPrint(
-          '\nMain initializeDatabaseGetSharedPrefs() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\n');
-    }
+    initAudioPlayerFuture = initAudioPlayerProvider();
   }
 
   @override
@@ -250,7 +247,7 @@ class _JustPlayState extends State<JustPlay> {
 
       // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const WrapperScreen(),
       home: FutureBuilder<void>(
-        future: initializeDatabaseGetSharedPrefs(),
+        future: initAudioPlayerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(

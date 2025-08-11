@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
-import '../providers/database_provider.dart';
+import '../main.dart';
 
 import '../widgets/custom_list_item.dart';
 import '../widgets/now_playing_menu.dart';
@@ -38,8 +38,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void searchTracksFromDatabase() {
     setState(() {
-      searchResultTrackListFuture =
-          Provider.of<DatabaseProvider>(context, listen: false).searchTracks(searchTextFieldController.text);
+      // searchResultTrackListFuture = Provider.of<DatabaseProvider>(context, listen: false).searchTracks(searchTextFieldController.text);
+      searchResultTrackListFuture = trackStoreDatabase.searchTracks(searchTextFieldController.text);
     });
   }
 
