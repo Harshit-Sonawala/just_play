@@ -38,7 +38,8 @@ class _CustomCardState extends State<CustomCard> {
                 ),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.2),
+                  // Colors.black.withOpacity(0.2),
+                  Colors.black.withValues(alpha: 0.2), // 20% opacity
                   BlendMode.darken,
                 ),
               ),

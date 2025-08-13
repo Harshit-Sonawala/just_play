@@ -268,7 +268,7 @@ class _JustPlayState extends State<JustPlay> {
           } else if (snapshot.connectionState == ConnectionState.done) {
             // debugPrint('Main snapshot.data: ${snapshot.data}');
             showOnboardingScreen = Provider.of<AudioPlayerProvider>(context).prefs?.getBool('showOnboardingScreen');
-            debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
+            // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
             if (showOnboardingScreen == null || showOnboardingScreen == true) {
               return const OnboardingScreen();
             } else {

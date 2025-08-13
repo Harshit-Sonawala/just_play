@@ -85,7 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         focusNode: searchTextFieldFocusNode,
                         textInputAction: TextInputAction.search,
                         onSubmitted: (value) => {
-                          debugPrint('Trying to Search with ${searchTextFieldController.text}'),
+                          debugPrint('Tried Search with ${searchTextFieldController.text}'),
                           if (searchTextFieldController.text.isNotEmpty)
                             searchTracksFromDatabase()
                           else
@@ -94,6 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         style: Theme.of(context).textTheme.bodyMedium,
                         decoration: InputDecoration(
                           hintText: 'Enter search term...',
+                          hintStyle: const TextStyle(fontWeight: FontWeight.normal),
                           suffixIcon: IconButton(
                             icon: Icon(
                               Icons.search_rounded,
@@ -101,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               color: Theme.of(context).colorScheme.secondary,
                             ),
                             onPressed: () => {
-                              debugPrint('Trying to Search with ${searchTextFieldController.text}'),
+                              debugPrint('Tried Search with ${searchTextFieldController.text}'),
                               if (searchTextFieldController.text.isNotEmpty)
                                 searchTracksFromDatabase()
                               else
@@ -145,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     size: 64.0,
                                     color: Theme.of(context).colorScheme.secondary,
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 20),
                                   Text(
                                     'Search for File, Title, Artist or Album',
                                     style: Theme.of(context).textTheme.bodyMedium,

@@ -30,18 +30,18 @@ class _WrapperScreenState extends State<WrapperScreen> {
   Future<List<Track>>? readTracksFromDatabase() async {
     if (mounted) {
       final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
-      debugPrint(
-          'WrapperScreen readTracksFromDatabase() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}\n\n');
+      // debugPrint('WrapperScreen readTracksFromDatabase() showOnboardingScreen: ${audioPlayerProviderListenFalse.prefs?.getBool('showOnboardingScreen')}\nsortMode: ${audioPlayerProviderListenFalse.prefs?.getInt('sortMode')}');
       sortMode = audioPlayerProviderListenFalse.prefs?.getInt('sortMode') ?? 3;
       final trackList = trackStoreDatabase.readAllTracksSorted(sortMode: sortMode);
+      debugPrint('WrapperScreen readTracksFromDatabase got sortMode: $sortMode');
       return trackList;
     }
     return [];
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     trackListFuture = trackStoreDatabase.isTrackStoreCreated ? readTracksFromDatabase() : Future.value([]);
   }
 
@@ -70,7 +70,7 @@ class _WrapperScreenState extends State<WrapperScreen> {
                     setState(() {
                       // Update prefs with the chosen sortMode
                       Provider.of<AudioPlayerProvider>(context, listen: false).prefs?.setInt('sortMode', sortMode);
-                      readTracksFromDatabase();
+                      trackListFuture = readTracksFromDatabase();
                     })
                   },
                 ),

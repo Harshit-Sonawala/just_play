@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               size: 24,
                               color: Theme.of(context).colorScheme.secondary,
                             ),
-                            onPressed: () => {},
+                            onPressed: null,
                             // onPressed: () => {
                             //   if (searchTextFieldController.text.isNotEmpty)
                             //     {
