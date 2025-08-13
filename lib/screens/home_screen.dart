@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 
-import '../widgets/custom_divider.dart';
+// import '../widgets/custom_divider.dart';
 import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
 import '../screens/search_screen.dart';
@@ -116,77 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  MenuAnchor(
-                    builder: (BuildContext context, MenuController menuAnchorController, Widget? child) {
-                      return IconButton(
-                        onPressed: () {
-                          if (menuAnchorController.isOpen) {
-                            menuAnchorController.close();
-                          } else {
-                            menuAnchorController.open();
-                          }
-                        },
-                        icon: const Icon(Icons.sort_rounded),
-                      );
-                    },
-                    menuChildren: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 20,
-                          top: 10,
-                          right: 20,
-                        ),
-                        child: Text(
-                          'Sort By:',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: CustomDivider(),
-                      ),
-                      MenuItemButton(
-                        leadingIcon: Icon(
-                          Icons.keyboard_arrow_up_rounded,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
-                        onPressed: () => setState(() {
-                          widget.onSortModeChanged(0);
-                        }),
-                      ),
-                      MenuItemButton(
-                        leadingIcon: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
-                        onPressed: () => setState(() {
-                          widget.onSortModeChanged(1);
-                        }),
-                      ),
-                      MenuItemButton(
-                        leadingIcon: Icon(
-                          Icons.keyboard_arrow_up_rounded,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
-                        onPressed: () => setState(() {
-                          widget.onSortModeChanged(2);
-                        }),
-                      ),
-                      MenuItemButton(
-                        leadingIcon: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
-                        onPressed: () => setState(() {
-                          widget.onSortModeChanged(3);
-                        }),
-                      ),
-                    ],
-                  ),
                   IconButton(
                     icon: const Icon(Icons.settings_rounded),
                     onPressed: () {
@@ -199,35 +128,65 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
 
-          // AppBar Header Row 2
+          // AppBar Header Button Row 2
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Quick Tracks',
+                Expanded(
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      debugPrint('Play All pressed.');
+                    },
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    borderRadius: 50,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                    icon: Icons.playlist_add_rounded,
+                    iconSize: 22,
+                    iconColor: Theme.of(context).colorScheme.secondary,
+                    title: 'Play All',
+                    titleStyle: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
-                CustomElevatedButton(
-                  onPressed: () {
-                    debugPrint('Play All Quick Tracks pressed.');
-                  },
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  borderRadius: 50,
-                  backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                  icon: Icons.playlist_add_rounded,
-                  iconSize: 22,
-                  iconColor: Theme.of(context).colorScheme.secondary,
-                  title: 'Play All',
-                  titleStyle: Theme.of(context).textTheme.bodySmall,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      debugPrint('New Tracks pressed.');
+                    },
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    borderRadius: 50,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                    icon: Icons.history_rounded,
+                    iconSize: 22,
+                    iconColor: Theme.of(context).colorScheme.secondary,
+                    title: 'New',
+                    titleStyle: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      debugPrint('Shuffle All pressed.');
+                    },
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    borderRadius: 50,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                    icon: Icons.compare_arrows_rounded,
+                    iconSize: 22,
+                    iconColor: Theme.of(context).colorScheme.secondary,
+                    title: 'Shuffle All',
+                    titleStyle: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 6),
 
           FutureBuilder<List<Track>>(
             future: widget.trackListFuture,
@@ -254,16 +213,83 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               'All Tracks (${snapshot.data!.length})',
-                              style: Theme.of(context).textTheme.titleMedium,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            MenuAnchor(
+                              builder: (BuildContext context, MenuController menuAnchorController, Widget? child) {
+                                return IconButton(
+                                  onPressed: () {
+                                    if (menuAnchorController.isOpen) {
+                                      menuAnchorController.close();
+                                    } else {
+                                      menuAnchorController.open();
+                                    }
+                                  },
+                                  icon: const Icon(Icons.sort_rounded),
+                                  iconSize: 24,
+                                );
+                              },
+                              menuChildren: [
+                                // Padding(
+                                //   padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                                //   child: Text(
+                                //     'Sort By:',
+                                //     style: Theme.of(context).textTheme.titleSmall,
+                                //   ),
+                                // ),
+                                // const Padding(
+                                //   padding: EdgeInsets.symmetric(horizontal: 20),
+                                //   child: CustomDivider(),
+                                // ),
+                                MenuItemButton(
+                                  leadingIcon: Icon(
+                                    Icons.sort_by_alpha_rounded,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
+                                  onPressed: () => setState(() {
+                                    widget.onSortModeChanged(0);
+                                  }),
+                                ),
+                                MenuItemButton(
+                                  leadingIcon: Icon(
+                                    Icons.sort_by_alpha_rounded,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
+                                  onPressed: () => setState(() {
+                                    widget.onSortModeChanged(1);
+                                  }),
+                                ),
+                                MenuItemButton(
+                                  leadingIcon: Icon(
+                                    Icons.history_rounded,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
+                                  onPressed: () => setState(() {
+                                    widget.onSortModeChanged(2);
+                                  }),
+                                ),
+                                MenuItemButton(
+                                  leadingIcon: Icon(
+                                    Icons.history_rounded,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
+                                  onPressed: () => setState(() {
+                                    widget.onSortModeChanged(3);
+                                  }),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 4),
 
                       // All Tracks Main ListView Builder
                       Expanded(

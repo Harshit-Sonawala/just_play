@@ -66,7 +66,7 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
         children: [
           // Appbar Line 1
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               children: [
                 const Icon(
@@ -84,10 +84,10 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
 
           // Appbar Line 2
           Text(
-            'Shuffle play from a wider more random selection of tracks:',
+            'Shuffle play from a random selection of tracks:',
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
           // Shuffled Cards FutureBuilder
           FutureBuilder<List<Track>>(
