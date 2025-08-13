@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -230,8 +228,8 @@ class AudioPlayerProvider with ChangeNotifier {
   // play next from _nowPlayingList
   void playNextFromNowPlayingList() async {
     if (_nowPlayingList.isNotEmpty &&
-        nowPlayingTrackIndex + 1 < _nowPlayingList.length &&
-        _nowPlayingList[nowPlayingTrackIndex + 1] != null) {
+        nowPlayingTrackIndex + 1 < _nowPlayingList.length) // && _nowPlayingList[nowPlayingTrackIndex + 1] != null)
+    {
       // playlist not empty && index within range && next track exists
       nowPlayingTrackIndex += 1;
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
@@ -249,8 +247,8 @@ class AudioPlayerProvider with ChangeNotifier {
   // play prev from _nowPlayingList
   void playPrevFromNowPlayingList() async {
     if (_nowPlayingList.isNotEmpty &&
-        nowPlayingTrackIndex - 1 >= 0 &&
-        _nowPlayingList[nowPlayingTrackIndex - 1] != null) {
+        nowPlayingTrackIndex - 1 >= 0) // && _nowPlayingList[nowPlayingTrackIndex - 1] != null)
+    {
       nowPlayingTrackIndex -= 1;
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
@@ -262,7 +260,8 @@ class AudioPlayerProvider with ChangeNotifier {
 
   // play specific index from _nowPlayingList
   void playIndexFromNowPlayingList(int indexToPlay) async {
-    if (nowPlayingList.isNotEmpty && indexToPlay < _nowPlayingList.length && _nowPlayingList[indexToPlay] != null) {
+    if (nowPlayingList.isNotEmpty && indexToPlay < _nowPlayingList.length) // && _nowPlayingList[indexToPlay] != null)
+    {
       nowPlayingTrackIndex = indexToPlay;
       await setAudioPlayerFile(_nowPlayingList[nowPlayingTrackIndex]);
       await playTrack();
@@ -319,8 +318,8 @@ class AudioPlayerProvider with ChangeNotifier {
   void removeFromNowPlayingListAt(int trackIndexToRemove) {
     if (_nowPlayingList.isNotEmpty &&
         trackIndexToRemove >= 0 &&
-        trackIndexToRemove <= _nowPlayingList.length &&
-        _nowPlayingList[trackIndexToRemove] != null) {
+        trackIndexToRemove <= _nowPlayingList.length) // && _nowPlayingList[trackIndexToRemove] != null)
+    {
       // playlist not empty && index within range && track at index exists
       if (trackIndexToRemove == nowPlayingTrackIndex) {
         if (_nowPlayingList.length == 1) {

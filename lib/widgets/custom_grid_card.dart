@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
 class CustomGridCard extends StatefulWidget {
   final VoidCallback? onPressed;
@@ -6,7 +7,7 @@ class CustomGridCard extends StatefulWidget {
   final EdgeInsets padding;
   final double borderRadius;
   final Widget? child;
-  final String backgroundImage;
+  final Uint8List? backgroundImage;
   final Color? color;
 
   const CustomGridCard({
@@ -15,7 +16,7 @@ class CustomGridCard extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
     this.borderRadius = 10,
     this.child,
-    this.backgroundImage = '',
+    this.backgroundImage,
     this.color,
     super.key,
   });
@@ -33,28 +34,26 @@ class _CustomGridCardState extends State<CustomGridCard> {
         color: Colors.transparent,
         child: Ink(
           // width: 360,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            color: Theme.of(context).colorScheme.surface,
-          ),
-          // decoration: widget.backgroundImage != ''
-          //     ? BoxDecoration(
-          //         borderRadius: BorderRadius.circular(widget.borderRadius),
-          //         image: DecorationImage(
-          //           image: AssetImage(
-          //             widget.backgroundImage,
-          //           ),
-          //           fit: BoxFit.cover,
-          //           colorFilter: ColorFilter.mode(
-          //             Colors.black.withOpacity(0.2),
-          //             BlendMode.darken,
-          //           ),
-          //         ),
-          //       )
-          //     : BoxDecoration(
-          //         color: widget.color ?? Theme.of(context).colorScheme.surface,
-          //         borderRadius: BorderRadius.circular(widget.borderRadius),
-          //       ),
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(widget.borderRadius),
+          //   color: Theme.of(context).colorScheme.surface,
+          // ),
+          decoration: widget.backgroundImage == null
+              ? BoxDecoration(
+                  color: widget.color ?? Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(widget.borderRadius),
+                )
+              : BoxDecoration(
+                  borderRadius: BorderRadius.circular(widget.borderRadius),
+                  image: DecorationImage(
+                    image: MemoryImage(widget.backgroundImage!),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withValues(alpha: 0.3),
+                      BlendMode.darken,
+                    ),
+                  ),
+                ),
           child: InkWell(
             onTap: widget.onPressed,
             onLongPress: widget.onLongPress,

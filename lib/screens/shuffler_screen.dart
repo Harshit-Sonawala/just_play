@@ -108,7 +108,7 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                 );
               } else if (snapshot.hasData) {
                 final shuffledTrackList = getShuffledTrackList(snapshot.data ?? []);
-                debugPrint('ShufflerScreen shuffledTrackList Length: ${shuffledTrackList.length}');
+                // debugPrint('ShufflerScreen shuffledTrackList Length: ${shuffledTrackList.length}');
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
                 return Expanded(
                   // height: 600,
@@ -124,6 +124,9 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                     itemCount: shuffledTrackList.length,
                     itemBuilder: (context, index) {
                       Track eachTrack = shuffledTrackList[index];
+                      // String trackTitlePhrase = eachTrack.fileName.length <= 40
+                      //     ? eachTrack.fileName
+                      //     : '${(eachTrack.fileName).substring(0, 41)}...';
                       return CustomGridCard(
                         onPressed: () {
                           // Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
@@ -132,26 +135,34 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                         onLongPress: () {
                           audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
                         },
+                        backgroundImage: eachTrack.albumArt,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // const Icon(Icons.music_note_rounded, size: 16),
+                            (eachTrack.albumArt == null)
+                                ? Text(
+                                    eachTrack.fileName[0].toUpperCase(),
+                                    style: Theme.of(context).textTheme.displayLarge,
+                                  )
+                                : SizedBox(height: 8),
+                            SizedBox(height: 2),
                             Text(
                               '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
                               style: Theme.of(context).textTheme.displaySmall,
-                              // maxLines: 4,
-                              // overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
                               Padding(
-                                padding: const EdgeInsets.only(top: 4),
+                                padding: const EdgeInsets.only(top: 2),
                                 child: Text(
                                   // '${eachTrack.artist!.substring(0, 71)}...',
                                   '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
                                   style: Theme.of(context).textTheme.bodySmall,
-                                  // maxLines: 4,
-                                  // overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                           ],
