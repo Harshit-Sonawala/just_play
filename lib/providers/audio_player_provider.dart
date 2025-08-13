@@ -10,7 +10,7 @@ import 'package:audiotags/audiotags.dart';
 import '../models/track.dart';
 
 class AudioPlayerProvider with ChangeNotifier {
-  String persistentMusicDirectory = "";
+  // String persistentMusicDirectory = "";
   String? libraryDirectory;
   final AudioPlayer audioPlayer = AudioPlayer();
   Track? _nowPlayingTrack;

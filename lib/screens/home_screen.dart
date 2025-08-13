@@ -230,6 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                   icon: const Icon(Icons.sort_rounded),
                                   iconSize: 24,
+                                  padding: const EdgeInsets.all(0),
+                                  // constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                                  visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
+                                  // splashRadius: 16,
                                 );
                               },
                               menuChildren: [

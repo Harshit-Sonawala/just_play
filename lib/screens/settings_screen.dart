@@ -19,12 +19,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   TextEditingController musicDirectoryTextFieldController = TextEditingController();
 
-  @override
-  void dispose() {
-    musicDirectoryTextFieldController.dispose();
-    super.dispose();
-  }
-
   void showRestartSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -37,6 +31,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    musicDirectoryTextFieldController.text =
+        await Provider.of<AudioPlayerProvider>(context, listen: false).getLibraryDirectory() ??
+            'Change Library Directory';
+  }
+
+  @override
+  void dispose() {
+    musicDirectoryTextFieldController.dispose();
+    super.dispose();
   }
 
   // TODO: Refactor buildLibrary() into AudioPlayerProvider / TrackStoreDatabase
@@ -52,8 +60,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    musicDirectoryTextFieldController.text = Provider.of<AudioPlayerProvider>(context).libraryDirectory!;
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
