@@ -30,170 +30,189 @@ class _HomeScreenState extends State<HomeScreen> {
     final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Header Search TextField
-              Expanded(
-                child: Hero(
-                  tag: 'searchHero',
-                  child: Material(
-                    color: Colors.transparent,
-                    child: GestureDetector(
-                      onTap: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const SearchScreen(
-                              // searchTextFieldController: searchTextFieldController,
-                              // searchTextFieldFocusNode: searchTextFieldFocusNode,
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            floating: true,
+            pinned: false,
+            snap: false,
+            stretch: false,
+            elevation: 0,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            // toolbarHeight: 50,
+            // titleSpacing: 0,
+            expandedHeight: 106,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Column(
+                children: [
+                  // AppBar Header Row 1
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Header Search TextField
+                      Expanded(
+                        child: Hero(
+                          tag: 'searchHero',
+                          child: Material(
+                            color: Colors.transparent,
+                            child: GestureDetector(
+                              onTap: () => {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const SearchScreen(
+                                      // searchTextFieldController: searchTextFieldController,
+                                      // searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                      ),
+                                )),
+                              },
+                              child: TextField(
+                                enabled: false,
+                                // controller: searchTextFieldController,
+                                // focusNode: searchTextFieldFocusNode,
+                                // textInputAction: TextInputAction.search, // replaces keyboard's Enter with Search Icon
+                                // onSubmitted: (value) {
+                                //   debugPrint(
+                                //       'onSubmitted Trying to nav to search screen with ${searchTextFieldController.text}');
+                                //   Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (context) => SearchScreen(
+                                //       searchTextFieldController: searchTextFieldController,
+                                //       searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                //     ),
+                                //   ));
+                                // },
+                                // onTapOutside: (event) => {
+                                //   debugPrint('Unfocusing Header TextField.'),
+                                //   // FocusManager.instance.primaryFocus?.unfocus(),
+                                //   searchTextFieldFocusNode.unfocus(),
+                                // },
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                style: Theme.of(context).textTheme.displayMedium,
+                                decoration: InputDecoration(
+                                  hintText: 'JustPlay!',
+                                  hintStyle: Theme.of(context).textTheme.displayLarge,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.search_rounded,
+                                      size: 24,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                    onPressed: null,
+                                    // onPressed: () => {
+                                    //   if (searchTextFieldController.text.isNotEmpty)
+                                    //     {
+                                    //       debugPrint(
+                                    //           'onPressed Trying to nav to search screen with ${searchTextFieldController.text}'),
+                                    //       Navigator.of(context).push(MaterialPageRoute(
+                                    //         builder: (context) => SearchScreen(
+                                    //           // Passing the TextEditingController and FocusNode for Hero
+                                    //           searchTextFieldController: searchTextFieldController,
+                                    //           searchTextFieldFocusNode: searchTextFieldFocusNode,
+                                    //         ),
+                                    //       ))
+                                    //     }
+                                    //   else
+                                    //     {
+                                    //       debugPrint('Search Query Empty'),
+                                    //     }
+                                    // },
+                                  ),
+                                ),
                               ),
-                        )),
-                      },
-                      child: TextField(
-                        enabled: false,
-                        // controller: searchTextFieldController,
-                        // focusNode: searchTextFieldFocusNode,
-                        // textInputAction: TextInputAction.search, // replaces keyboard's Enter with Search Icon
-                        // onSubmitted: (value) {
-                        //   debugPrint(
-                        //       'onSubmitted Trying to nav to search screen with ${searchTextFieldController.text}');
-                        //   Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => SearchScreen(
-                        //       searchTextFieldController: searchTextFieldController,
-                        //       searchTextFieldFocusNode: searchTextFieldFocusNode,
-                        //     ),
-                        //   ));
-                        // },
-                        // onTapOutside: (event) => {
-                        //   debugPrint('Unfocusing Header TextField.'),
-                        //   // FocusManager.instance.primaryFocus?.unfocus(),
-                        //   searchTextFieldFocusNode.unfocus(),
-                        // },
-                        cursorColor: Theme.of(context).colorScheme.secondary,
-                        style: Theme.of(context).textTheme.displayMedium,
-                        decoration: InputDecoration(
-                          hintText: 'JustPlay!',
-                          hintStyle: Theme.of(context).textTheme.displayLarge,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              Icons.search_rounded,
-                              size: 24,
-                              color: Theme.of(context).colorScheme.secondary,
                             ),
-                            onPressed: null,
-                            // onPressed: () => {
-                            //   if (searchTextFieldController.text.isNotEmpty)
-                            //     {
-                            //       debugPrint(
-                            //           'onPressed Trying to nav to search screen with ${searchTextFieldController.text}'),
-                            //       Navigator.of(context).push(MaterialPageRoute(
-                            //         builder: (context) => SearchScreen(
-                            //           // Passing the TextEditingController and FocusNode for Hero
-                            //           searchTextFieldController: searchTextFieldController,
-                            //           searchTextFieldFocusNode: searchTextFieldFocusNode,
-                            //         ),
-                            //       ))
-                            //     }
-                            //   else
-                            //     {
-                            //       debugPrint('Search Query Empty'),
-                            //     }
-                            // },
                           ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.settings_rounded),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const SettingsScreen(),
+                              ));
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const SizedBox(width: 6),
-
-              // Sort Menu Anchor and Settings
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.settings_rounded),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const SettingsScreen(),
-                      ));
-                    },
+                  // const SizedBox(height: 4),
+                  // AppBar Header Row 2
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: CustomElevatedButton(
+                          onPressed: () {
+                            debugPrint('Play All pressed.');
+                          },
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          borderRadius: 50,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                          icon: Icons.playlist_add_rounded,
+                          iconSize: 22,
+                          iconColor: Theme.of(context).colorScheme.secondary,
+                          title: 'Play All',
+                          titleStyle: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: CustomElevatedButton(
+                          onPressed: () {
+                            debugPrint('New Tracks pressed.');
+                          },
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          borderRadius: 50,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                          icon: Icons.new_releases_rounded,
+                          iconSize: 22,
+                          iconColor: Theme.of(context).colorScheme.secondary,
+                          title: 'New',
+                          titleStyle: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: CustomElevatedButton(
+                          onPressed: () {
+                            debugPrint('Shuffle All pressed.');
+                          },
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          borderRadius: 50,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                          icon: Icons.compare_arrows_rounded,
+                          iconSize: 22,
+                          iconColor: Theme.of(context).colorScheme.secondary,
+                          title: 'Shuffle All',
+                          titleStyle: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-          const SizedBox(height: 4),
-
-          // AppBar Header Button Row 2
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: CustomElevatedButton(
-                    onPressed: () {
-                      debugPrint('Play All pressed.');
-                    },
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    borderRadius: 50,
-                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                    icon: Icons.playlist_add_rounded,
-                    iconSize: 22,
-                    iconColor: Theme.of(context).colorScheme.secondary,
-                    title: 'Play All',
-                    titleStyle: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: CustomElevatedButton(
-                    onPressed: () {
-                      debugPrint('New Tracks pressed.');
-                    },
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    borderRadius: 50,
-                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                    icon: Icons.history_rounded,
-                    iconSize: 22,
-                    iconColor: Theme.of(context).colorScheme.secondary,
-                    title: 'New',
-                    titleStyle: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: CustomElevatedButton(
-                    onPressed: () {
-                      debugPrint('Shuffle All pressed.');
-                    },
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    borderRadius: 50,
-                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                    icon: Icons.compare_arrows_rounded,
-                    iconSize: 22,
-                    iconColor: Theme.of(context).colorScheme.secondary,
-                    title: 'Shuffle All',
-                    titleStyle: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              ],
             ),
+            // bottom: PreferredSize(
+            //   preferredSize: Size.fromHeight(52),
+            //   child:
+            // ),
           ),
 
+          // Body FutureBuilder
           FutureBuilder<List<Track>>(
             future: widget.trackListFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // Loading Tracks
-                return Expanded(
+                return SliverToBoxAdapter(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,161 +225,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else if (snapshot.hasData) {
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
-                return Expanded(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'All Tracks (${snapshot.data!.length})',
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            MenuAnchor(
-                              builder: (BuildContext context, MenuController menuAnchorController, Widget? child) {
-                                return IconButton(
-                                  onPressed: () {
-                                    if (menuAnchorController.isOpen) {
-                                      menuAnchorController.close();
-                                    } else {
-                                      menuAnchorController.open();
-                                    }
-                                  },
-                                  icon: const Icon(Icons.sort_rounded),
-                                  iconSize: 24,
-                                  padding: const EdgeInsets.all(0),
-                                  // constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                                  visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
-                                  // splashRadius: 16,
-                                );
-                              },
-                              menuChildren: [
-                                // Padding(
-                                //   padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                                //   child: Text(
-                                //     'Sort By:',
-                                //     style: Theme.of(context).textTheme.titleSmall,
-                                //   ),
-                                // ),
-                                // const Padding(
-                                //   padding: EdgeInsets.symmetric(horizontal: 20),
-                                //   child: CustomDivider(),
-                                // ),
-                                MenuItemButton(
-                                  leadingIcon: Icon(
-                                    Icons.sort_by_alpha_rounded,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  child: Text('Alphabetical Asc', style: Theme.of(context).textTheme.bodySmall),
-                                  onPressed: () => setState(() {
-                                    widget.onSortModeChanged(0);
-                                  }),
-                                ),
-                                MenuItemButton(
-                                  leadingIcon: Icon(
-                                    Icons.sort_by_alpha_rounded,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  child: Text('Alphabetical Desc', style: Theme.of(context).textTheme.bodySmall),
-                                  onPressed: () => setState(() {
-                                    widget.onSortModeChanged(1);
-                                  }),
-                                ),
-                                MenuItemButton(
-                                  leadingIcon: Icon(
-                                    Icons.history_rounded,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  child: Text('Date Modified Asc', style: Theme.of(context).textTheme.bodySmall),
-                                  onPressed: () => setState(() {
-                                    widget.onSortModeChanged(2);
-                                  }),
-                                ),
-                                MenuItemButton(
-                                  leadingIcon: Icon(
-                                    Icons.history_rounded,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  child: Text('Date Modified Desc', style: Theme.of(context).textTheme.bodySmall),
-                                  onPressed: () => setState(() {
-                                    widget.onSortModeChanged(3);
-                                  }),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-
-                      // All Tracks Main ListView Builder
-                      Expanded(
-                        child: ListView.builder(
-                          // itemExtent: 80,
-                          // itemCount: Provider.of<AudioPlayerProvider>(context).trackList.length,
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            // final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
-                            Track eachTrack = snapshot.data![index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
-                              child: CustomListItem(
-                                onPressed: () {
-                                  // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
-                                  audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
-                                },
-                                onLongPress: () {
-                                  audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
-                                },
-                                fileName: eachTrack.fileName,
-                                title: eachTrack.title,
-                                artist: eachTrack.artist,
-                                album: eachTrack.album,
-                                albumArt: eachTrack.albumArt,
-                                duration: eachTrack.fileDuration,
-                                // body: eachTrack.path,
-                              ),
-                            );
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: snapshot.data!.length,
+                    (context, index) {
+                      // final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
+                      Track eachTrack = snapshot.data![index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: CustomListItem(
+                          onPressed: () {
+                            // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                            audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
                           },
+                          onLongPress: () {
+                            audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
+                          },
+                          fileName: eachTrack.fileName,
+                          title: eachTrack.title,
+                          artist: eachTrack.artist,
+                          album: eachTrack.album,
+                          albumArt: eachTrack.albumArt,
+                          duration: eachTrack.fileDuration,
+                          // body: eachTrack.path,
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 );
               } else if (snapshot.hasError) {
                 // unexpected case and error encounterred
                 debugPrint('HomeScreen Error: ${snapshot.error}');
-                return Center(
-                  child: Text('HomeScreen Error: ${snapshot.error}'),
+                return SliverToBoxAdapter(
+                  child: Center(
+                    child: Text('HomeScreen Error: ${snapshot.error}'),
+                  ),
                 );
               } else {
                 // unexpected case but no error encountered
                 debugPrint('HomeScreen Unexpected: $snapshot');
-                return Center(
-                  child: Text('HomeScreen Unexpected: $snapshot'),
+                return SliverToBoxAdapter(
+                  child: Center(
+                    child: Text('HomeScreen Unexpected: $snapshot'),
+                  ),
                 );
               }
             },
           ),
-          // Floating Action Button Shuffle Play All Tracks
-          // Positioned(
-          //   bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
-          //   right: 10,
-          //   child: FloatingActionButton(
-          //     elevation: 0,
-          //     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-          //     onPressed: () {
-          //       debugPrint('Shuffle Play pressed.');
-          //     },
-          //     child: Icon(
-          //       Icons.shuffle_rounded,
-          //       size: 28,
-          //       color: Theme.of(context).colorScheme.secondary,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
