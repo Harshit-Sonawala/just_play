@@ -151,7 +151,7 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                             Text(
                               '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
                               style: Theme.of(context).textTheme.displaySmall,
-                              maxLines: 2,
+                              maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                             ),
                             if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)

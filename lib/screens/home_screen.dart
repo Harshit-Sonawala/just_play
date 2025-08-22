@@ -167,6 +167,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: CustomElevatedButton(
                           onPressed: () {
+                            debugPrint('Shuffle All pressed.');
+                          },
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          borderRadius: 50,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                          icon: Icons.shuffle_rounded,
+                          iconSize: 22,
+                          iconColor: Theme.of(context).colorScheme.secondary,
+                          title: 'Shuffle All',
+                          titleStyle: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: CustomElevatedButton(
+                          onPressed: () {
                             debugPrint('New Tracks pressed.');
                           },
                           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
@@ -176,22 +192,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           iconSize: 22,
                           iconColor: Theme.of(context).colorScheme.secondary,
                           title: 'New',
-                          titleStyle: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: CustomElevatedButton(
-                          onPressed: () {
-                            debugPrint('Shuffle All pressed.');
-                          },
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                          borderRadius: 50,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                          icon: Icons.compare_arrows_rounded,
-                          iconSize: 22,
-                          iconColor: Theme.of(context).colorScheme.secondary,
-                          title: 'Shuffle All',
                           titleStyle: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),

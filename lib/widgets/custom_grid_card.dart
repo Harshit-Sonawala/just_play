@@ -49,7 +49,7 @@ class _CustomGridCardState extends State<CustomGridCard> {
                     image: MemoryImage(widget.backgroundImage!),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      Colors.black.withValues(alpha: 0.3),
+                      Colors.black.withValues(alpha: 0.4),
                       BlendMode.darken,
                     ),
                   ),
