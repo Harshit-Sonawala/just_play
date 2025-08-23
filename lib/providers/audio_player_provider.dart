@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:audiotags/audiotags.dart';
 
 import '../models/track.dart';
@@ -182,15 +184,38 @@ class AudioPlayerProvider with ChangeNotifier {
     if (File(trackToPlay.filePath).existsSync()) {
       _nowPlayingTrack = trackToPlay;
       try {
-        await audioPlayer.setFilePath(trackToPlay.filePath);
+        // await audioPlayer.setFilePath(trackToPlay.filePath);
+
+        // Write albumArtBytes to a temp file
+        Uri? albumArtUri;
+        if (trackToPlay.albumArt != null) {
+          final tempDir = await getTemporaryDirectory();
+          final artFile = File('${tempDir.path}/art_${trackToPlay.id}.jpg');
+          await artFile.writeAsBytes(trackToPlay.albumArt!);
+          albumArtUri = Uri.file(artFile.path);
+        }
+
+        await audioPlayer.setAudioSource(
+          AudioSource.file(
+            trackToPlay.filePath,
+            tag: MediaItem(
+              id: trackToPlay.filePath,
+              title: trackToPlay.title ?? trackToPlay.fileName,
+              artist: trackToPlay.artist,
+              album: trackToPlay.album,
+              artUri: albumArtUri,
+              extras: {
+                'androidCompactActionIndices': [0, 1],
+                'androidNotificationButtons': ['skipToPrevious', 'skipToNext'],
+              },
+            ),
+          ),
+        );
       } catch (e) {
         _nowPlayingTrack = null;
         debugPrint(
             'AudioPlayerProvider setAudioPlayerFile(), Error setting file ${trackToPlay.fileName} as audio source. Error type: ${e.runtimeType}. Error details: $e');
       }
-      // Now durationStream will handle duration.
-      // Deprecated: removed positionStream Listener method of obtaining updated duration
-      // nowPlayingTotalDuration = (await audioPlayer.load())!.inSeconds;
       notifyListeners();
     } else {
       _nowPlayingTrack = null;

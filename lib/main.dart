@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/theme_provider.dart';
+import 'providers/theme_provider.dart';
 import 'providers/track_store_database.dart';
-import '../providers/audio_player_provider.dart';
+import 'providers/audio_player_provider.dart';
 
-import '../screens/onboarding_screen.dart';
+import 'screens/onboarding_screen.dart';
 import 'screens/wrapper_screen.dart';
+
+import 'package:just_audio_background/just_audio_background.dart';
 
 late TrackStoreDatabase trackStoreDatabase;
 
@@ -14,6 +16,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ensure ObjectBox can get the application directory
   trackStoreDatabase = TrackStoreDatabase();
   await trackStoreDatabase.createStoreAndBox();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.harshitsonawala.justplay.channel.audio',
+    androidNotificationChannelName: 'Audio Playback',
+    androidNotificationOngoing: true,
+  );
+  debugPrint('\nAFTER JUST AUDIO BG\n');
 
   runApp(
     MultiProvider(
@@ -24,10 +33,6 @@ void main() async {
         ChangeNotifierProvider<AudioPlayerProvider>(
           create: (context) => AudioPlayerProvider(),
         ),
-        // ChangeNotifierProxyProvider<DatabaseProvider, AudioPlayerProvider>(
-        //   create: (context) => AudioPlayerProvider(context.read<DatabaseProvider>()),
-        //   update: (context, databaseProvider, audioPlayerProvider) => audioPlayerProvider!,
-        // ),
       ],
       child: const JustPlay(),
     ),
@@ -245,7 +250,6 @@ class _JustPlayState extends State<JustPlay> {
         ),
       ),
 
-      // home: (showOnboardingScreen == null) ? const OnboardingScreen() : const WrapperScreen(),
       home: FutureBuilder<void>(
         future: initAudioPlayerFuture,
         builder: (context, snapshot) {
@@ -266,9 +270,7 @@ class _JustPlayState extends State<JustPlay> {
               ),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            // debugPrint('Main snapshot.data: ${snapshot.data}');
             showOnboardingScreen = Provider.of<AudioPlayerProvider>(context).prefs?.getBool('showOnboardingScreen');
-            // debugPrint('Main showOnboardingScreen: $showOnboardingScreen');
             if (showOnboardingScreen == null || showOnboardingScreen == true) {
               return const OnboardingScreen();
             } else {
