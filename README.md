@@ -17,11 +17,11 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 	- [x] Shuffler Menu for constant random selection of tracks
 	- [ ] Shuffler add all to NowPlayingList
 	- [ ] Edit Shuffler random track count?
-	- [ ] Manual Re-roll Shuffler
-- [ ] Background Playback
-	- [ ] just_audio_background implementation
-	- [ ] Foreground Android audio service
-	- [ ] Notification Controls
+	- [ ] Manually re-roll Shuffler
+- [x] Background Playback
+	- [x] just_audio_background implementation
+	- [x] Foreground Android audio service
+	- [x] Notification Controls
 - [ ] Search Screen
 	- [ ] Search Screen add all to NowPlayingList
 	- [ ] Search Screen shuffle play all to NowPlayingList
@@ -33,7 +33,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 	- [x] Swipe / Dismiss to remove from nowPlayingList - Dismissible() widget
 	- [ ] Shuffle All
 	- [x] Repeat All
-	- [ ] Repeat Single Toggle
+	- [ ] Repeat Toggle
 	- [ ] Save Current Playlist into ObjectBox Database - Playlist Title, Track Count, Total Duration
 	- [ ] User input custom icons 
 - [ ] Song Genre Tags
@@ -75,6 +75,8 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Search Function is not satisfactory, is case-insensitive and is too typo-sensitive
 - [ ] Search Screen Last Result slightly covered by NowPlayingMenu
 - [ ] Search Screen NowPlayingMenu slightly covered by keyboard when opened
+- [ ] Updating AudioSources List causing playback restart from first track in playlist - refactored into using playlist API instead of ConcatenatingAudioSource
+- [ ] Only on notification skipToNext/skipToPrev song, NowPlayingMenu not accurately reflecting updated song info - refactor `List<Track> _playlist` & `nowPlayingIndex` into auto-updating index fetched from audioPlayer's AudioSource updates. 
 
 
 ### Tech Stack 🛠️  
@@ -84,6 +86,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 + Cache Storage & Preferences: [shared_preferences](https://pub.dev/packages/shared_preferences)  
 + Audio Metadata Handling: [audiotags](https://pub.dev/packages/audiotags)  
 + Audio Player: [just_audio](https://pub.dev/packages/just_audio)  
++ Audio Background Playback & Notification Controls: [just_audio_background](https://pub.dev/packages/just_audio_background)
 + Permissions Management: [permission_handler](https://pub.dev/packages/permission_handler), [device_info_plus](https://pub.dev/packages/device_info_plus)  
 + File Management: [file_picker](https://pub.dev/packages/file_picker)    
 
