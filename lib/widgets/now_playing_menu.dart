@@ -442,7 +442,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        audioPlayerProviderListenFalse.playPrevFromNowPlayingList();
+                                        audioPlayerProviderListenFalse.playPrevFromPlaylist();
                                       },
                                       icon: const Icon(
                                         Icons.skip_previous_rounded,
@@ -504,7 +504,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        audioPlayerProviderListenFalse.playNextFromNowPlayingList();
+                                        audioPlayerProviderListenFalse.playNextFromPlaylist();
                                       },
                                       icon: const Icon(
                                         Icons.skip_next_rounded,
@@ -542,7 +542,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                   //   debugPrint('oldIndex: $oldIndex, newIndex: $newIndex');
                                   // },
                                   children: Provider.of<AudioPlayerProvider>(context)
-                                      .nowPlayingList
+                                      .playlist
                                       .asMap()
                                       .entries
                                       .map((eachEntry) {
@@ -554,7 +554,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       child: Dismissible(
                                         key: Key(eachTrack.filePath),
                                         onDismissed: (dismissDirection) {
-                                          audioPlayerProviderListenFalse.removeFromNowPlayingListAt(eachTrackIndex);
+                                          audioPlayerProviderListenFalse.removeFromPlaylistAt(eachTrackIndex);
                                         },
                                         background: Container(
                                           decoration: BoxDecoration(
@@ -579,17 +579,16 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                           onPressed: () {
                                             if (eachTrackIndex ==
                                                 Provider.of<AudioPlayerProvider>(context, listen: false)
-                                                    .nowPlayingTrackIndex) {
+                                                    .nowPlayingIndex) {
                                             } else {
-                                              audioPlayerProviderListenFalse
-                                                  .playIndexFromNowPlayingList(eachTrackIndex);
+                                              audioPlayerProviderListenFalse.playIndexFromPlaylist(eachTrackIndex);
                                             }
                                           },
                                           onLongPress: () {
                                             // reorder playlist order
                                           },
                                           selected: eachTrackIndex ==
-                                              Provider.of<AudioPlayerProvider>(context).nowPlayingTrackIndex,
+                                              Provider.of<AudioPlayerProvider>(context).nowPlayingIndex,
                                           fileName: eachTrack.fileName,
                                           title: eachTrack.title,
                                           artist: eachTrack.artist,

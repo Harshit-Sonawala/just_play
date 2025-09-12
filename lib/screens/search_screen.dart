@@ -214,10 +214,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                           child: CustomListItem(
                                             onPressed: () {
                                               // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
-                                              audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
+                                              audioPlayerProviderListenFalse.addToPlaylist(eachTrack);
                                             },
                                             onLongPress: () {
-                                              audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
+                                              audioPlayerProviderListenFalse.addToPlaylistUpNext(eachTrack);
                                             },
                                             fileName: eachTrack.fileName,
                                             title: eachTrack.title,

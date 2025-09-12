@@ -130,10 +130,10 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                       return CustomGridCard(
                         onPressed: () {
                           // Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
-                          audioPlayerProviderListenFalse.addToNowPlayingList(eachTrack);
+                          audioPlayerProviderListenFalse.addToPlaylist(eachTrack);
                         },
                         onLongPress: () {
-                          audioPlayerProviderListenFalse.addToNowPlayingListUpNext(eachTrack);
+                          audioPlayerProviderListenFalse.addToPlaylistUpNext(eachTrack);
                         },
                         backgroundImage: eachTrack.albumArt,
                         child: Column(
