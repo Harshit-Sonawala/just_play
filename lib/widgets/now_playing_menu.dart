@@ -195,7 +195,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                         return IconButton(
                                           padding: const EdgeInsets.all(10),
                                           onPressed: () {
-                                            audioPlayerProviderListenFalse.replayCurrentTrack();
+                                            audioPlayerProviderListenFalse.replayPlaylist();
                                           },
                                           icon: Icon(
                                             Icons.replay_rounded,
@@ -463,7 +463,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                             child: IconButton(
                                               padding: const EdgeInsets.all(14),
                                               onPressed: () {
-                                                audioPlayerProviderListenFalse.replayCurrentTrack();
+                                                audioPlayerProviderListenFalse.replayPlaylist();
                                               },
                                               icon: Icon(
                                                 Icons.replay_rounded,

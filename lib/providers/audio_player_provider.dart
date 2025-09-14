@@ -12,18 +12,17 @@ import 'package:audiotags/audiotags.dart';
 import '../models/track.dart';
 
 class AudioPlayerProvider with ChangeNotifier {
-  // String persistentMusicDirectory = "";
-  String? libraryDirectory;
-  final AudioPlayer audioPlayer = AudioPlayer();
-  Track? _nowPlaying;
-  int nowPlayingIndex = -1;
-  // List<FileSystemEntity> filesList = [];
-  List<Track> trackList = [];
   SharedPreferences? prefs;
+  String? libraryDirectory;
+  List<Track> allTracksList = [];
+
+  final AudioPlayer audioPlayer = AudioPlayer();
+  Track? _nowPlayingTrack;
+  int nowPlayingIndex = -1;
   final List<Track> _playlist = [];
 
   // Getters and Streams
-  Track? get nowPlayingTrack => _nowPlaying;
+  Track? get nowPlayingTrack => _nowPlayingTrack;
   List<Track> get playlist => _playlist;
   Stream<Duration> get positionStream => audioPlayer.positionStream; // Get current playback position
   Stream<Duration?> get durationStream => audioPlayer.durationStream; // Get the song duration
@@ -58,10 +57,14 @@ class AudioPlayerProvider with ChangeNotifier {
     await requestPermission();
     libraryDirectory = await getLibraryDirectory();
 
-    // Deprecated: positionStream Listener causing constant rebuilds
-    // audioPlayer.positionStream.listen((obtainedPosition) {
-    //   // nowPlayingPosition = obtainedPosition.inSeconds; // returns int
-    //   notifyListeners();
+    // ERROR: DID NOT WORK
+    // Current index stream listener updating on notification playback changes
+    // updates _nowPlayingTrack and nowPlayingIndex
+    // audioPlayer.currentIndexStream.listen((currentIndex) {
+    //   debugPrint("audioPlayer currentIndex changed to $currentIndex");
+    //   nowPlayingIndex = currentIndex ?? -1;
+    //   _nowPlayingTrack = (currentIndex != null) ? _playlist[currentIndex] : null;
+    //   debugPrint("nowPlayingIndex: $nowPlayingIndex, nowPlayingTrack: ${nowPlayingTrack!.fileName}");
     // });
   }
 
@@ -80,8 +83,11 @@ class AudioPlayerProvider with ChangeNotifier {
         // debugPrint('androidVersionSdkInt >= 33. After requested permission status: $audioPermissionStatus');
       }
       if (audioPermissionStatus.isGranted) {
-        if (_nowPlaying != null && _nowPlaying!.filePath != '' && File(_nowPlaying!.filePath).existsSync()) {
-          debugPrint("androidVersionSdkInt >= 33. Audio permission granted. _nowPlaying: ${_nowPlaying!.fileName}");
+        if (_nowPlayingTrack != null &&
+            _nowPlayingTrack!.filePath != '' &&
+            File(_nowPlayingTrack!.filePath).existsSync()) {
+          debugPrint(
+              "androidVersionSdkInt >= 33. Audio permission granted. _nowPlayingTrack: ${_nowPlayingTrack!.fileName}");
         } else {
           debugPrint("androidVersionSdkInt >= 33. Audio permission granted. No playback track loaded.");
         }
@@ -100,8 +106,11 @@ class AudioPlayerProvider with ChangeNotifier {
       }
       if (storagePermissionStatus.isGranted) {
         debugPrint('androidVersionSdkInt < 33. Storage permission granted.');
-        if (_nowPlaying != null && _nowPlaying!.filePath != '' && File(_nowPlaying!.filePath).existsSync()) {
-          debugPrint("androidVersionSdkInt < 33. Storage permission granted. _nowPlaying: ${_nowPlaying!.fileName}");
+        if (_nowPlayingTrack != null &&
+            _nowPlayingTrack!.filePath != '' &&
+            File(_nowPlayingTrack!.filePath).existsSync()) {
+          debugPrint(
+              "androidVersionSdkInt < 33. Storage permission granted. _nowPlayingTrack: ${_nowPlayingTrack!.fileName}");
         } else {
           debugPrint('androidVersionSdkInt < 33. Storage permission granted. No playback track loaded.');
         }
@@ -116,13 +125,13 @@ class AudioPlayerProvider with ChangeNotifier {
   // During onboarding, build music database for the first time
   Future<List<Track>> generateTrackList() async {
     final directory = Directory(libraryDirectory!);
-    trackList = []; // empty the existingTrackList every time
+    allTracksList = []; // empty the existingTrackList every time
 
     if (directory.existsSync()) {
       int fileCounter = 0;
       final files = directory.listSync(recursive: true);
       for (var eachFile in files) {
-        // Only if .mp3 file, add to trackList
+        // Only if .mp3 file, add to allTracksList
         if (eachFile is File && eachFile.path.endsWith('.mp3')) {
           // Retrieve file metadata or catch error
           try {
@@ -144,9 +153,9 @@ class AudioPlayerProvider with ChangeNotifier {
               // bitrate: metadata?.bitrate,
               playCount: 0,
             );
-            // trackList.insert (fileCounter,tempTrack);
-            trackList.add(tempTrack);
-            // await databaseProvider.insertTrackList(trackList);
+            // allTracksList.insert (fileCounter,tempTrack);
+            allTracksList.add(tempTrack);
+            // await databaseProvider.insertTrackList(allTracksList);
             fileCounter++;
           } catch (e) {
             debugPrint(
@@ -157,8 +166,37 @@ class AudioPlayerProvider with ChangeNotifier {
     } else {
       debugPrint('AudioPlayerProvider generateTrackList(), libraryDirectory: $libraryDirectory doesn\'t exist');
     }
-    return trackList;
+    return allTracksList;
   }
+
+  Future<void> playTrack() async {
+    await audioPlayer.play();
+  }
+
+  Future<void> pauseTrack() async {
+    await audioPlayer.pause();
+  }
+
+  Future<void> stopTrack() async {
+    await audioPlayer.stop();
+  }
+
+  Future<void> seekTrack(Duration newSeekValue) async {
+    await audioPlayer.seek(newSeekValue);
+  }
+
+  Future<void> replayPlaylist() async {
+    playIndexFromPlaylist(0);
+    playTrack();
+  }
+
+  // void updateNowPlayingTrack() {
+  //   final currentIndex = audioPlayer.currentIndex;
+  //   nowPlayingIndex = currentIndex ?? -1;
+  //   _nowPlayingTrack = (currentIndex != null) ? _playlist[currentIndex] : null;
+  //   debugPrint(
+  //       "updateNowPlayingTrack()\ncurrentIndex: $currentIndex\nnowPlayingIndex: $nowPlayingIndex\nnowPlayingTrack: ${nowPlayingTrack!.fileName}");
+  // }
 
   // Convert Track type into AudioSource Type for AudioSource Playlist
   Future<AudioSource> trackToAudioSource(Track passedTrack) async {
@@ -182,8 +220,8 @@ class AudioPlayerProvider with ChangeNotifier {
         duration: Duration(seconds: passedTrack.fileDuration),
         playable: true,
         extras: {
-          'skipToPrevious': true,
-          'skipToNext': true,
+          // 'skipToPrevious': true,
+          // 'skipToNext': true,
           'androidCompactActionIndices': [0, 1],
           'androidNotificationButtons': ['skipToPrevious', 'skipToNext'],
         },
@@ -191,50 +229,8 @@ class AudioPlayerProvider with ChangeNotifier {
     );
   }
 
-  // Set Track into audioPlayer
-  // Future<void> setAudioPlayerFile(Track trackToPlay) async {
-  //   if (File(trackToPlay.filePath).existsSync()) {
-  //     _nowPlaying = trackToPlay;
-  //     try {
-  //       // deprecated
-  //       // await audioPlayer.setFilePath(trackToPlay.filePath);
-  //       await audioPlayer.setAudioSource(await trackToAudioSource(trackToPlay));
-  //     } catch (e) {
-  //       _nowPlaying = null;
-  //       debugPrint(
-  //           'AudioPlayerProvider setAudioPlayerFile(), Error setting file ${trackToPlay.fileName} as audio source. Error type: ${e.runtimeType}. Error details: $e');
-  //     }
-  //     notifyListeners();
-  //   } else {
-  //     _nowPlaying = null;
-  //     notifyListeners();
-  //     debugPrint("File ${trackToPlay.filePath} doesn't exist.");
-  //   }
-  // }
-
-  Future<void> playTrack() async {
-    await audioPlayer.play();
-  }
-
-  Future<void> pauseTrack() async {
-    await audioPlayer.pause();
-  }
-
-  Future<void> stopTrack() async {
-    await audioPlayer.stop();
-  }
-
-  Future<void> seekTrack(Duration newSeekValue) async {
-    await audioPlayer.seek(newSeekValue);
-  }
-
-  void replayCurrentTrack() {
-    seekTrack(Duration.zero);
-    playTrack();
-  }
-
   // Add to end of _playlist
-  void addToPlaylist(Track trackToAdd) async {
+  Future<void> addToPlaylist(Track trackToAdd) async {
     if (_playlist.contains(trackToAdd)) {
       debugPrint('addToPlaylist Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
@@ -242,7 +238,7 @@ class AudioPlayerProvider with ChangeNotifier {
         // add & play since its the only 1
         _playlist.add(trackToAdd);
         await audioPlayer.addAudioSource(await trackToAudioSource(trackToAdd));
-        _nowPlaying = trackToAdd;
+        _nowPlayingTrack = trackToAdd;
         nowPlayingIndex = 0;
         playTrack();
       } else {
@@ -254,7 +250,7 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   // Add to the upNext of _playlist
-  void addToPlaylistUpNext(Track trackToAdd) async {
+  Future<void> addToPlaylistUpNext(Track trackToAdd) async {
     if (_playlist.contains(trackToAdd)) {
       debugPrint('addToPlaylistUpNext Cannot add duplicate track: ${trackToAdd.fileName}');
     } else {
@@ -262,20 +258,19 @@ class AudioPlayerProvider with ChangeNotifier {
         // add & play since its the only 1
         _playlist.add(trackToAdd);
         await audioPlayer.addAudioSource(await trackToAudioSource(trackToAdd));
-        _nowPlaying = trackToAdd;
+        _nowPlayingTrack = trackToAdd;
         nowPlayingIndex = 0;
         playTrack();
       } else {
         _playlist.insert(nowPlayingIndex + 1, trackToAdd);
         await audioPlayer.insertAudioSource(nowPlayingIndex + 1, await trackToAudioSource(trackToAdd));
-        // _nowPlayingAudioSources.insert(nowPlayingIndex + 1, await trackToAudioSource(trackToAdd));
       }
       notifyListeners();
     }
   }
 
   // Remove from _playlist and update nowPlayingIndex
-  void removeFromPlaylistAt(int indexToRemove) async {
+  Future<void> removeFromPlaylistAt(int indexToRemove) async {
     if (_playlist.isNotEmpty && indexToRemove >= 0 && indexToRemove < _playlist.length) {
       // playlist not empty && index within range && track at index exists
       if (indexToRemove == nowPlayingIndex) {
@@ -285,7 +280,7 @@ class AudioPlayerProvider with ChangeNotifier {
           stopTrack();
           _playlist.removeAt(indexToRemove);
           await audioPlayer.removeAudioSourceAt(indexToRemove);
-          _nowPlaying = null;
+          _nowPlayingTrack = null;
           nowPlayingIndex = -1;
         } else {
           // Removing nowPlayingTrack && arbitrary track
@@ -311,35 +306,31 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   // Play next from _playlist and update nowPlayingIndex
-  void playNextFromPlaylist() async {
-    if (_playlist.isNotEmpty && nowPlayingIndex + 1 < _playlist.length) {
+  Future<void> playNextFromPlaylist() async {
+    if (_playlist.isNotEmpty && nowPlayingIndex + 1 < _playlist.length && audioPlayer.hasNext) {
       // && _playlist[nowPlayingIndex + 1] != null)
       // playlist not empty && index within range && next track exists
       nowPlayingIndex += 1;
-      // deprecated setfiles
-      // await setAudioPlayerFile(_playlist[nowPlayingIndex]);
-      // await playTrack();
-      _nowPlaying = _playlist[nowPlayingIndex];
+      _nowPlayingTrack = _playlist[nowPlayingIndex];
       await audioPlayer.seekToNext();
       notifyListeners();
     } else if (_playlist.isNotEmpty && nowPlayingIndex + 1 == _playlist.length) {
       // playlist not empty && playing last song then
       // start from the beginning of the playlist
       playIndexFromPlaylist(0);
+      notifyListeners();
     } else {
       debugPrint('playNextFromPlaylist Cannot play next track at nowPlayingIndex: ${nowPlayingIndex + 1}');
     }
   }
 
   // Play prev from _playlist and update nowPlayingIndex
-  void playPrevFromPlaylist() async {
-    if (_playlist.isNotEmpty && nowPlayingIndex - 1 >= 0) {
+  Future<void> playPrevFromPlaylist() async {
+    if (_playlist.isNotEmpty && nowPlayingIndex - 1 >= 0 && audioPlayer.hasPrevious) {
       // && _playlist[nowPlayingIndex - 1] != null)
       // playlist not empty && index within range && prev track exists
       nowPlayingIndex -= 1;
-      // await setAudioPlayerFile(_playlist[nowPlayingIndex]);
-      // await playTrack();
-      _nowPlaying = _playlist[nowPlayingIndex];
+      _nowPlayingTrack = _playlist[nowPlayingIndex];
       await audioPlayer.seekToPrevious();
       notifyListeners();
     } else {
@@ -348,20 +339,40 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   // Play specific index from _playlist and update nowPlayingIndex
-  void playIndexFromPlaylist(int indexToPlay) async {
+  Future<void> playIndexFromPlaylist(int indexToPlay) async {
     if (_playlist.isNotEmpty && indexToPlay >= 0 && indexToPlay < _playlist.length) {
       // && _playlist[indexToPlay] != null)
       // playlist not empty && index within range && track@index exists
       nowPlayingIndex = indexToPlay;
-      // await setAudioPlayerFile(_playlist[nowPlayingIndex]);
-      // await playTrack();
-      _nowPlaying = _playlist[nowPlayingIndex];
+      _nowPlayingTrack = _playlist[nowPlayingIndex];
       await audioPlayer.seek(null, index: indexToPlay);
       notifyListeners();
     } else {
       debugPrint('playIndexFromPlaylist Cannot play track at indexToPlay: $indexToPlay');
     }
   }
+
+  // TODO: Remove unnecessary set track function
+  // Set Track into audioPlayer
+  // Future<void> setAudioPlayerFile(Track trackToPlay) async {
+  //   if (File(trackToPlay.filePath).existsSync()) {
+  //     _nowPlayingTrack = trackToPlay;
+  //     try {
+  //       // deprecated
+  //       // await audioPlayer.setFilePath(trackToPlay.filePath);
+  //       await audioPlayer.setAudioSource(await trackToAudioSource(trackToPlay));
+  //     } catch (e) {
+  //       _nowPlayingTrack = null;
+  //       debugPrint(
+  //           'AudioPlayerProvider setAudioPlayerFile(), Error setting file ${trackToPlay.fileName} as audio source. Error type: ${e.runtimeType}. Error details: $e');
+  //     }
+  //     notifyListeners();
+  //   } else {
+  //     _nowPlayingTrack = null;
+  //     notifyListeners();
+  //     debugPrint("File ${trackToPlay.filePath} doesn't exist.");
+  //   }
+  // }
 
   // TODO: Remove unnecessary auto play next function
   // Play next track on track completion with listener
