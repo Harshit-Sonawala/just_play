@@ -76,7 +76,7 @@ JustPlay! is a beautiful and feature-rich music player app for local music files
 - [ ] Search Screen Last Result slightly covered by NowPlayingMenu
 - [ ] Search Screen NowPlayingMenu slightly covered by keyboard when opened
 - [ ] Updating AudioSources List causing playback restart from first track in playlist - refactored into using playlist API instead of ConcatenatingAudioSource
-- [ ] Only on notification skipToNext/skipToPrev song, NowPlayingMenu not accurately reflecting updated song info - refactor `List<Track> _playlist` & `nowPlayingIndex` into auto-updating index fetched from audioPlayer's AudioSource updates. 
+- [x] Only on notification skipToNext/skipToPrev song, NowPlayingMenu not accurately reflecting updated song info - refactor `List<Track> _playlist` & `nowPlayingIndex` into auto-updating index fetched from sequenceStateStream listener. 
 
 
 ### Tech Stack 🛠️  

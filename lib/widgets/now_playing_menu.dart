@@ -441,9 +441,11 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       ),
                                     ),
                                     IconButton(
-                                      onPressed: () {
-                                        audioPlayerProviderListenFalse.playPrevFromPlaylist();
-                                      },
+                                      onPressed: audioPlayerProviderListenFalse.audioPlayer.hasPrevious
+                                          ? () {
+                                              audioPlayerProviderListenFalse.playPrevFromPlaylist();
+                                            }
+                                          : null,
                                       icon: const Icon(
                                         Icons.skip_previous_rounded,
                                         size: 36,
@@ -503,9 +505,11 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       },
                                     ),
                                     IconButton(
-                                      onPressed: () {
-                                        audioPlayerProviderListenFalse.playNextFromPlaylist();
-                                      },
+                                      onPressed: audioPlayerProviderListenFalse.audioPlayer.hasNext
+                                          ? () {
+                                              audioPlayerProviderListenFalse.playNextFromPlaylist();
+                                            }
+                                          : null,
                                       icon: const Icon(
                                         Icons.skip_next_rounded,
                                         size: 36,
