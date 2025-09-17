@@ -321,6 +321,7 @@ class AudioPlayerProvider with ChangeNotifier {
     nowPlayingIndex = -1;
     _playlist.clear(); // Clear _playlist
     await audioPlayer.clearAudioSources(); // Clear AudioSourcesList
+    notifyListeners();
   }
 
   // Play next from _playlist and update nowPlayingIndex

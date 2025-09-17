@@ -8,6 +8,8 @@ class ThemeProvider with ChangeNotifier {
   Color globalPrimaryColor = const Color(0xFF43D0F6);
   Color globalSecondaryColor = const Color(0xFF40EBC6);
   Color globalTertiaryColor = const Color(0xFF9BE2F5);
+  Color globalWarningColor = Colors.amber;
+  Color globalErrorColor = Colors.red.shade400;
 
   // Global dark theme foreground & background colors:
   Color globalDarkSurfaceColor = const Color(0xFF1A2324);

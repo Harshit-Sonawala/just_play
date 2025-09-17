@@ -128,12 +128,15 @@ class _JustPlayState extends State<JustPlay> {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
 
+      // TODO: Move all themeData to ThemeProvider
+
       // Light Theme:
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: Provider.of<ThemeProvider>(context).globalOnSurfaceColor,
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Provider.of<ThemeProvider>(context).globalPrimaryColor,
+          error: Provider.of<ThemeProvider>(context).globalErrorColor,
         ),
         fontFamily: 'Inter',
         textTheme: appWideTextTheme,
@@ -157,6 +160,7 @@ class _JustPlayState extends State<JustPlay> {
           // onPrimary: Provider.of<ThemeProvider>(context).globalOnPrimaryColor,
           secondary: Provider.of<ThemeProvider>(context).globalSecondaryColor,
           tertiary: Provider.of<ThemeProvider>(context).globalTertiaryColor,
+          error: Provider.of<ThemeProvider>(context).globalErrorColor,
           // onSecondary: Provider.of<ThemeProvider>(context).globalOnSecondaryColor,
           surface: Provider.of<ThemeProvider>(context).globalDarkSurfaceColor,
           surfaceBright: Provider.of<ThemeProvider>(context).globalDarkSurfaceBrightColor,

@@ -517,9 +517,12 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     ),
                                     IconButton(
                                       onPressed: () {},
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.repeat_rounded,
                                         size: 26,
+                                        // color: audioPlayerProviderListenFalse.audioPlayer.loopMode
+                                        //     ? Theme.of(context).colorScheme.primary
+                                        //     : Theme.of(context).colorScheme.secondary,
                                       ),
                                     ),
                                   ],
@@ -534,7 +537,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Up Next',
+                                        'Playing ${audioPlayerProviderListenFalse.nowPlayingIndex + 1} of ${audioPlayerProviderListenFalse.playlist.length}',
                                         style: Theme.of(context).textTheme.titleMedium,
                                       ),
                                     ],
@@ -563,7 +566,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                         background: Container(
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
-                                            color: Colors.red.shade400,
+                                            color: Theme.of(context).colorScheme.error,
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -604,6 +607,22 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       ),
                                     );
                                   }).toList(),
+                                ),
+                                const SizedBox(height: 10),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: CustomElevatedButton(
+                                    onPressed: () {
+                                      audioPlayerProviderListenFalse.clearPlaylist();
+                                    },
+                                    borderRadius: 50,
+                                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                    icon: Icons.clear_all_rounded,
+                                    iconSize: 22,
+                                    iconColor: Theme.of(context).colorScheme.error,
+                                    title: 'Clear All',
+                                    titleStyle: Theme.of(context).textTheme.bodySmall,
+                                  ),
                                 ),
                               ],
                             ),
