@@ -144,58 +144,82 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   // const SizedBox(height: 4),
                   // AppBar Header Row 2
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: CustomElevatedButton(
-                          onPressed: () {
-                            debugPrint('Play All pressed.');
-                          },
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                          borderRadius: 50,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                          icon: Icons.playlist_add_rounded,
-                          iconSize: 22,
-                          iconColor: Theme.of(context).colorScheme.secondary,
-                          title: 'Play All',
-                          titleStyle: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: CustomElevatedButton(
-                          onPressed: () {
-                            debugPrint('Shuffle All pressed.');
-                          },
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                          borderRadius: 50,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                          icon: Icons.shuffle_rounded,
-                          iconSize: 22,
-                          iconColor: Theme.of(context).colorScheme.secondary,
-                          title: 'Shuffle All',
-                          titleStyle: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: CustomElevatedButton(
-                          onPressed: () {
-                            debugPrint('New Tracks pressed.');
-                          },
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                          borderRadius: 50,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                          icon: Icons.new_releases_rounded,
-                          iconSize: 22,
-                          iconColor: Theme.of(context).colorScheme.secondary,
-                          title: 'New',
-                          titleStyle: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                    ],
+                  FutureBuilder<List<Track>>(
+                    future: widget.trackListFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: LinearProgressIndicator(),
+                        );
+                      } else if (snapshot.hasData) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: CustomElevatedButton(
+                                onPressed: () {
+                                  audioPlayerProviderListenFalse.addAllToPlaylist(snapshot.data!);
+                                  debugPrint('Playing ALL tracks!');
+                                },
+                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                borderRadius: 50,
+                                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                icon: Icons.playlist_add_rounded,
+                                iconSize: 22,
+                                iconColor: Theme.of(context).colorScheme.secondary,
+                                title: 'Play All',
+                                titleStyle: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: CustomElevatedButton(
+                                onPressed: () {
+                                  debugPrint('Shuffle All pressed.');
+                                },
+                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                borderRadius: 50,
+                                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                icon: Icons.shuffle_rounded,
+                                iconSize: 22,
+                                iconColor: Theme.of(context).colorScheme.secondary,
+                                title: 'Shuffle All',
+                                titleStyle: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: CustomElevatedButton(
+                                onPressed: () {
+                                  audioPlayerProviderListenFalse.addAllToPlaylist(snapshot.data!.sublist(0, 31));
+                                  debugPrint('Playing 30 Tracks.');
+                                },
+                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                borderRadius: 50,
+                                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                icon: Icons.new_releases_rounded,
+                                iconSize: 22,
+                                iconColor: Theme.of(context).colorScheme.secondary,
+                                title: 'New Tracks',
+                                titleStyle: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else if (snapshot.hasError) {
+                        debugPrint('HomeScreen Error: ${snapshot.error}');
+                        return Center(
+                          child: Text('HomeScreen Error: ${snapshot.error}'),
+                        );
+                      } else {
+                        debugPrint('HomeScreen Unexpected: $snapshot');
+                        return Center(
+                          child: Text('HomeScreen Unexpected: $snapshot'),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

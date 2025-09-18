@@ -434,10 +434,16 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
+                                      onPressed: () {
+                                        audioPlayerProviderListenFalse.changeShuffleMode();
+                                        debugPrint('Shuffle Mode changed');
+                                      },
+                                      icon: Icon(
                                         Icons.shuffle_rounded,
                                         size: 26,
+                                        color: audioPlayerProviderListenFalse.shuffleEnabled
+                                            ? Theme.of(context).colorScheme.primary
+                                            : Theme.of(context).colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                     IconButton(

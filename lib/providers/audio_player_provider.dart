@@ -20,10 +20,12 @@ class AudioPlayerProvider with ChangeNotifier {
   Track? _nowPlayingTrack;
   int nowPlayingIndex = -1;
   final List<Track> _playlist = [];
+  bool _shuffleEnabled = false;
 
   // Getters and Streams
   Track? get nowPlayingTrack => _nowPlayingTrack;
   List<Track> get playlist => _playlist;
+  bool get shuffleEnabled => _shuffleEnabled;
   Stream<Duration> get positionStream => audioPlayer.positionStream; // Get current playback position
   Stream<Duration?> get durationStream => audioPlayer.durationStream; // Get the song duration
   Stream<PlayerState> get playerStateStream => audioPlayer.playerStateStream; // Get player play/pause state
@@ -192,6 +194,12 @@ class AudioPlayerProvider with ChangeNotifier {
   Future<void> replayPlaylist() async {
     playIndexFromPlaylist(0);
     playTrack();
+  }
+
+  Future<void> changeShuffleMode() async {
+    _shuffleEnabled = !_shuffleEnabled;
+    await audioPlayer.setShuffleModeEnabled(_shuffleEnabled);
+    notifyListeners();
   }
 
   // Convert Track type into AudioSource Type for AudioSource Playlist

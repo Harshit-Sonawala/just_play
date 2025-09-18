@@ -56,8 +56,6 @@ class _JustPlayState extends State<JustPlay> {
       debugPrint('Main Initializing AudioPlayerProvider');
       await audioPlayerProviderListenFalse.initializeAudioPlayerProvider();
       await audioPlayerProviderListenFalse.initializeSharedPrefs();
-      // TODO: Remove unnecessary auto play next function
-      // audioPlayerProviderListenFalse.autoPlayNextOnTrackCompletion(); // Not async
     }
   }
 
