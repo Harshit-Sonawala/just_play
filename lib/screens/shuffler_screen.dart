@@ -46,11 +46,6 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
         uniqueRandomIds.add(randomId);
       }
     }
-
-    // for (int i = 0; i < randomCount; i++) {
-    //   int randomId = random.nextInt(sourceTrackList.length); // add a + 1 / + 2... / + minRange
-    //   shuffledTrackList.add(sourceTrackList[randomId]);
-    // }
     return shuffledTrackList;
   }
 
