@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math'; // for Random()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +6,7 @@ import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 
 import '../widgets/custom_grid_card.dart';
+import '../widgets/custom_elevated_button.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -22,6 +23,8 @@ class ShufflerScreen extends StatefulWidget {
 }
 
 class _ShufflerScreenState extends State<ShufflerScreen> {
+  List<Track> shuffledTrackList = [];
+
   // keep randomCount as a multiple of 3 since crossAxisCount = 3
   List<Track> getShuffledTrackList(List<Track> sourceTrackList, {int randomCount = 18}) {
     List<Track> shuffledTrackList = [];
@@ -54,32 +57,71 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
     final audioPlayerProviderListenFalse = Provider.of<AudioPlayerProvider>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Appbar Line 1
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.casino_rounded,
-                  size: 28,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Shuffler',
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
-              ],
-            ),
+          // Appbar Header Line 1
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.casino_rounded,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Shuffler',
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
+                  const SizedBox(width: 6),
+                ],
+              ),
+              Row(
+                children: [
+                  CustomElevatedButton(
+                    onPressed: () {
+                      audioPlayerProviderListenFalse.addAllToPlaylist(shuffledTrackList);
+                      debugPrint('Adding All Shuffled Tracks');
+                    },
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    borderRadius: 50,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                    icon: Icons.playlist_add_rounded,
+                    iconSize: 22,
+                    iconColor: Theme.of(context).colorScheme.secondary,
+                    title: 'Add All',
+                    titleStyle: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  // const SizedBox(width: 6),
+                  // CustomElevatedButton(
+                  //   onPressed: () {
+                  //     setState(() {
+                  //       debugPrint('Re-rolled Shuffled Tracks');
+                  //     });
+                  //   },
+                  //   padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                  //   borderRadius: 50,
+                  //   backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                  //   icon: Icons.refresh_rounded,
+                  //   iconSize: 22,
+                  //   iconColor: Theme.of(context).colorScheme.secondary,
+                  //   title: 'Re-roll',
+                  //   titleStyle: Theme.of(context).textTheme.bodySmall,
+                  // ),
+                ],
+              ),
+            ],
           ),
+          const SizedBox(height: 10),
 
-          // Appbar Line 2
+          // Appbar Header Line 2
           Text(
-            'Shuffle play from a random selection of tracks:',
+            'Shuffle play from a random selection of tracks. Swipe to re-roll and hold to add to up next.',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 10),
@@ -102,68 +144,77 @@ class _ShufflerScreenState extends State<ShufflerScreen> {
                   ),
                 );
               } else if (snapshot.hasData) {
-                final shuffledTrackList = getShuffledTrackList(snapshot.data ?? []);
+                shuffledTrackList = getShuffledTrackList(snapshot.data ?? []);
                 // debugPrint('ShufflerScreen shuffledTrackList Length: ${shuffledTrackList.length}');
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
+
+                // Body GridView Builder
                 return Expanded(
                   // height: 600,
-                  child: MasonryGridView.builder(
-                    padding: const EdgeInsets.only(bottom: 100),
-                    // axisDirection: AxisDirection.down,
-                    gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                    ),
-                    // crossAxisCount: 4,
-                    mainAxisSpacing: 6,
-                    crossAxisSpacing: 6,
-                    itemCount: shuffledTrackList.length,
-                    itemBuilder: (context, index) {
-                      Track eachTrack = shuffledTrackList[index];
-                      // String trackTitlePhrase = eachTrack.fileName.length <= 40
-                      //     ? eachTrack.fileName
-                      //     : '${(eachTrack.fileName).substring(0, 41)}...';
-                      return CustomGridCard(
-                        onPressed: () {
-                          // Provider.of<AudioPlayerProvider>(context, listen: false).setAudioPlayerFile(eachTrack);
-                          audioPlayerProviderListenFalse.addToPlaylist(eachTrack);
-                        },
-                        onLongPress: () {
-                          audioPlayerProviderListenFalse.addToPlaylistUpNext(eachTrack);
-                        },
-                        backgroundImage: eachTrack.albumArt,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // const Icon(Icons.music_note_rounded, size: 16),
-                            (eachTrack.albumArt == null)
-                                ? Text(
-                                    eachTrack.fileName[0].toUpperCase(),
-                                    style: Theme.of(context).textTheme.displayLarge,
-                                  )
-                                : SizedBox(height: 8),
-                            SizedBox(height: 2),
-                            Text(
-                              '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
-                              style: Theme.of(context).textTheme.displaySmall,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2),
-                                child: Text(
-                                  // '${eachTrack.artist!.substring(0, 71)}...',
-                                  '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
+                  child: RefreshIndicator(
+                    elevation: 0,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                    triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                    onRefresh: () async {
+                      setState(() {
+                        debugPrint('Re-rolled Shuffled Tracks');
+                      });
                     },
+                    child: MasonryGridView.builder(
+                      padding: const EdgeInsets.only(bottom: 100),
+                      // axisDirection: AxisDirection.down,
+                      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                      itemCount: shuffledTrackList.length,
+                      itemBuilder: (context, index) {
+                        Track eachTrack = shuffledTrackList[index];
+                        // String trackTitlePhrase = eachTrack.fileName.length <= 40
+                        //     ? eachTrack.fileName
+                        //     : '${(eachTrack.fileName).substring(0, 41)}...';
+                        return CustomGridCard(
+                          onPressed: () {
+                            audioPlayerProviderListenFalse.addToPlaylist(eachTrack);
+                          },
+                          onLongPress: () {
+                            audioPlayerProviderListenFalse.addToPlaylistUpNext(eachTrack);
+                          },
+                          backgroundImage: eachTrack.albumArt,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              (eachTrack.albumArt == null)
+                                  ? Text(
+                                      eachTrack.fileName[0].toUpperCase(),
+                                      style: Theme.of(context).textTheme.displayLarge,
+                                    )
+                                  : SizedBox(height: 8),
+                              SizedBox(height: 2),
+                              Text(
+                                '${(eachTrack.title != null && eachTrack.title!.isNotEmpty) ? eachTrack.title : eachTrack.fileName}',
+                                style: Theme.of(context).textTheme.displaySmall,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (eachTrack.artist != null && eachTrack.artist!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2),
+                                  child: Text(
+                                    // '${eachTrack.artist!.substring(0, 71)}...',
+                                    '${(eachTrack.artist != null && eachTrack.artist!.isNotEmpty) ? eachTrack.artist : 'Unknown Artist'}',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               } else if (snapshot.hasError) {
