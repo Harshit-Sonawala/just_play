@@ -539,12 +539,25 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Playing ${audioPlayerProviderListenFalse.nowPlayingIndex + 1} of ${audioPlayerProviderListenFalse.playlist.length}',
                                         style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                      CustomElevatedButton(
+                                        onPressed: () {
+                                          audioPlayerProviderListenFalse.clearPlaylist();
+                                        },
+                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                        borderRadius: 50,
+                                        backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                        icon: Icons.delete,
+                                        iconSize: 22,
+                                        iconColor: Theme.of(context).colorScheme.error,
+                                        title: 'Clear All',
+                                        titleStyle: Theme.of(context).textTheme.bodyMedium,
                                       ),
                                     ],
                                   ),
@@ -563,7 +576,7 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                     Track eachTrack = eachEntry.value;
 
                                     return Padding(
-                                      padding: const EdgeInsets.only(bottom: 6),
+                                      padding: const EdgeInsets.only(bottom: 8),
                                       child: Dismissible(
                                         key: Key(eachTrack.filePath),
                                         onDismissed: (dismissDirection) {
@@ -613,22 +626,6 @@ class _NowPlayingMenuState extends State<NowPlayingMenu> {
                                       ),
                                     );
                                   }).toList(),
-                                ),
-                                const SizedBox(height: 10),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: CustomElevatedButton(
-                                    onPressed: () {
-                                      audioPlayerProviderListenFalse.clearPlaylist();
-                                    },
-                                    borderRadius: 50,
-                                    backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                                    icon: Icons.clear_all_rounded,
-                                    iconSize: 22,
-                                    iconColor: Theme.of(context).colorScheme.error,
-                                    title: 'Clear All',
-                                    titleStyle: Theme.of(context).textTheme.bodySmall,
-                                  ),
                                 ),
                               ],
                             ),

@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  // const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   // AppBar Header Row 2
                   FutureBuilder<List<Track>>(
                     future: widget.trackListFuture,
@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: CustomElevatedButton(
                                 onPressed: () {
                                   audioPlayerProviderListenFalse.addAllToPlaylist(snapshot.data!);
-                                  debugPrint('Playing ALL tracks!');
+                                  debugPrint('Playing All Tracks!');
                                 },
                                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                                 borderRadius: 50,
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                               child: CustomElevatedButton(
                                 onPressed: () {
-                                  audioPlayerProviderListenFalse.addAllToPlaylist(snapshot.data!.sublist(0, 31));
+                                  audioPlayerProviderListenFalse.addAllToPlaylist(snapshot.data!.sublist(0, 30));
                                   debugPrint('Playing 30 Tracks.');
                                 },
                                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
@@ -249,6 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else if (snapshot.hasData) {
                 // debugPrint('WrapperScreen snapshot.data: ${snapshot.data}');
+                // TODO: Add Extra 100 Bottom Padding
+                // padding: const EdgeInsets.only(bottom: 100),
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
                     childCount: snapshot.data!.length,
@@ -256,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // final eachTrack = Provider.of<AudioPlayerProvider>(context).trackList[index];
                       Track eachTrack = snapshot.data![index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: CustomListItem(
                           onPressed: () {
                             // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);

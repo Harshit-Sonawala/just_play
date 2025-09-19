@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatefulWidget {
   final VoidCallback onPressed;
+  final EdgeInsets? margin;
   final EdgeInsets? padding;
   final double? borderRadius;
   final Color? backgroundColor;
@@ -16,7 +17,8 @@ class CustomElevatedButton extends StatefulWidget {
 
   const CustomElevatedButton({
     required this.onPressed,
-    this.padding = const EdgeInsets.all(10),
+    this.margin = EdgeInsets.zero,
+    this.padding = const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
     this.borderRadius = 10,
     this.backgroundColor,
     this.title,
@@ -42,7 +44,8 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
       style: ElevatedButton.styleFrom(
         elevation: 0,
         padding: widget.padding,
-        minimumSize: const Size(0, 0),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minimumSize: Size.zero,
         backgroundColor: widget.backgroundColor ?? Theme.of(context).colorScheme.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius!),

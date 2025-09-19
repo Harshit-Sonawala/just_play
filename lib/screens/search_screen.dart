@@ -5,6 +5,7 @@ import '../models/track.dart';
 import '../providers/audio_player_provider.dart';
 import '../main.dart';
 
+import '../widgets/custom_elevated_button.dart';
 import '../widgets/custom_list_item.dart';
 import '../widgets/now_playing_menu.dart';
 
@@ -198,6 +199,20 @@ class _SearchScreenState extends State<SearchScreen> {
                                         'Found ${snapshot.data!.length} Results:',
                                         style: Theme.of(context).textTheme.titleMedium,
                                       ),
+                                      CustomElevatedButton(
+                                        onPressed: () {
+                                          audioPlayerProviderListenFalse.addAllToPlaylist(snapshot.data!);
+                                          debugPrint('Playing All Search Results');
+                                        },
+                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                        borderRadius: 50,
+                                        backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                                        icon: Icons.playlist_add_rounded,
+                                        iconSize: 22,
+                                        iconColor: Theme.of(context).colorScheme.secondary,
+                                        title: 'Add All',
+                                        titleStyle: Theme.of(context).textTheme.bodySmall,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -206,29 +221,31 @@ class _SearchScreenState extends State<SearchScreen> {
                                 // Search Results ListView Builder
                                 Expanded(
                                   child: ListView.builder(
-                                      itemCount: snapshot.data!.length,
-                                      itemBuilder: (context, index) {
-                                        Track eachTrack = snapshot.data![index];
-                                        return Padding(
-                                          padding: const EdgeInsets.only(bottom: 8),
-                                          child: CustomListItem(
-                                            onPressed: () {
-                                              // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
-                                              audioPlayerProviderListenFalse.addToPlaylist(eachTrack);
-                                            },
-                                            onLongPress: () {
-                                              audioPlayerProviderListenFalse.addToPlaylistUpNext(eachTrack);
-                                            },
-                                            fileName: eachTrack.fileName,
-                                            title: eachTrack.title,
-                                            artist: eachTrack.artist,
-                                            album: eachTrack.album,
-                                            albumArt: eachTrack.albumArt,
-                                            duration: eachTrack.fileDuration,
-                                            // body: eachTrack.path,
-                                          ),
-                                        );
-                                      }),
+                                    padding: const EdgeInsets.only(bottom: 100),
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, index) {
+                                      Track eachTrack = snapshot.data![index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 8),
+                                        child: CustomListItem(
+                                          onPressed: () {
+                                            // audioPlayerProviderListenFalse.setAudioPlayerFile(eachTrack);
+                                            audioPlayerProviderListenFalse.addToPlaylist(eachTrack);
+                                          },
+                                          onLongPress: () {
+                                            audioPlayerProviderListenFalse.addToPlaylistUpNext(eachTrack);
+                                          },
+                                          fileName: eachTrack.fileName,
+                                          title: eachTrack.title,
+                                          artist: eachTrack.artist,
+                                          album: eachTrack.album,
+                                          albumArt: eachTrack.albumArt,
+                                          duration: eachTrack.fileDuration,
+                                          // body: eachTrack.path,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -254,23 +271,23 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             // Floating Action Button Play All Search Results
-            // TODO: Render in snapshot cases only
-            Positioned(
-              bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
-              right: 10,
-              child: FloatingActionButton(
-                elevation: 0,
-                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
-                onPressed: () {
-                  debugPrint('Play All Search Results pressed.');
-                },
-                child: Icon(
-                  Icons.playlist_add_rounded,
-                  size: 28,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ),
+            // Todo: Render in snapshot cases only?
+            // Positioned(
+            //   bottom: Provider.of<AudioPlayerProvider>(context).nowPlayingTrack == null ? 20 : 90,
+            //   right: 10,
+            //   child: FloatingActionButton(
+            //     elevation: 0,
+            //     backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+            //     onPressed: () {
+            //       debugPrint('Play All Search Results pressed.');
+            //     },
+            //     child: Icon(
+            //       Icons.playlist_add_rounded,
+            //       size: 28,
+            //       color: Theme.of(context).colorScheme.secondary,
+            //     ),
+            //   ),
+            // ),
 
             const NowPlayingMenu(),
           ],
