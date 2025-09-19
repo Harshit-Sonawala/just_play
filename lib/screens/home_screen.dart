@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 icon: Icons.new_releases_rounded,
                                 iconSize: 22,
                                 iconColor: Theme.of(context).colorScheme.secondary,
-                                title: 'New Tracks',
+                                title: 'New',
                                 titleStyle: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),

@@ -192,8 +192,8 @@ class AudioPlayerProvider with ChangeNotifier {
   }
 
   Future<void> replayPlaylist() async {
-    playIndexFromPlaylist(0);
-    playTrack();
+    await playIndexFromPlaylist(0);
+    await playTrack();
   }
 
   Future<void> changeShuffleMode() async {
@@ -232,7 +232,7 @@ class AudioPlayerProvider with ChangeNotifier {
     );
   }
 
-  // Add to end of _playlist
+  // Add 1 Track to end of _playlist
   Future<void> addToPlaylist(Track trackToAdd) async {
     if (_playlist.contains(trackToAdd)) {
       debugPrint('addToPlaylist Cannot add duplicate track: ${trackToAdd.fileName}');
@@ -241,7 +241,7 @@ class AudioPlayerProvider with ChangeNotifier {
         // add & play since its the only 1
         _playlist.add(trackToAdd);
         await audioPlayer.addAudioSource(await trackToAudioSource(trackToAdd));
-        playTrack();
+        await playTrack();
       } else {
         _playlist.add(trackToAdd);
         await audioPlayer.addAudioSource(await trackToAudioSource(trackToAdd));
@@ -250,24 +250,7 @@ class AudioPlayerProvider with ChangeNotifier {
     }
   }
 
-  // Add to the upNext of _playlist
-  Future<void> addToPlaylistUpNext(Track trackToAdd) async {
-    if (_playlist.contains(trackToAdd)) {
-      debugPrint('addToPlaylistUpNext Cannot add duplicate track: ${trackToAdd.fileName}');
-    } else {
-      if (_playlist.isEmpty) {
-        // add & play since its the only 1
-        _playlist.add(trackToAdd);
-        await audioPlayer.addAudioSource(await trackToAudioSource(trackToAdd));
-        playTrack();
-      } else {
-        _playlist.insert(nowPlayingIndex + 1, trackToAdd);
-        await audioPlayer.insertAudioSource(nowPlayingIndex + 1, await trackToAudioSource(trackToAdd));
-      }
-      notifyListeners();
-    }
-  }
-
+  // Add multiple Tracks to the end of _playlist
   Future<void> addAllToPlaylist(List<Track> trackListToAdd) async {
     if (_playlist.isEmpty) {
       _playlist.addAll(trackListToAdd);
@@ -278,7 +261,7 @@ class AudioPlayerProvider with ChangeNotifier {
           ),
         ),
       );
-      playTrack();
+      await replayPlaylist();
     } else {
       _playlist.addAll(trackListToAdd);
       await audioPlayer.addAudioSources(
@@ -288,6 +271,24 @@ class AudioPlayerProvider with ChangeNotifier {
           ),
         ),
       );
+    }
+  }
+
+  // Add 1 Track to the upNext of _playlist
+  Future<void> addToPlaylistUpNext(Track trackToAdd) async {
+    if (_playlist.contains(trackToAdd)) {
+      debugPrint('addToPlaylistUpNext Cannot add duplicate track: ${trackToAdd.fileName}');
+    } else {
+      if (_playlist.isEmpty) {
+        // add & play since its the only 1
+        _playlist.add(trackToAdd);
+        await audioPlayer.addAudioSource(await trackToAudioSource(trackToAdd));
+        await playTrack();
+      } else {
+        _playlist.insert(nowPlayingIndex + 1, trackToAdd);
+        await audioPlayer.insertAudioSource(nowPlayingIndex + 1, await trackToAudioSource(trackToAdd));
+      }
+      notifyListeners();
     }
   }
 
